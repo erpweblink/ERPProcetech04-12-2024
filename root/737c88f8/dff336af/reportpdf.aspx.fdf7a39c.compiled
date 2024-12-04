@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/ReportPDF.aspx" hash="fffffffffd45b345" filehash="4c66217c33158f8a" flags="110000" assembly="App_Web_vzhtofw2" type="ASP.admin_reportpdf_aspx">
+    <filedeps>
+        <filedep name="/Admin/ReportPDF.aspx" />
+        <filedep name="/Admin/ReportPDF.aspx.cs" />
+    </filedeps>
+</preserve>

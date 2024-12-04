@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/EnquiryFile.aspx" hash="fffffffffd45b345" filehash="4a0b45021b8197c2" flags="110000" assembly="App_Web_szsqphqc" type="ASP.admin_enquiryfile_aspx">
+    <filedeps>
+        <filedep name="/Admin/EnquiryFile.aspx" />
+        <filedep name="/Admin/EnquiryFile.aspx.cs" />
+    </filedeps>
+</preserve>

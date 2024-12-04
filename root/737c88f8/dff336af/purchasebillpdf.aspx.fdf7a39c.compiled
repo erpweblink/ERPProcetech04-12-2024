@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/PurchaseBillPDF.aspx" hash="fffffffffd45b345" filehash="44db37e0880a802a" flags="110000" assembly="App_Web_cd1md3mr" type="ASP.admin_purchasebillpdf_aspx">
+    <filedeps>
+        <filedep name="/Admin/PurchaseBillPDF.aspx" />
+        <filedep name="/Admin/PurchaseBillPDF.aspx.cs" />
+    </filedeps>
+</preserve>

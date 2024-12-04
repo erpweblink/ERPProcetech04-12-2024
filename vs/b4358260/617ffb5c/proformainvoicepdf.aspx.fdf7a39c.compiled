@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/ProformaInvoicePDF.aspx" hash="fffffffffd45b345" filehash="120280d322321ddd" flags="110000" assembly="App_Web_vtmro1ph" type="ASP.admin_proformainvoicepdf_aspx">
+    <filedeps>
+        <filedep name="/Admin/ProformaInvoicePDF.aspx" />
+        <filedep name="/Admin/ProformaInvoicePDF.aspx.cs" />
+    </filedeps>
+</preserve>

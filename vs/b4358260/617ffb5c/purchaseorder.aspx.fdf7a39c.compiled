@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/PurchaseOrder.aspx" hash="fffffffffd45b345" filehash="bcf9ec4461a6b8a3" flags="110000" assembly="App_Web_dszsk1uh" type="ASP.admin_purchaseorder_aspx">
+    <filedeps>
+        <filedep name="/Admin/AdminMasterPage.master" />
+        <filedep name="/Admin/AdminMasterPage.master.cs" />
+        <filedep name="/Admin/PurchaseOrder.aspx" />
+        <filedep name="/Admin/PurchaseOrder.aspx.cs" />
+    </filedeps>
+</preserve>

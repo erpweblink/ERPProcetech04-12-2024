@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/ReceiptPDF.aspx" hash="fffffffffd45b345" filehash="29a01028a964ee8c" flags="110000" assembly="App_Web_cd1md3mr" type="ASP.admin_receiptpdf_aspx">
+    <filedeps>
+        <filedep name="/Admin/ReceiptPDF.aspx" />
+        <filedep name="/Admin/ReceiptPDF.aspx.cs" />
+    </filedeps>
+</preserve>

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/TestCertificatePDF.aspx" hash="fffffffffd45b345" filehash="f2416e8339ec180c" flags="110000" assembly="App_Web_cd1md3mr" type="ASP.admin_testcertificatepdf_aspx">
+    <filedeps>
+        <filedep name="/Admin/TestCertificatePDF.aspx" />
+        <filedep name="/Admin/TestCertificatePDF.aspx.cs" />
+    </filedeps>
+</preserve>

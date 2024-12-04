@@ -1,0 +1,244 @@
+﻿
+ <style>
+        .swal2-styled.swal2-confirm {
+            border: 0;
+            border-radius: 0.25em;
+            background: initial;
+            background-color:  #aa0404;
+            color: #fff;
+            font-size: 1em;          
+        }
+    </style>
+
+
+@if (TempData["Create"] != null)
+{
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script>
+        toastr.success('@TempData["Create"]');
+
+    </script>
+}
+@if (TempData["Delete"] != null)
+{
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script>
+        toastr.error('@TempData["Delete"]');
+
+    </script>
+}
+@if (TempData["Update"] != null)
+{
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script>
+        toastr.info('@TempData["Update"]');
+
+    </script>
+}
+@if (TempData["User_Not_Approved"] != null)
+{
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script>
+        toastr.error('@TempData["User_Not_Approved"]');
+
+    </script>
+}
+
+@if (TempData["User_Approved"] != null)
+{
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script>
+        toastr.success('@TempData["User_Approved"]');
+
+    </script>
+}
+
+@if (TempData["Mobile_No"] != null)
+{
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+   
+    <script type="text/javascript">
+        window.onload = function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Mobile No Alredy Exist !!!',
+                        
+            })
+                ("@(TempData["Mobile_No"])");
+        };
+    </script>
+}
+
+@if (TempData["Invalid_Username_Password"] != null)
+{
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <script type="text/javascript">
+        window.onload = function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Invalid Username or Password !!!',
+
+            })
+                ("@(TempData["Invalid_Username_Password"])");
+        };
+    </script>
+}
+
+
+@if (TempData["Save_Record"] != null)
+{
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            Swal.fire({
+                position: 'top-center',
+                icon: 'success',
+                title: 'Thank You For Ragisttration',
+                showConfirmButton: false,
+                timer: 1500
+            })
+                ("@(TempData["Save_Record"])");
+        };
+    </script>
+}
+
+@if (TempData["Update_Record"] != null)
+{
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            Swal.fire({
+                position: 'top-center',
+                icon: 'success',
+                title: 'Record Updated Successful !!',
+                showConfirmButton: false,
+                timer: 1500
+            })
+                ("@(TempData["Update_Record"])");
+        };
+    </script>
+}
+
+
+@if (TempData["Internet_Connection"] != null)
+{
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            Swal.fire(
+                'Please Check Your Internet Connection !!',
+                
+                'question'
+            )
+                ("@(TempData["Internet_Connection"])");
+        };
+    </script>
+}
+
+@if (TempData["Atleastone"] != null)
+{
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            Swal.fire(
+                'Please fill record....!!',
+            )
+                ("@(TempData["Atleastone"])");
+        };
+    </script>
+}
+
+
+
+@if (TempData["User_Approved"] != null)
+{
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            Swal.fire({
+                position: 'top-center',
+                icon: 'success',
+                title: 'User Approved !!!',
+                showConfirmButton: false,
+                timer: 1200
+            })
+                ("@(TempData["User_Approved"])");
+        };
+    </script>
+}
+
+
+@if (TempData["Payment_Approved"] != null)
+{
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            Swal.fire({
+                position: 'top-center',
+                icon: 'success',
+                title: 'Payment Approved !!!',
+                showConfirmButton: false,
+                timer: 1200
+            })
+                ("@(TempData["Payment_Approved"])");
+        };
+    </script>
+}
+
+
+
+
+@if (TempData["User_Reject"] != null)
+{
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            Swal.fire({
+                position: 'top-center',
+                icon: 'error',
+                title: 'User Rejected !!!',
+                showConfirmButton: false,
+                timer: 1200
+            })
+                ("@(TempData["User_Reject"])");
+        };
+    </script>
+}
+
+
+
+
+@if (TempData["Payment_Reject"] != null)
+{
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            Swal.fire({
+                position: 'top-center',
+                icon: 'error',
+                title: 'User Rejected !!!',
+                showConfirmButton: false,
+                timer: 1200
+            })
+                ("@(TempData["Payment_Reject"])");
+        };
+    </script>
+}

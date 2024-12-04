@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/CDNotePDF.aspx" hash="fffffffffd45b345" filehash="82acf754b0212033" flags="110000" assembly="App_Web_vtmro1ph" type="ASP.admin_cdnotepdf_aspx">
+    <filedeps>
+        <filedep name="/Admin/CDNotePDF.aspx" />
+        <filedep name="/Admin/CDNotePDF.aspx.cs" />
+    </filedeps>
+</preserve>

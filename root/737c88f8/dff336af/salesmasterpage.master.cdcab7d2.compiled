@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/SalesMasterPage.master" hash="fffffffffd45b345" filehash="9f300575d7ae6181" flags="110000" assembly="App_Web_22e0z2ov" type="ASP.salesmasterpage_master">
+    <filedeps>
+        <filedep name="/SalesMasterPage.master" />
+        <filedep name="/SalesMasterPage.master.cs" />
+    </filedeps>
+</preserve>

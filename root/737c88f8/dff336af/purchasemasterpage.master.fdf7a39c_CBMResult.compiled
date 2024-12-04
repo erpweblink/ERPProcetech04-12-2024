@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="7" virtualPath="/Admin/PurchaseMasterPage.master" hash="fffffffffd45b345" filehash="cd5ee456d" flags="100000" CCUpreservationFileName="purchasemasterpage.master.fdf7a39c_CBMResult.ccu">
+    <filedeps>
+        <filedep name="/Admin/PurchaseMasterPage.master" />
+        <filedep name="/Admin/PurchaseMasterPage.master.cs" />
+    </filedeps>
+</preserve>

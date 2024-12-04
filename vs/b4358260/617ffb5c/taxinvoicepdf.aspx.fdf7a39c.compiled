@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/TaxInvoicePDF.aspx" hash="fffffffffd45b345" filehash="cc1a2c62ff1c1399" flags="110000" assembly="App_Web_szsqphqc" type="ASP.admin_taxinvoicepdf_aspx">
+    <filedeps>
+        <filedep name="/Admin/TaxInvoicePDF.aspx" />
+        <filedep name="/Admin/TaxInvoicePDF.aspx.cs" />
+    </filedeps>
+</preserve>

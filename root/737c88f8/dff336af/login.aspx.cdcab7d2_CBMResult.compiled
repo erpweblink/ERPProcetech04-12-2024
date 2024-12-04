@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="7" virtualPath="/Login.aspx" hash="fffffffffd45b345" filehash="fffffff1bd3c99eb" flags="100000" CCUpreservationFileName="login.aspx.cdcab7d2_CBMResult.ccu">
+    <filedeps>
+        <filedep name="/Login.aspx" />
+        <filedep name="/Login.aspx.cs" />
+    </filedeps>
+</preserve>

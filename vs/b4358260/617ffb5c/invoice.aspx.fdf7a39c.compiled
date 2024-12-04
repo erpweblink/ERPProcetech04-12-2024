@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/Invoice.aspx" hash="fffffffffd45b345" filehash="3ae41a32aefd7951" flags="110000" assembly="App_Web_kw1uuqii" type="ASP.admin_invoice_aspx">
+    <filedeps>
+        <filedep name="/Admin/AdminMasterPage.master" />
+        <filedep name="/Admin/AdminMasterPage.master.cs" />
+        <filedep name="/Admin/Invoice.aspx" />
+        <filedep name="/Admin/Invoice.aspx.cs" />
+    </filedeps>
+</preserve>

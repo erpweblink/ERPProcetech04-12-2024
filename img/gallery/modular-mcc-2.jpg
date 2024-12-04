@@ -1,0 +1,909 @@
+         table.SetWidths(new float[] { 0f, 76f, 12f });
+            table.AddCell(paragraph);
+            PdfPCell cell44 = new PdfPCell(new Phrase("Grand Total", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell44.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell44);
+            PdfPCell cell55 = new PdfPCell(new Phrase(GrandTotal, FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell55.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell55);
+
+
+            doc.Add(table);
+            //Grand total Row End
+
+
+
+
+
+            //Grand total in word Row STart
+            Paragraph paragraphTable18 = new Paragraph();
+            paragraphTable18.SpacingAfter = 50f;
+
+            //paragraphTable5.SpacingAfter = 10f;
+
+            string[] itemmm = { "Goods once sold will not be taken back or exchange. \b",
+                        "Interest at the rate of 18% will be charged if bill is'nt paid within 30 days.\b",
+                        "Our risk and responsibility ceases the moment goods leaves out godown. \n",
+                        };
+
+            Font font18 = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font19 = FontFactory.GetFont("Arial", 10, Font.BOLD);
+            Paragraph paragraphhmhhh = new Paragraph("", font12);
+
+
+
+            for (int i = 0; i < items.Length; i++)
+            {
+                paragraph.Add(new Phrase("", font10));
+            }
+
+            table = new PdfPTable(3);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+
+
+
+            table.SetWidths(new float[] { 0f, 25f, 63f });
+            table.AddCell(paragraph);
+            PdfPCell cell66 = new PdfPCell(new Phrase("Amount In Words Rs. ", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell66.HorizontalAlignment = Element.ALIGN_CENTER;
+            table.AddCell(cell66);
+            PdfPCell cell77 = new PdfPCell(new Phrase(TotalInWord, FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell77.HorizontalAlignment = Element.ALIGN_CENTER;
+            table.AddCell(cell77);
+
+            doc.Add(table);
+            //Grand total in word Row End
+
+            /////////new code //////////14 start
+            ///  ///////////term And Condition
+
+            string[] items90term = { "Dear Sir/Madam,\b", "We acknowledge with thanks the receipt of your above enquiry and have great pleasure in submitting our lowest quotation,\b", "subject to the conditions printed below.\n" };
+
+            Font font12112term = FontFactory.GetFont("Arial", 8);
+            Font font10111term = FontFactory.GetFont("Arial", 8);
+            Font fontWithSize = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+            // Paragraph paragraph110term = new Paragraph("\bTerms & Conditions:", font12112term);
+            Paragraph paragraph110term = new Paragraph("I / we certify that our registration certficate under the GST Act, 2017 is in force on the date on which the supply of goods specified In This Tax Invoiceis made by me / us & the transaction of supply covered by this Tax Invoice had been effected by me / us & it shall be accounted for in the turnover ofsupplies while filling of return &the due tax if any payable on the supplies has been paid or shall be paid.Further certified that the particulars givenabove are true and correct &the amount indicated represents the prices actually charged and that there is no flow additional consideration directly orindirectly from the buyer. Interest @ 18 % p.a.charged on all outstanding more than one month after invoice has been rendered", fontWithSize);
+
+            for (int i = 0; i < items90term.Length; i++)
+            {
+                paragraph110term.Add(new Phrase(" ", fontWithSize));
+            }
+
+            table = new PdfPTable(1);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+            table.SetWidths(new float[] { 150f });
+
+            table.AddCell(paragraph110term);
+            //table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10)));
+            //table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 11, Font.BOLD)));
+
+            doc.Add(table);
+
+            /////////////////////////////////////////////////term condition in Database
+
+            string[] items90termdata = { "Dear Sir/Madam,\b", "We acknowledge with thanks the receipt of your above enquiry and have great pleasure in submitting our lowest quotation,\b", "subject to the conditions printed below.\n" };
+
+            Font font12112termdata = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font10111termdata = FontFactory.GetFont("Arial", 10);
+            Paragraph paragraph110termdata = new Paragraph("", font12112termdata);
+
+            for (int i = 0; i < items90termdata.Length; i++)
+            {
+                paragraph110termdata.Add(new Phrase(" ", font10111termdata));
+            }
+
+            table = new PdfPTable(2);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+            table.SetWidths(new float[] { 150f, 350f });
+
+
+
+            doc.Add(table);
+            ////////term condition in Database end
+            string[] items91 = { "Dear Sir/Madam,\b", "We acknowledge with thanks the receipt of your above enquiry and have great pleasure in submitting our lowest quotation,\b", "subject to the conditions printed below.\n" };
+
+            Font font12111 = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font101111 = FontFactory.GetFont("Arial", 10);
+            Paragraph paragraph111 = new Paragraph("", font12111);
+
+            for (int i = 0; i < items91.Length; i++)
+            {
+                paragraph111.Add(new Phrase(" ", font101111));
+            }
+
+            table = new PdfPTable(1);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+            table.SetWidths(new float[] { 560f });
+
+            table.AddCell(new Phrase("\b Subject To Pune Jurisdiction Only \n Payment to be made by A/c. Payee Cheque Only. \n Interest @18 % will be charged on bill not paid within due date", FontFactory.GetFont("Arial", 10)));
+
+            doc.Add(table);
+            /////////////////////////////
+
+            ///////////Add Bank details Titles
+
+            string[] items90 = { "Dear Sir/Madam,\b", "We acknowledge with thanks the receipt of your above enquiry and have great pleasure in submitting our lowest quotation,\b", "subject to the conditions printed below.\n" };
+
+            Font font12112 = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font10111 = FontFactory.GetFont("Arial", 10);
+            Paragraph paragraph110 = new Paragraph("\bBank Account Details", font12112);
+
+            for (int i = 0; i < items90.Length; i++)
+            {
+                paragraph110.Add(new Phrase(" ", font10111));
+            }
+
+            table = new PdfPTable(1);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+            table.SetWidths(new float[] { 310f });
+
+            table.AddCell(paragraph110);
+            doc.Add(table);
+            /////////////////////////////////////////////////
+            string[] items9 = { "Dear Sir/Madam,\b", "We acknowledge with thanks the receipt of your above enquiry and have great pleasure in submitting our lowest quotation,\b", "subject to the conditions printed below.\n" };
+
+            Font font1211 = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font1011 = FontFactory.GetFont("Arial", 10);
+            Paragraph paragraph11 = new Paragraph("", font1211);
+
+            for (int i = 0; i < items9.Length; i++)
+            {
+                paragraph11.Add(new Phrase(" ", font1011));
+            }
+
+            table = new PdfPTable(2);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+            table.SetWidths(new float[] { 310f, 250f });
+
+            //table.AddCell(paragraph11);
+            table.AddCell(new Phrase("\bBank Name : BANK OF BARODA\n\n\bAccount Name : ENDEAVOUR AUTOMATION\n\n\bBranch : KALEWADI\n\n\bA/c No. : 46180200000214\n\n\bIFSC/Neft Code :BARB0KALEWA\n", FontFactory.GetFont("Arial", 10)));
+            table.AddCell(new Phrase("\b      For,\n\n\b\b\b\b\b\b\b\b\b            ENDEAVOUR AUTOMATION\n\n\n\n\n                                       Authorised Signatory", FontFactory.GetFont("Arial", 11, Font.BOLD)));
+
+            doc.Add(table);
+            /////////////////////////////
+            PdfPCell celll = null;
+            Paragraph paragraphTable4 = new Paragraph();
+            paragraphTable4.SpacingBefore = 10f;
+            table = new PdfPTable(1);
+            table.TotalWidth = 560f;
+            float[] widths = new float[] { 560f };
+            table.SetWidths(widths);
+            table.LockedWidth = true;
+            cell = new PdfPCell(new Phrase("                                                                                           *Subject to Pune Jurisdiction Only*", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            cell.Border = Rectangle.NO_BORDER;
+            table.AddCell(cell);
+            doc.Add(table);
+            doc.Close();
+            Byte[] FileBuffer = File.ReadAllBytes(Server.MapPath("~/Files/") + "TaxInvoice.pdf");
+        }
+        //    }
+        //}
+        return pdf;
+    }
+
+    protected void check_address_CheckedChanged(object sender, EventArgs e)
+    {
+        if (check_address.Checked == true)
+        {
+            txtCustName.Text = txtCompName.Text;
+            txt_ShipingAdddesss.Text = txt_CompanyAddress.Text;
+            txt_CustomerGstNo.Text = txt_CompanyGSTno.Text;
+            txt_CustomerPanNo.Text = txt_CompanyPanNo.Text;
+            txt_CustomerStateCode.Text = txt_CompanyStateCode.Text;
+            drop_CustomerRagisterType.Text = drop_CustomerRagisterType.Text;
+        }
+    }
+
+    protected void btn_Cancel_Click(object sender, EventArgs e)
+    {
+        if (Request.QueryString["InvoiceNo"] != null)
+        {
+            Response.Redirect("Taxinvoicereport.aspx");
+        }
+        else
+        {
+            Response.Redirect("TaxInvoiceList.aspx");
+        }
+
+    }
+
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetPONOList(string prefixText, int count)
+    {
+        return AutoFillPONOlist(prefixText);
+    }
+    public static List<string> AutoFillPONOlist(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.CommandText = "select DISTINCT Pono from CustomerPO_Hdr where " + "Pono like @Search + '%' AND Is_Deleted='0' ";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> Pono = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        Pono.Add(sdr["Pono"].ToString());
+                    }
+                }
+                con.Close();
+                return Pono;
+            }
+        }
+    }
+
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetCompanyList(string prefixText, int count)
+    {
+        return AutoFillCompanylist(prefixText);
+    }
+    public static List<string> AutoFillCompanylist(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                // com.CommandText = "select DISTINCT JobNo from CustomerPO_Hdr where " + "JobNo like @Search + '%' AND Is_Deleted='0'  ";
+                com.CommandText = "select DISTINCT CustomerName from [tblCustomer] where " + "CustomerName like @Search + '%' AND isdeleted='0'  ";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> Customer_Name = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        Customer_Name.Add(sdr["CustomerName"].ToString());
+                    }
+                }
+                con.Close();
+                return Customer_Name;
+            }
+        }
+    }
+
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetJobNOList(string prefixText, int count)
+    {
+        return AutoFillJOBNOlist(prefixText);
+    }
+    public static List<string> AutoFillJOBNOlist(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.CommandText = "select DISTINCT JobNo from CustomerPO_Hdr where " + "JobNo like @Search + '%' AND Is_Deleted='0'  ";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> JobNo = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        JobNo.Add(sdr["JobNo"].ToString());
+                    }
+                }
+                con.Close();
+                return JobNo;
+            }
+        }
+    }
+
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetDescriptionList(string prefixText, int count)
+    {
+        return AutoFillDescriptionlist(prefixText);
+    }
+
+    public static List<string> AutoFillDescriptionlist(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.CommandText = "select DISTINCT CompName from tblComponent where " + "CompName like @Search + '%' AND isdeleted='0'";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> CompName = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        CompName.Add(sdr["CompName"].ToString());
+                    }
+                }
+                con.Close();
+                return CompName;
+            }
+
+        }
+    }
+
+    //protected void txt_PoNo_TextChanged(object sender, EventArgs e)
+    //{
+    //try
+    //{
+    //    DataTable Dt = new DataTable();
+    //    SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM CustomerPO_Hdr WHERE Pono='" + txt_PoNo.Text + "'", con);
+    //    Da.Fill(Dt);
+    //    if (Dt.Rows.Count > 0)
+    //    {
+    //        DateTime ffff1 = Convert.ToDateTime(Dt.Rows[0]["PoDate"].ToString());
+    //        txt_poDate.Text = ffff1.ToString("yyyy-MM-dd");
+
+    //        txt_CompanyGSTno.Text = Dt.Rows[0]["GstNo"].ToString();
+    //        txt_KindAtt.Text = Dt.Rows[0]["KindAtt"].ToString();
+    //        txt_CompanyAddress.Text = Dt.Rows[0]["DeliveryAddress"].ToString();
+    //        txt_Payterm.Text = Dt.Rows[0]["PayTerm"].ToString();
+    //        TXtMailtbl.Text = Dt.Rows[0]["EmailId"].ToString();
+    //        //txt_subtotal.Text = Dt.Rows[0]["AllTotalPrice"].ToString();
+    //        //txt_cgst_amt.Text = Dt.Rows[0]["Cgst"].ToString();
+    //        //txt_sgst_amt.Text = Dt.Rows[0]["Sgst"].ToString();    
+    //        //txt_grand_total.Text = Dt.Rows[0]["GrandTotal"].ToString();
+    //    }
+
+    //    con.Open();
+    //    DataTable SDt = new DataTable();
+    //    SqlDataAdapter SDA = new SqlDataAdapter("SELECT  * FROM vw_Tax_Invoice WHERE Pono='" + txt_PoNo.Text + "'", con);
+    //    SDA.Fill(SDt);
+    //    grd_getDTLS.EmptyDataText = "Not Records Found";
+    //    grd_getDTLS.DataSource = SDt;
+    //    grd_getDTLS.DataBind();
+    //    con.Close();
+    //}
+    //catch (Exception)
+    //{
+
+    //    throw;
+    //}
+
+    //}
+
+    protected void txt_discription_TextChanged(object sender, EventArgs e)
+    {
+        SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM tblComponent WHERE CompName='" + txt_discription.Text + "'", con);
+        DataTable Dt = new DataTable();
+        Da.Fill(Dt);
+        if (Dt.Rows.Count > 0)
+        {
+            txt_total_amount.Text = "0";
+            txt_discount.Text = "0";
+
+            txt_hsn.Text = Dt.Rows[0]["HSN"].ToString();
+            txt_rate.Text = Dt.Rows[0]["Rate"].ToString();
+            txt_unit.Text = Dt.Rows[0]["Units"].ToString();
+            txt_tax.Text = Dt.Rows[0]["Tax"].ToString();
+        }
+        txtprintdescription.Text = txt_discription.Text;
+    }
+    private decimal TTotal;
+    decimal totaltax = 0;
+
+    decimal Total11177 = 0, Qty = 0, rate111111 = 0, totalrateqty = 0, Totaltax12 = 0, Totaltax18 = 0, Totaltx28 = 0;
+    protected void grd_getDTLS_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            // cast the current row to a datarowview
+            DataRowView row = e.Row.DataItem as DataRowView;
+            TTotal += Convert.ToDecimal(DataBinder.Eval(e.Row.DataItem, "Total"));
+            hdnPoProductTot.Value = TTotal.ToString();
+            txt_subtotal.Text = TTotal.ToString("##.00");
+
+            string lbltotaltax = (e.Row.FindControl("lbl_tax_GET") as Label).Text;
+            string lblrate = (e.Row.FindControl("lbl_rate_GET") as Label).Text;
+            string lblqty = (e.Row.FindControl("lbl_quntity_GET") as Label).Text;
+            string lblAmount = (e.Row.FindControl("lbl_total_amount_GET") as Label).Text;
+            totaltax = Convert.ToDecimal(lbltotaltax);
+            if (lbltotaltax == "12")
+            {
+                TaxPanel2.Visible = true;
+                Totaltax12 += Convert.ToDecimal(lblAmount);
+                hdn12.Value = Totaltax12.ToString();
+                if (txt_CompanyStateCode.Text == "27 MAHARASHTRA")
+                {
+                    Label.Text = ((Convert.ToDecimal(Totaltax12) * Convert.ToDecimal(lbltotaltax) / 100) / 2).ToString("0.00");
+                    TextBox2.Text = ((Convert.ToDecimal(Totaltax12) * Convert.ToDecimal(lbltotaltax) / 100) / 2).ToString("0.00");
+                    TextBox3.Text = Convert.ToDecimal(00).ToString("0.00");
+                }
+                else
+                {
+                    TextBox3.Text = ((Convert.ToDecimal(Totaltax12) * Convert.ToDecimal(lbltotaltax) / 100)).ToString("0.00");
+                    TextBox2.Text = Convert.ToDecimal(00).ToString("0.00");
+                    Label.Text = Convert.ToDecimal(00).ToString("0.00");
+                }
+            }
+            if (lbltotaltax == "18")
+            {
+                TaxPanel1.Visible = true;
+                Totaltax18 += Convert.ToDecimal(lblAmount);
+                hdn18.Value = Totaltax18.ToString();
+                if (txt_CompanyStateCode.Text == "27 MAHARASHTRA")
+                {
+                    txt_cgst_amt.Text = ((Convert.ToDecimal(Totaltax18) * Convert.ToDecimal(lbltotaltax) / 100) / 2).ToString("0.00");
+                    txt_sgst_amt.Text = ((Convert.ToDecimal(Totaltax18) * Convert.ToDecimal(lbltotaltax) / 100) / 2).ToString("0.00");
+                    txt_igst_amt.Text = Convert.ToDecimal(00).ToString("0.00");
+                }
+                else
+                {
+                    txt_cgst_amt.Text = ((Convert.ToDecimal(Totaltax18) * Convert.ToDecimal(lbltotaltax) / 100) / 2).ToString("0.00");
+                    txt_sgst_amt.Text = ((Convert.ToDecimal(Totaltax18) * Convert.ToDecimal(lbltotaltax) / 100) / 2).ToString("0.00");
+                    txt_igst_amt.Text = Convert.ToDecimal(00).ToString("0.00");
+                    //txt_igst_amt.Text = ((Convert.ToDecimal(Totaltax18) * Convert.ToDecimal(lbltotaltax) / 100)).ToString("0.00");
+                    //txt_cgst_amt.Text = Convert.ToDecimal(00).ToString("0.00");
+                    //txt_sgst_amt.Text = Convert.ToDecimal(00).ToString("0.00");
+                }
+            }
+            if (lbltotaltax == "28")
+            {
+                TaxPanel3.Visible = true;
+                Totaltx28 += Convert.ToDecimal(lblAmount);
+                hdn28.Value = Totaltx28.ToString();
+                if (txt_CompanyStateCode.Text == "27 MAHARASHTRA")
+                {
+                    TextBox4.Text = ((Convert.ToDecimal(Totaltx28) * Convert.ToDecimal(lbltotaltax) / 100) / 2).ToString("0.00");
+                    TextBox5.Text = ((Convert.ToDecimal(Totaltx28) * Convert.ToDecimal(lbltotaltax) / 100) / 2).ToString("0.00");
+                    TextBox6.Text = Convert.ToDecimal(00).ToString("0.00");
+                }
+                else
+                {
+                    TextBox6.Text = ((Convert.ToDecimal(Totaltx28) * Convert.ToDecimal(lbltotaltax) / 100)).ToString("0.00");
+                    TextBox4.Text = Convert.ToDecimal(00).ToString("0.00");
+                    TextBox5.Text = Convert.ToDecimal(00).ToString("0.00");
+                }
+            }
+
+            taxhidden.Value = totalrateqty.ToString();
+
+            decimal grd_total;
+            if (!string.IsNullOrEmpty(txt_total_amount.Text))
+            {
+                grd_total = 0;
+            }
+            else
+            {
+                decimal val1 = Convert.ToDecimal(txt_subtotal.Text);
+                decimal val2 = Convert.ToDecimal(txt_sgst_amt.Text);
+                decimal val3 = Convert.ToDecimal(txt_cgst_amt.Text);
+                decimal val4 = Convert.ToDecimal(Label.Text);
+                decimal val5 = Convert.ToDecimal(TextBox2.Text);
+                decimal val6 = Convert.ToDecimal(TextBox3.Text);
+                decimal val7 = Convert.ToDecimal(TextBox4.Text);
+                decimal val8 = Convert.ToDecimal(TextBox5.Text);
+                decimal val9 = Convert.ToDecimal(TextBox6.Text);
+                decimal val10 = Convert.ToDecimal(txt_igst_amt.Text);
+                grd_total = (val1 + val2 + val3 + val4 + val5 + val6 + val7 + val8 + val9 + val10);
+            }
+            //txt_grand_total.Text = grd_total.ToString();
+            txt_grand_total.Text = grd_total.ToString("##.00");
+
+
+            hfTotal.Value = txt_grand_total.Text;
+            string isNegative = "";
+            try
+            {
+                string number = hfTotal.Value;
+                number = Convert.ToDouble(number).ToString();
+
+                lbl_Amount_In_Word.Text = isNegative + ConvertToWords(number);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            //Round Off
+            var Totalamtfff = Convert.ToDouble(txt_grand_total.Text);
+            var totalgrand = Math.Round(Totalamtfff);
+            System.Globalization.CultureInfo info = System.Globalization.CultureInfo.GetCultureInfo("en-IN");
+            string FinaleTotalamt = Totalamtfff.ToString("N2", info);
+            double GetVal = 0;  // to know rounded value
+            GetVal -= Convert.ToDouble(Totalamtfff) - Convert.ToDouble(totalgrand);
+            Double roundoff = Math.Round(GetVal, 2);
+            txtroundoff.Text = roundoff.ToString();
+            txt_grand_total.Text = totalgrand.ToString();
+        }
+    }
+
+    protected void gv_cancel_Click(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as LinkButton).NamingContainer as GridViewRow;
+
+        string Tax = ((TextBox)row.FindControl("txt_tax_grd")).Text;
+        string Quntity = ((TextBox)row.FindControl("txt_quntity_grd")).Text;
+        string Rate = ((TextBox)row.FindControl("txt_rate_grd")).Text;
+        string Discount = ((TextBox)row.FindControl("txt_discount_grd")).Text;
+        string TotalAmount = ((TextBox)row.FindControl("txt_total_amount_grd")).Text;
+
+        DataTable Dt = ViewState["Invoice"] as DataTable;
+        gvPurchaseRecord.EditIndex = -1;
+        //Show_Grid();
+        //gvPurchaseRecord.DataBind();
+        ViewState["Invoice"] = Dt;
+        gvPurchaseRecord.EditIndex = -1;
+
+        gvPurchaseRecord.DataSource = (DataTable)ViewState["Invoice"];
+        gvPurchaseRecord.DataBind();
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Success", "scrollToElement();", true);
+    }
+
+    protected void gvPurchaseRecord_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+    {
+        //gvPurchaseRecord.EditIndex = -1;
+        //gvPurchaseRecord.DataSource = (DataTable)ViewState["Invoice"];
+        //gvPurchaseRecord.DataBind();
+        //ScriptManager.RegisterStartupScript(this, this.GetType(), "Success", "scrollToElement();", true);
+    }
+
+    protected void lnkMAILDelete_Click(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as LinkButton).NamingContainer as GridViewRow;
+
+        DataTable dt = ViewState["MULTMail"] as DataTable;
+        dt.Rows.Remove(dt.Rows[row.RowIndex]);
+        ViewState["MULTMail"] = dt;
+        Grd_MAIL.DataSource = (DataTable)ViewState["MULTMail"];
+        Grd_MAIL.DataBind();
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Mail ID Delete Succesfully !!!');", true);
+    }
+
+    protected void ShowMAILRecord()
+    {
+        ViewState["RowNo"] = (int)ViewState["RowNo"] + 1;
+        DataTable Dt = (DataTable)ViewState["MULTMail"];
+        Dt.Rows.Add(ViewState["RowNo"], TXtMailtbl.Text);
+        ViewState["MULTMail"] = Dt;
+
+        TXtMailtbl.Text = string.Empty;
+
+        Grd_MAIL.DataSource = (DataTable)ViewState["MULTMail"];
+        Grd_MAIL.DataBind();
+    }
+
+    protected void Lnkbtn_Addmail_Click(object sender, EventArgs e)
+    {
+        if (TXtMailtbl.Text == "")
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Please fill Mail ID  !!!');", true);
+        }
+        else
+        {
+            ShowMAILRecord();
+        }
+    }
+
+    //protected void txtJobNo_TextChanged(object sender, EventArgs e)
+    //{
+    //    ////customer information 
+    //    SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM CustomerPO_Hdr WHERE JobNo='" + txtJobNo.Text + "'  ", con);
+    //    DataTable Dt = new DataTable();
+    //    Da.Fill(Dt);
+    //    if (Dt.Rows.Count > 0)
+    //    {
+    //        txtCompName.Text = Dt.Rows[0]["CustomerName"].ToString();
+    //        txt_PoNo.Text = Dt.Rows[0]["Pono"].ToString();
+    //        DateTime ffff1 = Convert.ToDateTime(Dt.Rows[0]["PoDate"].ToString());
+    //        txt_poDate.Text = ffff1.ToString("yyyy-MM-dd");
+    //        txt_CompanyGSTno.Text = Dt.Rows[0]["GstNo"].ToString();
+    //        txt_KindAtt.Text = Dt.Rows[0]["KindAtt"].ToString();
+    //        txt_CompanyAddress.Text = Dt.Rows[0]["DeliveryAddress"].ToString();
+    //        txt_Payterm.Text = Dt.Rows[0]["PayTerm"].ToString();
+    //        TXtMailtbl.Text = Dt.Rows[0]["EmailId"].ToString();
+    //    }
+    //    ///pan number information in customer table
+    //    SqlDataAdapter Daa = new SqlDataAdapter("SELECT * FROM tblCustomer WHERE CustomerName='" + txtCompName.Text + "'  ", con);
+    //    DataTable Dtt = new DataTable();
+    //    Daa.Fill(Dtt);
+    //    if (Dtt.Rows.Count > 0)
+    //    {
+    //        txt_CompanyPanNo.Text = Dtt.Rows[0]["PanNo"].ToString();
+    //        txt_CompanyStateCode.Text = Dtt.Rows[0]["StateCode"].ToString();
+    //    }
+    //    ///bind grid in automatic in customer po table.
+    //    con.Open();
+    //    DataTable SDt = new DataTable();
+    //    SqlDataAdapter SDA = new SqlDataAdapter("SELECT [Description],[Hsn_Sac],[TaxPercenteage],[Quantity],[Unit],[Rate],[DiscountPercentage],[Total] FROM vw_Tax_Invoice WHERE Pono='" + txt_PoNo.Text + "'", con);
+    //    SDA.Fill(SDt);
+    //    int count = 1;
+    //    if (SDt.Rows.Count > 0)
+    //    {
+    //        ViewState["RowNo"] = 0;
+    //        Dt_Itemsdetails.Columns.AddRange(new DataColumn[9] { new DataColumn("Id"),
+    //            new DataColumn("Description"),  new DataColumn("Hsn_Sac"),
+    //            new DataColumn("TaxPercenteage"), new DataColumn("Quantity"),
+    //            new DataColumn("Unit"), new DataColumn("Rate"),
+    //            new DataColumn("DiscountPercentage"), new DataColumn("Total")
+    //          });
+
+    //        ViewState["Invoicedetails"] = Dt_Itemsdetails;
+    //        for (int i = 0; i < SDt.Rows.Count; i++)
+    //        {
+    //            Dt_Itemsdetails.Rows.Add(count, SDt.Rows[i]["Description"].ToString(), SDt.Rows[i]["Hsn_Sac"].ToString(), SDt.Rows[i]["TaxPercenteage"].ToString(), SDt.Rows[i]["Quantity"].ToString(), SDt.Rows[i]["Unit"].ToString(), SDt.Rows[i]["Rate"].ToString(), SDt.Rows[i]["DiscountPercentage"].ToString(), SDt.Rows[i]["Total"].ToString());
+
+    //            count = count + 1;
+    //        }
+    //    }
+
+    //    grd_getDTLS.DataSource = Dt_Itemsdetails;
+    //    grd_getDTLS.DataBind();
+    //    grd_getDTLS.EmptyDataText = "Not Records Found";
+    //    con.Close();
+    //    //kint attence bind
+    //    DataTable dt1 = new DataTable();
+    //    SqlDataAdapter sad1 = new SqlDataAdapter("select * from tblCustomerContactPerson where CustName='" + txtCompName.Text + "'", con);
+    //    sad1.Fill(dt1);
+    //    if (dt1.Rows.Count>0)
+    //    {
+    //        txt_KindAtt.DataTextField = "ContactPerName";
+    //        txt_KindAtt.DataSource = dt1;
+    //        txt_KindAtt.DataBind();
+    //        txt_KindAtt.Items.Insert(0, "-- Select Kind Att. --");
+    //    }
+
+    //    //email gridview bind
+    //    DataTable dt2 = new DataTable();
+    //    SqlDataAdapter sad2 = new SqlDataAdapter("select * from tblCustomerContactPerson where CustName='" + txtCompName.Text + "'", con);
+    //    sad2.Fill(dt2);
+    //    Grd_MAIL.DataSource = dt2;
+    //    Grd_MAIL.DataBind();
+    //    Grd_MAIL.EmptyDataText = "Record Not Found";
+
+    //}
+
+    protected void Grd_MAIL_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (btn_save.Text == "Update")
+        {
+
+
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                con.Open();
+                int id = Convert.ToInt32(Grd_MAIL.DataKeys[e.Row.RowIndex].Values[0]);
+                CheckBox chkmailupdate = (CheckBox)e.Row.FindControl("chkmail");
+                Label mail = (Label)e.Row.FindControl("lblmultMail");
+                SqlCommand cmd = new SqlCommand("select chkEmail from InvoiceMail where InvoiceNo='" + txt_InvoiceNo.Text + "' AND id='" + id + "'", con);
+
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.Read())
+                {
+
+                    chkupdate = dr["chkEmail"].ToString();
+                    con.Close();
+                }
+                chkmailupdate.Checked = chkupdate == "True" ? true : false;
+                con.Close();
+            }
+        }
+    }
+
+    protected void lnkbtnDelete_Click(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as LinkButton).NamingContainer as GridViewRow;
+
+        DataTable dt = ViewState["Invoicedetails"] as DataTable;
+        dt.Rows.Remove(dt.Rows[row.RowIndex]);
+        ViewState["Invoicedetails"] = dt;
+        grd_getDTLS.DataSource = (DataTable)ViewState["Invoicedetails"];
+        grd_getDTLS.DataBind();
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Data Delete Succesfully !!!');", true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Success", "scrollToElement();", true);
+    }
+
+    protected void txtCompName_TextChanged(object sender, EventArgs e)
+    {
+        SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM [tbl_Quotation_Hdr] WHERE Customer_Name='" + txtCompName.Text + "'  ", con);
+        DataTable Dt = new DataTable();
+        Da.Fill(Dt);
+        if (Dt.Rows.Count > 0)
+        {
+            // txt_CompanyGSTno.Text = Dt.Rows[0]["GST_No"].ToString();
+            txt_KindAtt.Text = Dt.Rows[0]["kind_Att"].ToString();
+            // txt_CompanyAddress.Text = Dt.Rows[0]["Address"].ToString();
+        }
+
+        ///pan number information in customer table
+        SqlDataAdapter Daa = new SqlDataAdapter("SELECT * FROM tblCustomer WHERE CustomerName='" + txtCompName.Text + "'  ", con);
+        DataTable Dtt = new DataTable();
+        Daa.Fill(Dtt);
+        if (Dtt.Rows.Count > 0)
+        {
+            txt_CompanyGSTno.Text = Dtt.Rows[0]["GSTNo"].ToString();
+            //txt_KindAtt.Text = Dtt.Rows[0]["kind_Att"].ToString();
+            txt_CompanyAddress.Text = Dtt.Rows[0]["AddresLine1"].ToString();
+            txt_CompanyPanNo.Text = Dtt.Rows[0]["PanNo"].ToString();
+            txt_CompanyStateCode.Text = Dtt.Rows[0]["StateCode"].ToString();
+        }
+
+        SqlDataAdapter Daaa = new SqlDataAdapter("SELECT * FROM CustomerPO_Hdr WHERE CustomerName='" + txtCompName.Text + "'  ", con);
+        DataTable Dttt = new DataTable();
+        Daaa.Fill(Dttt);
+        if (Dttt.Rows.Count > 0)
+        {
+
+            //txt_PoNo.Text = Dttt.Rows[0]["Pono"].ToString();
+            DateTime ffff1 = Convert.ToDateTime(Dttt.Rows[0]["PoDate"].ToString());
+            //txt_poDate.Text = ffff1.ToString("yyyy-MM-dd");
+            txt_Payterm.Text = Dttt.Rows[0]["PayTerm"].ToString();
+            txt_KindAtt.Text = Dttt.Rows[0]["KindAtt"].ToString();
+        }
+
+        //email gridview bind
+        DataTable dt2 = new DataTable();
+        SqlDataAdapter sad2 = new SqlDataAdapter("select * from tblCustomerContactPerson where CustName='" + txtCompName.Text + "'", con);
+        sad2.Fill(dt2);
+        Grd_MAIL.DataSource = dt2;
+        Grd_MAIL.DataBind();
+        Grd_MAIL.EmptyDataText = "Record Not Found";
+        GetJobNO();
+
+        ddljobnobind();
+
+        //kint attence bind
+        //DataTable dt1 = new DataTable();
+        //SqlDataAdapter sad1 = new SqlDataAdapter("select * from tblCustomerContactPerson where CustName='" + txtCompName.Text + "'", con);
+        //sad1.Fill(dt1);
+        //if (dt1.Rows.Count > 0)
+        //{
+        //    txt_KindAtt.Text = Dttt.Rows[0]["KindAtt"].ToString();
+        //}
+    }
+
+    protected void ddlagainst_TextChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!String.IsNullOrEmpty(txtCompName.Text))
+            {
+                if (ddlagainst.SelectedItem.Text == "Direct")
+                {
+                    ddlagainstno.Enabled = false;
+                }
+                else if (ddlagainst.Text == "Order")
+                {
+                    //TableDirect.Visible = false;
+                    //TableOrder.Visible = true;
+
+                    ddlagainstno.Enabled = true;
+                    // SqlDataAdapter ad = new SqlDataAdapter("SELECT [Quotationno] FROM [tbl_QuotationHdr] WHERE Companyname = '" + txtCompName.Text + "'", con);
+                    SqlDataAdapter ad = new SqlDataAdapter("SELECT [Pono] FROM [CustomerPO_Hdr] WHERE CustomerName = '" + txtCompName.Text + "' AND  Is_Deleted = 0 ", con);
+                    DataTable dt = new DataTable();
+                    ad.Fill(dt);
+                    if (dt.Rows.Count > 0)
+                    {
+                        ddlagainstno.DataSource = dt;
+                        ddlagainstno.DataTextField = "Pono";
+                        ddlagainstno.DataBind();
+                        ddlagainstno.Items.Insert(0, "-- Select Product --");
+                    }
+                }
+                else
+                {
+                    ddlagainst.SelectedValue = "0";
+                }
+            }
+            else
+            {
+                // ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Enter Customer Name First');window.location.href='TaxInvoice.aspx';", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+
+
+        //if (ddlagainst.SelectedItem.Text == "Order")
+        //{
+        //    ///bind grid in automatic in customer po table.
+        //    con.Open();
+        //    DataTable SDt = new DataTable();
+        //    SqlDataAdapter SDA = new SqlDataAdapter("SELECT JobNo,[Description],[Hsn_Sac],[Rate],[Unit],[Quantity],[TaxPercenteage],[DiscountPercentage],[Total] FROM vw_Tax_Invoice WHERE Pono='" + txt_PoNo.Text + "'", con);
+        //    SDA.Fill(SDt);
+        //    int count = 1;
+        //    if (SDt.Rows.Count > 0)
+        //    {
+
+        //        ViewState["RowNo"] = 0;
+        //        Dt_Itemsdetails.Columns.AddRange(new DataColumn[10] { new DataColumn("Id"),new DataColumn("JobNo"),
+        //        new DataColumn("Description"),  new DataColumn("Hsn_Sac"),
+        //        new DataColumn("Rate"),  new DataColumn("Unit"),
+        //        new DataColumn("Quantity"),  new DataColumn("TaxPercenteage"),
+        //        new DataColumn("DiscountPercentage"),  new DataColumn("Total"),
+        //      });
+
+        //        ViewState["Invoicedetails"] = Dt_Itemsdetails;
+        //        for (int i = 0; i < SDt.Rows.Count; i++)
+        //        {
+        //            Dt_Itemsdetails.Rows.Add(count, SDt.Rows[i]["JobNo"].ToString(), SDt.Rows[i]["Description"].ToString(), SDt.Rows[i]["Hsn_Sac"].ToString(), SDt.Rows[i]["Rate"].ToString(), SDt.Rows[i]["Unit"].ToString(), SDt.Rows[i]["Quantity"].ToString(), SDt.Rows[i]["TaxPercenteage"].ToString(), SDt.Rows[i]["DiscountPercentage"].ToString(), SDt.Rows[i]["Total"].ToString());
+
+        //            count = count + 1;
+        //        }
+        //    }
+
+        //    grd_getDTLS.DataSource = Dt_Itemsdetails;
+        //    grd_getDTLS.DataBind();
+        //    grd_getDTLS.EmptyDataText = "Not Records Found";
+        //    con.Close();
+        //}
+    }
+
+    protected void ddlagainstno_TextChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            ///bind grid in automatic in customer po table.
+            con.Open();
+            DataTable SDt = new DataTable();
+            SqlDataAdapter SDA = new SqlDataAdapter("SELECT JobNo, MateName, [Description], PrintDescription,[Hsn_Sac],[Rate],[Unit],[Quantity],[TaxPercenteage],[DiscountPercentage],[Total] FROM vw_Tax_Invoice WHERE Pono='" + ddlagainstno.Text + "'", con);
+            SDA.Fill(SDt);
+            int count = 1;
+            if (SDt.Rows.Count > 0)
+            {
+                ViewState["RowNo"] = 0;
+                Dt_Itemsdetails.Columns.AddRange(new DataColumn[13] { new DataColumn("Id"),new DataColumn("JobNo"), new DataColumn("MateName"),
+                    new DataColumn("Description"), new DataColumn("PrintDescription"),  new DataColumn("Hsn_Sac"),
+                    new DataColumn("Rate"),  new DataColumn("Unit"),
+                    new DataColumn("Quantity"),  new DataColumn("TaxPercenteage"),
+                    new DataColumn("DiscountPercentage"),  new DataColumn("Total"), new DataColumn("JobDaysCount"),
+                  });
+
+                ViewState["Invoicedetails"] = Dt_Itemsdetails;
+                for (int i = 0; i < SDt.Rows.Count; i++)
+                {
+                    Dt_Itemsdetails.Rows.Add(count, SDt.Rows[i]["JobNo"].ToString(), SDt.Rows[i]["MateName"].ToString(), SDt.Rows[i]["Description"].ToString(), SDt.Rows[i]["PrintDescription"].ToString(), SDt.Rows[i]["Hsn_Sac"].ToString(), SDt.Rows[i]["Rate"].ToString(), SDt.Rows[i]["Unit"].ToString(), SDt.Rows[i]["Quantity"].ToString(), SDt.Rows[i]["TaxPercenteage"].ToString(), SDt.Rows[i]["DiscountPercentage"].ToString(), SDt.Rows[i]["Total"].ToString());
+
+                    count = count + 1;
+                }
+            }
+
+            grd_getDTLS.DataSource = Dt_Itemsdetails;
+            grd_getDTLS.DataBind();
+            grd_getDTLS.EmptyDataText = "Not Records Found";
+            con.Close();
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+        //txt_PoNo.Text = ddlagainstno.Text.Trim();
+        GetPODate();
+    }
+
+    protected void txt_jobno_TextChanged(object sender, EventArgs e)
+    {
+        SqlDataAdapter Da = new SqlDataAdapter("SELECT Id,JobNo,MateName FROM tblInwardEntry WHERE JobNo ='" + txt_jobno.Text + "'", con);
+        DataTable Dt = new DataTable();
+        Da.Fill(Dt);
+       

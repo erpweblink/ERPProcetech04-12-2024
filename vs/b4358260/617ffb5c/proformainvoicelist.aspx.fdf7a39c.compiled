@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/ProformaInvoiceList.aspx" hash="fffffffffd45b345" filehash="b44baa0195cc1f2c" flags="110000" assembly="App_Web_j40ey3xo" type="ASP.admin_proformainvoicelist_aspx">
+    <filedeps>
+        <filedep name="/Admin/AdminMasterPage.master" />
+        <filedep name="/Admin/AdminMasterPage.master.cs" />
+        <filedep name="/Admin/ProformaInvoiceList.aspx" />
+        <filedep name="/Admin/ProformaInvoiceList.aspx.cs" />
+    </filedeps>
+</preserve>

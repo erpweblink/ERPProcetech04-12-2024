@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/SupplierMaster.aspx" hash="fffffffffd45b345" filehash="5f66fd291f2d3890" flags="110000" assembly="App_Web_nrra5p3r" type="ASP.admin_suppliermaster_aspx">
+    <filedeps>
+        <filedep name="/Admin/AdminMasterPage.master" />
+        <filedep name="/Admin/AdminMasterPage.master.cs" />
+        <filedep name="/Admin/SupplierMaster.aspx" />
+        <filedep name="/Admin/SupplierMaster.aspx.cs" />
+    </filedeps>
+</preserve>

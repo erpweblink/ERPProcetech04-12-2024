@@ -1,0 +1,175 @@
+﻿using CrystalDecisions.CrystalReports.Engine;
+using CrystalDecisions.Shared;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+public partial class RptLaserCutting : System.Web.UI.Page
+{
+    byte[] attachment; List<byte[]> files = new List<byte[]>(); string filename = "", party = "", querystringValue = "";
+    SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+    ReportDocument cryRpt = new ReportDocument();
+    TableLogOnInfos crtableLogoninfos = new TableLogOnInfos();
+    TableLogOnInfo crtableLogoninfo = new TableLogOnInfo();
+    ConnectionInfo crConnectionInfo = new ConnectionInfo();
+    Tables CrTables;
+    CommonCls objClass = new CommonCls();
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            querystringValue = objClass.Decrypt(Request.QueryString["OANumber"]);
+            PrintReport();
+        }
+    }
+    private void SetDBLogonForReport(ConnectionInfo connectionInfo, ReportDocument reportDocument)
+    {
+        Tables tables = reportDocument.Database.Tables;
+        foreach (CrystalDecisions.CrystalReports.Engine.Table table in tables)
+        {
+            TableLogOnInfo tableLogonInfo = table.LogOnInfo;
+            tableLogonInfo.ConnectionInfo = connectionInfo;
+            table.ApplyLogOnInfo(tableLogonInfo);
+        }
+    }
+
+    private void PrintReport()
+    {
+        string servername = "", dbname = "", userid = "", pass = "";
+        string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+
+        SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
+        dbname = builder.InitialCatalog;
+        servername = builder.DataSource;
+        userid = builder.UserID;
+        pass = builder.Password;
+
+        cryRpt.Load(Server.MapPath("~/Reports/RptCNCBending.rpt"));
+
+        crConnectionInfo.ServerName = servername;
+        crConnectionInfo.DatabaseName = dbname;
+        crConnectionInfo.UserID = userid;
+        crConnectionInfo.Password = pass;
+
+        SqlDataAdapter adpfill = new SqlDataAdapter(@"SELECT [pono],[podate],[quotationdate],[quotationno],[OANumber],[CustomerName],[Size],
+        [TotalQty],[InwardDtTime],[InwardQty],[OutwardDtTime],[OutwardQty],[DeliveryDate] 
+        FROM [ExcelEncDemo].[ExcelEncDemo].[vwCNCBending] where OANumber='" + querystringValue + "'", con);
+        DataTable dtfill = new DataTable();
+        adpfill.Fill(dtfill);
+
+        if (dtfill.Rows.Count > 0)
+        {
+            cryRpt.SetParameterValue("oano", dtfill.Rows[0]["OANumber"].ToString());
+            cryRpt.SetParameterValue("quotationno", dtfill.Rows[0]["quotationno"].ToString());
+            cryRpt.SetParameterValue("pono", dtfill.Rows[0]["pono"].ToString());
+            cryRpt.SetParameterValue("podate", dtfill.Rows[0]["podate"].ToString());
+            cryRpt.SetParameterValue("quotationdate", dtfill.Rows[0]["quotationdate"].ToString());
+            cryRpt.SetParameterValue("cutomername", dtfill.Rows[0]["CustomerName"].ToString());
+            cryRpt.SetParameterValue("description", dtfill.Rows[0]["Size"].ToString());
+            cryRpt.SetParameterValue("qty", dtfill.Rows[0]["TotalQty"].ToString());
+            cryRpt.SetParameterValue("inwarddatetime", dtfill.Rows[0]["InwardDtTime"].ToString());
+            cryRpt.SetParameterValue("inwardqty", dtfill.Rows[0]["InwardQty"].ToString());
+            cryRpt.SetParameterValue("outwardtttime", dtfill.Rows[0]["OutwardDtTime"].ToString());
+            cryRpt.SetParameterValue("outwardqty", dtfill.Rows[0]["OutwardQty"].ToString());
+            cryRpt.SetParameterValue("deliverydatebycust", dtfill.Rows[0]["DeliveryDate"].ToString());
+
+            CrTables = cryRpt.Database.Tables;
+
+            foreach (CrystalDecisions.CrystalReports.Engine.Table CrTable in CrTables)
+            {
+                crtableLogoninfo = CrTable.LogOnInfo;
+                crtableLogoninfo.ConnectionInfo = crConnectionInfo;
+                CrTable.ApplyLogOnInfo(crtableLogoninfo);
+            }
+            Stream stream1 = cryRpt.ExportToStream(ExportFormatType.PortableDocFormat);
+            byte[] attach = ReadFully(stream1);
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                PdfReader reader = new PdfReader(attach);
+                using (PdfStamper stamper = new PdfStamper(reader, stream))
+                {
+                    int pages = reader.NumberOfPages;
+                }
+                attachment = stream.ToArray();
+            }
+            Stream stream2 = new MemoryStream(attachment);
+            files.Add(ReadFully(stream2));
+            Response.Clear();
+            Response.Buffer = true;
+            Response.ContentType = "application/pdf";
+            //merge the all reports & show the reports     
+
+            string[] abc = filename.Split('/');
+            string abc2 = abc[0].ToString();
+            string newfilename = abc2 + "-" + party + ".pdf";
+            Response.AppendHeader("Content-Disposition", "inline; filename=" + newfilename + "");
+            Response.BinaryWrite(MergeReports(files).ToArray());
+            Response.End();
+        }
+    }
+
+    public static byte[] ReadFully(Stream input)
+    {
+        byte[] buffer = new byte[16 * 1024];
+        using (MemoryStream ms = new MemoryStream())
+        {
+            int read;
+            while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                ms.Write(buffer, 0, read);
+            }
+            return ms.ToArray();
+        }
+    }
+
+    private MemoryStream MergeReports(List<byte[]> files)
+    {
+        if (files.Count > 1)
+        {
+            PdfReader pdfFile;
+            Document doc;
+            PdfWriter pCopy;
+            MemoryStream msOutput = new MemoryStream();
+
+            pdfFile = new PdfReader(files[0]);
+
+            doc = new Document();
+            pCopy = new PdfSmartCopy(doc, msOutput);
+
+            doc.Open();
+
+            for (int k = 0; k < files.Count; k++)
+            {
+                pdfFile = new PdfReader(files[k]);
+                for (int i = 1; i < pdfFile.NumberOfPages + 1; i++)
+                {
+                    ((PdfSmartCopy)pCopy).AddPage(pCopy.GetImportedPage(pdfFile, i));
+                }
+                pCopy.FreeReader(pdfFile);
+            }
+
+            pdfFile.Close();
+            pCopy.Close();
+            doc.Close();
+
+            return msOutput;
+        }
+        else if (files.Count == 1)
+        {
+            return new MemoryStream(files[0]);
+        }
+        return null;
+    }
+}

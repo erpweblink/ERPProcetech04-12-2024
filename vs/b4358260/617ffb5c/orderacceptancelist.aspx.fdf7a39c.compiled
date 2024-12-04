@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/OrderAcceptanceList.aspx" hash="fffffffffd45b345" filehash="c7f5db9f019bfb8f" flags="110000" assembly="App_Web_p0upcrdz" type="ASP.admin_orderacceptancelist_aspx">
+    <filedeps>
+        <filedep name="/Admin/AdminMasterPage.master" />
+        <filedep name="/Admin/AdminMasterPage.master.cs" />
+        <filedep name="/Admin/OrderAcceptanceList.aspx" />
+        <filedep name="/Admin/OrderAcceptanceList.aspx.cs" />
+    </filedeps>
+</preserve>

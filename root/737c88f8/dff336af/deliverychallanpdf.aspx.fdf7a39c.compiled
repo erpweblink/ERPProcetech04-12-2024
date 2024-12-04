@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/DeliveryChallanPDF.aspx" hash="fffffffffd45b345" filehash="78f08c3843fd17a0" flags="110000" assembly="App_Web_z0kr4hqd" type="ASP.admin_deliverychallanpdf_aspx">
+    <filedeps>
+        <filedep name="/Admin/DeliveryChallanPDF.aspx" />
+        <filedep name="/Admin/DeliveryChallanPDF.aspx.cs" />
+    </filedeps>
+</preserve>

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/RegisterReport.aspx" hash="fffffffffd45b345" filehash="33858b4962da1303" flags="110000" assembly="App_Web_xaetu40d" type="ASP.admin_registerreport_aspx">
+    <filedeps>
+        <filedep name="/Admin/AdminMasterPage.master" />
+        <filedep name="/Admin/AdminMasterPage.master.cs" />
+        <filedep name="/Admin/RegisterReport.aspx" />
+        <filedep name="/Admin/RegisterReport.aspx.cs" />
+    </filedeps>
+</preserve>

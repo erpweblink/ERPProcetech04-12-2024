@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/DepartmentWiseReport.aspx" hash="fffffffffd45b345" filehash="334bc2643eb14f95" flags="110000" assembly="App_Web_04u0qavm" type="ASP.admin_departmentwisereport_aspx">
+    <filedeps>
+        <filedep name="/Admin/AdminMasterPage.master" />
+        <filedep name="/Admin/AdminMasterPage.master.cs" />
+        <filedep name="/Admin/DepartmentWiseReport.aspx" />
+        <filedep name="/Admin/DepartmentWiseReport.aspx.cs" />
+    </filedeps>
+</preserve>

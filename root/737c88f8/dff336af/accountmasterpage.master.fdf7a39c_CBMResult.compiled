@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="7" virtualPath="/Admin/AccountMasterPage.master" hash="fffffffffd45b345" filehash="536cd29c7" flags="100000" CCUpreservationFileName="accountmasterpage.master.fdf7a39c_CBMResult.ccu">
+    <filedeps>
+        <filedep name="/Admin/AccountMasterPage.master" />
+        <filedep name="/Admin/AccountMasterPage.master.cs" />
+    </filedeps>
+</preserve>

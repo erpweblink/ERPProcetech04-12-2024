@@ -1,0 +1,2327 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data.SqlClient;
+using System.Configuration;
+using System.Data;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
+using System.Net.Mail;
+using iTextSharp.text.pdf;
+using System.Globalization;
+using System.Threading.Tasks;
+using iTextSharp.text;
+using System.Collections;
+using System.Net;
+using iTextSharp.text.html.simpleparser;
+using Image = iTextSharp.text.Image;
+using System.Net.Mime;
+using iTextSharp.tool.xml;
+
+public partial class Admin_DeliveryChallan : System.Web.UI.Page
+{
+    SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+    DataTable dtparticular = new DataTable();
+    DataTable dtparticularorder = new DataTable();
+    string id;
+    string ChallanNo;
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (Session["name"] == null)
+        {
+            Response.Redirect("../Login.aspx");
+        }
+        else
+        {
+            if (!IsPostBack)
+        {
+            txtchallandate.Text = DateTime.Today.ToString("dd-MM-yyyy");
+            manuallytable.Visible = false;
+
+            if (Request.QueryString["Id"] != null)
+            {
+                id = Decrypt(Request.QueryString["Id"].ToString());
+
+                btnSubmit.Text = "Update";
+                hidden1.Value = id;
+
+                ViewState["RowNo"] = 0;
+                dtparticular.Columns.AddRange(new DataColumn[7] { new DataColumn("Id"),
+                 new DataColumn("Particular"),new DataColumn("Description"), new DataColumn("HSN")
+                , new DataColumn("Qty"),new DataColumn("UOM"), new DataColumn("Rate")
+                    });
+
+                ViewState["ParticularDetails"] = dtparticular;
+                LoadData(id);
+            }
+            else
+            {
+                ViewState["RowNo"] = 0;
+                dtparticular.Columns.AddRange(new DataColumn[7] { new DataColumn("id"),
+                 new DataColumn("Particular"),new DataColumn("Description"), new DataColumn("HSN")
+                , new DataColumn("Qty"),new DataColumn("UOM"), new DataColumn("Rate")
+            });
+                ViewState["ParticularDetails"] = dtparticular;
+            }
+
+        }
+        }
+    }
+
+    public string Decrypt(string cipherText)
+    {
+        string EncryptionKey = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        cipherText = cipherText.Replace(" ", "+");
+        byte[] cipherBytes = Convert.FromBase64String(cipherText);
+        using (Aes encryptor = Aes.Create())
+        {
+            Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] {
+            0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76
+        });
+            encryptor.Key = pdb.GetBytes(32);
+            encryptor.IV = pdb.GetBytes(16);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
+                {
+                    cs.Write(cipherBytes, 0, cipherBytes.Length);
+                    cs.Close();
+                }
+                cipherText = Encoding.Unicode.GetString(ms.ToArray());
+            }
+        }
+        return cipherText;
+    }
+
+    protected void LoadData(string id)
+    {
+        DataTable dtload = new DataTable();
+        SqlDataAdapter sad = new SqlDataAdapter("select * from DeliveryChallanHdr where Id='" + id + "'", con);
+        sad.Fill(dtload);
+        if (dtload.Rows.Count > 0)
+        {
+            txtCustomerNAme.Text = dtload.Rows[0]["BillingCustomer"].ToString();
+            txtshippingcustomer.Text = dtload.Rows[0]["ShippingCustomer"].ToString();
+            txtshippingAddress.Text = dtload.Rows[0]["ShippingAddress"].ToString();
+            // txtchallandate.Text = dtload.Rows[0]["Challandate"].ToString();
+            txtchallanagainst.Text = dtload.Rows[0]["ChallanAgainst"].ToString();
+            txtagainstNumber.SelectedItem.Text = dtload.Rows[0]["AgainstNumber"].ToString();
+            txtcustomerPoNo.Text = dtload.Rows[0]["CustomerPONo"].ToString();
+            //.Text = dt.Rows[0]["PODate"].ToString();
+            txttransportMode.Text = dtload.Rows[0]["TransportMode"].ToString();
+            txtvehicalNumber.Text = dtload.Rows[0]["VehicalNo"].ToString();
+            //txtpaymentDuedate.Text = dt.Rows[0]["Paymentdate"].ToString();
+            txtremark.Text = dtload.Rows[0]["Remark"].ToString();
+            sumofAmount.Text = dtload.Rows[0]["SumOfProductAmt"].ToString();
+            txtDescription.Text = dtload.Rows[0]["ChargesDescription"].ToString();
+            txthsntcs.Text = dtload.Rows[0]["HSNTcs"].ToString();
+            txtrateTcs.Text = dtload.Rows[0]["RateTcs"].ToString();
+            txtBasic.Text = dtload.Rows[0]["Basic"].ToString();
+            CGSTPertcs.Text = dtload.Rows[0]["CGST"].ToString();
+            SGSTPertcs.Text = dtload.Rows[0]["SGST"].ToString();
+            IGSTPertcs.Text = dtload.Rows[0]["IGST"].ToString();
+            txtCost.Text = dtload.Rows[0]["Cost"].ToString();
+            txtTCSPer.Text = dtload.Rows[0]["TCSPercent"].ToString();
+            txtTCSAmt.Text = dtload.Rows[0]["TCSAmt"].ToString();
+            txtGrandTot.Text = dtload.Rows[0]["GrandTotalFinal"].ToString();
+            txtCustchallanNo.Text = dtload.Rows[0]["CustChallanNo"].ToString();
+            txtCustchallanDate.Text = dtload.Rows[0]["CustChallanDate"].ToString();
+            txtchallandate.Text = dtload.Rows[0]["Challandate"].ToString();
+            txtpodate.Text = dtload.Rows[0]["PODate"].ToString();
+
+            string email = dtload.Rows[0]["IsEmail"].ToString();
+            IsSedndMail.Checked = email == "True" ? true : false;
+
+            if (txtchallanagainst.Text == "Direct")
+            {
+                txtagainstNumber.Enabled = false;
+            }
+            ///BindDiscription
+
+
+            DataTable dtt = new DataTable();
+            SqlDataAdapter sad3 = new SqlDataAdapter("select * from DeliveryChallanDtls where HeaderID='" + id + "'", con);
+            sad3.Fill(dtt);
+            if (dtt.Rows.Count > 0)
+            {
+                ViewState["RowNo"] = 0;
+                if (dtt.Rows.Count > 0)
+                {
+                    if (dtparticular.Columns.Count < 1)
+                    {
+                        Show_Grid();
+                    }
+
+                    for (int i = 0; i < dtt.Rows.Count; i++)
+                    {
+                        dtparticular.Rows.Add(dtt.Rows[i]["Id"].ToString(), dtt.Rows[i]["Particular"].ToString(), dtt.Rows[i]["Description"].ToString(), dtt.Rows[i]["HSN"].ToString(), dtt.Rows[i]["Qty"].ToString(), dtt.Rows[i]["UOM"].ToString(), dtt.Rows[i]["Rate"].ToString());
+                        // ViewState["RowNo"] = ViewState["RowNo"] + 1;
+                    }
+                }
+                gvinvoiceParticular.DataSource = dtparticular;
+                gvinvoiceParticular.DataBind();
+            }
+
+        }
+    }
+
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetCustomerList(string prefixText, int count)
+    {
+        return AutoFillCustomerName(prefixText);
+    }
+
+    public static List<string> AutoFillCustomerName(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.CommandText = "Select DISTINCT [cname] from Company where " + "cname like @Search + '%'";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> cname = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        cname.Add(sdr["cname"].ToString());
+                    }
+                }
+                con.Close();
+                return cname;
+            }
+        }
+    }
+
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetItemList(string prefixText, int count)
+    {
+        return AutoFilItem(prefixText);
+    }
+
+    public static List<string> AutoFilItem(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.CommandText = "Select DISTINCT [ItemName] from tblItemMaster where " + "ItemName like @Search + '%'";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> Items = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        Items.Add(sdr["ItemName"].ToString());
+                    }
+                }
+                con.Close();
+                return Items;
+            }
+        }
+    }
+
+    protected void txtCustomerNAme_TextChanged(object sender, EventArgs e)
+    {
+
+        try
+        {
+            DataTable dt = new DataTable();
+            SqlDataAdapter sad = new SqlDataAdapter("select * from Company where cname='" + txtCustomerNAme.Text + "'", con);
+            sad.Fill(dt);
+            if (dt.Rows.Count > 0)
+            {
+                txtshippingAddress.Text = dt.Rows[0]["shippingaddress"].ToString();
+                txtshippingcustomer.Text = dt.Rows[0]["cname"].ToString();
+
+            }
+
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+
+    protected void txtchallanagainst_TextChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!String.IsNullOrEmpty(txtCustomerNAme.Text))
+            {
+                if (txtchallanagainst.Text == "Direct")
+                {
+                    txtagainstNumber.Enabled = false;
+                    manuallytable.Visible = true;
+                    divdtls1.Visible = false;
+                    sumofAmount.Text = string.Empty;
+                }
+                else
+                {
+                    divdtls1.Visible = true;
+                    DataTable dtorder = new DataTable();
+                    SqlDataAdapter sadorder = new SqlDataAdapter("select * from OrderAccept where customername='" + txtCustomerNAme.Text + "'", con);
+                    sadorder.Fill(dtorder);
+                    txtagainstNumber.DataValueField = "OAno";
+                    txtagainstNumber.DataTextField = "pono";
+                    txtagainstNumber.DataSource = dtorder;
+                    txtagainstNumber.DataBind();
+
+                    manuallytable.Visible = false;
+                    txtagainstNumber.Enabled = true;
+                }
+            }
+            else
+            {
+                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Enter Customer Name First');window.location.href='TaxInvoice.aspx';", true);
+            }
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+
+    protected void txtagainstNumber_TextChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            DataTable dtorderno = new DataTable();
+            SqlDataAdapter sadorderno = new SqlDataAdapter("select * from OrderAcceptDtls where OAno='" + txtagainstNumber.SelectedValue + "'", con);
+            sadorderno.Fill(dtorderno);
+
+            gvorder.DataSource = dtorderno;
+            gvorder.DataBind();
+
+            DataTable dtPODetails = new DataTable();
+            SqlDataAdapter saPODetails = new SqlDataAdapter("select * from OrderAccept where OAno='" + txtagainstNumber.SelectedValue + "'", con);
+            saPODetails.Fill(dtPODetails);
+            if (dtPODetails.Rows.Count > 0)
+            {
+                txtcustomerPoNo.Text = dtPODetails.Rows[0]["pono"].ToString();
+                txtpodate.Text = dtPODetails.Rows[0]["podate"].ToString().Replace("/", "-").TrimEnd("0:0".ToCharArray());
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    protected void txtParticulars_TextChanged(object sender, EventArgs e)
+    {
+        txtHSN.Text = "85381010";
+    }
+
+    protected void txtQty_TextChanged(object sender, EventArgs e)
+    {
+        
+        GST_Calculation();
+    }
+
+    private void GST_Calculation()
+    {
+
+
+        //var totalamt = Convert.ToDouble(txtQty.Text.Trim()) * Convert.ToDouble(txtRate.Text.Trim());
+
+        //var CGSTamt = totalamt * (Convert.ToDouble(CGSTPer.Text.Trim())) / 100;
+        //var SGSTamt = totalamt * (Convert.ToDouble(SGSTPer.Text.Trim())) / 100;
+        //var IGSTamt = totalamt * (Convert.ToDouble(IGSTPer.Text.Trim())) / 100;
+
+        //var GSTtotal = SGSTamt + CGSTamt + IGSTamt;
+        //txtAmountt.Text = totalamt.ToString();
+        //var NetAmt = totalamt + GSTtotal;
+        ////var NetAmt = totalamt;
+
+        //Double AmtWithDiscount;
+        //if (txtdiscount.Text != "" || txtdiscount.Text != null)
+        //{
+        //    var disc = NetAmt * (Convert.ToDouble(txtdiscount.Text.Trim())) / 100;
+
+        //    AmtWithDiscount = NetAmt - disc;
+        //}
+        //else
+        //{
+        //    AmtWithDiscount = 0;
+        //}
+
+        //txtGrandtotal.Text = AmtWithDiscount.ToString("##.00");
+    }
+
+    protected void CGSTPer_TextChanged(object sender, EventArgs e)
+    {
+        GST_Calculation();
+
+        //if (CGSTPer.Text == "" || CGSTPer.Text == "0")
+        //{
+
+        //    IGSTPer.Enabled = true;
+        //    IGSTPer.Text = "0";
+        //}
+        //else
+        //{
+        //    Double CgstAmt = Convert.ToDouble(txtAmountt.Text) * Convert.ToDouble(CGSTPer.Text) / 100;
+        //    CGSTAmt.Text = CgstAmt.ToString();
+        //    IGSTPer.Enabled = false;
+        //    IGSTPer.Text = "0";
+        //}
+    }
+
+    private void GRID_GST_Calculation(GridViewRow row)
+    {
+        TextBox txt_Qty = (TextBox)row.FindControl("txtQty");
+        TextBox txt_price = (TextBox)row.FindControl("txtrate");
+        TextBox txt_CGST = (TextBox)row.FindControl("txtCGSTPer");
+        TextBox txt_SGST = (TextBox)row.FindControl("txtSGSTPer");
+        TextBox txt_IGST = (TextBox)row.FindControl("txtIGSTPer");
+        Label txt_amount = (Label)row.FindControl("txtGrandTotal");
+        Label taxableamt = (Label)row.FindControl("lblAmount");
+        TextBox txt_discount = (TextBox)row.FindControl("txtdiscountedit");
+
+        var totalamt = Convert.ToDouble(txt_Qty.Text.Trim()) * Convert.ToDouble(txt_price.Text.Trim());
+        taxableamt.Text = totalamt.ToString();
+        var CGSTamt = totalamt * (Convert.ToDouble(txt_CGST.Text.Trim())) / 100;
+        var SGSTamt = totalamt * (Convert.ToDouble(txt_SGST.Text.Trim())) / 100;
+        var IGSTamt = totalamt * (Convert.ToDouble(txt_IGST.Text.Trim())) / 100;
+        var GSTtotal = SGSTamt + CGSTamt;
+        var NetAmt = totalamt + GSTtotal;
+        //var NetAmt = totalamt;
+
+        Double AmtWithDiscount;
+        if (txt_discount.Text != "" || txt_discount.Text != null)
+        {
+            var disc = NetAmt * (Convert.ToDouble(txt_discount.Text.Trim())) / 100;
+
+            AmtWithDiscount = NetAmt - disc;
+        }
+        else
+        {
+            AmtWithDiscount = 0;
+        }
+
+        txt_amount.Text = AmtWithDiscount.ToString("##.00");
+
+
+    }
+
+    protected void SGSTPer_TextChanged(object sender, EventArgs e)
+    {
+        GST_Calculation();
+
+        //if (SGSTPer.Text == "" || SGSTPer.Text == "0")
+        //{
+        //    IGSTPer.Enabled = true;
+        //    IGSTPer.Text = "0";
+        //}
+        //else
+        //{
+        //    Double SgstAmt = Convert.ToDouble(txtAmountt.Text) * Convert.ToDouble(SGSTPer.Text) / 100;
+        //    SGSTAmt.Text = SgstAmt.ToString();
+        //    IGSTPer.Enabled = false;
+        //    IGSTPer.Text = "0";
+        //}
+    }
+
+    protected void IGSTPer_TextChanged(object sender, EventArgs e)
+    {
+        GST_Calculation();
+    }
+
+    protected void txtdiscount_TextChanged(object sender, EventArgs e)
+    {
+        GST_Calculation();
+    }
+
+    protected void btnAddMore_Click(object sender, EventArgs e)
+    {
+        if (txtQty.Text == "" || txtParticulars.Text == "")
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Please fill All Required fields !!!');", true);
+        }
+        else
+        {
+            Show_Grid();
+        }
+    }
+
+    private void Show_Grid()
+    {
+        ViewState["RowNo"] = 0;
+        ViewState["RowNo"] = (int)ViewState["RowNo"] + 1;
+        DataTable dt = (DataTable)ViewState["ParticularDetails"];
+
+        dt.Rows.Add(ViewState["RowNo"], txtParticulars.SelectedItem.Text, txtdiscription.Text, txtHSN.Text, txtQty.Text, txtuom.Text, txtRate.Text);
+        ViewState["ParticularDetails"] = dt;
+
+        gvinvoiceParticular.DataSource = (DataTable)ViewState["ParticularDetails"];
+        gvinvoiceParticular.DataBind();
+
+        //txtParticulars.Text = string.Empty;
+        txtdiscription.Text = string.Empty;
+        txtQty.Text = "0";
+        txtRate.Text = "0";
+    }
+
+    protected void gvinvoiceParticular_RowEditing(object sender, GridViewEditEventArgs e)
+    {
+        gvinvoiceParticular.EditIndex = e.NewEditIndex;
+        gvinvoiceParticular.DataSource = (DataTable)ViewState["ParticularDetails"];
+        gvinvoiceParticular.DataBind();
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Success", "scrollToElement();", true);
+    }
+
+    Double Totalamt = 0;
+    Double GrandTotalamt = 0;
+  
+
+    protected void txtQty_TextChanged1(object sender, EventArgs e)
+    {
+        
+    }
+
+    protected void txtrate_TextChanged(object sender, EventArgs e)
+    {
+        
+    }
+
+    protected void txtCGSTPer_TextChanged(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
+        GRID_GST_Calculation(row);
+        TextBox txt_CGST = (TextBox)row.FindControl("txtCGSTPer");
+        Label lbl_CGSTAmt = (Label)row.FindControl("lblCgstAmt");
+        Label Amount = (Label)row.FindControl("lblAmount");
+        TextBox txt_IGST = (TextBox)row.FindControl("txtIGSTPer");
+        if (txt_CGST.Text == "" || txt_CGST.Text == "0")
+        {
+            txt_IGST.Enabled = true;
+            txt_IGST.Text = "0";
+        }
+        else
+        {
+            Double CGStAmt = Convert.ToDouble(Amount.Text) * Convert.ToDouble(txt_CGST.Text) / 100;
+            lbl_CGSTAmt.Text = CGStAmt.ToString();
+            txt_IGST.Enabled = false;
+            txt_IGST.Text = "0";
+        }
+    }
+
+    protected void txtSGSTPer_TextChanged(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
+
+        GRID_GST_Calculation(row);
+        TextBox txt_SGST = (TextBox)row.FindControl("txtSGSTPer");
+        TextBox txt_IGST = (TextBox)row.FindControl("txtIGSTPer");
+        Label lbl_SGSTAmt = (Label)row.FindControl("lblSgstAmt");
+        Label Amount = (Label)row.FindControl("lblAmount");
+
+        if (txt_SGST.Text == "" || txt_SGST.Text == "0")
+        {
+            txt_IGST.Enabled = true;
+            txt_IGST.Text = "0";
+        }
+        else
+        {
+            Double SGSTAmt = Convert.ToDouble(Amount.Text) * Convert.ToDouble(txt_SGST.Text) / 100;
+            lbl_SGSTAmt.Text = SGSTAmt.ToString();
+            txt_IGST.Enabled = false;
+            txt_IGST.Text = "0";
+        }
+    }
+
+    protected void txtIGSTPer_TextChanged(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
+        GRID_GST_Calculation(row);
+        TextBox txt_CGST = (TextBox)row.FindControl("txtCGSTPer");
+        TextBox txt_SGST = (TextBox)row.FindControl("txtSGSTPer");
+
+        TextBox txt_IGST = (TextBox)row.FindControl("txtIGSTPer");
+        Label lbl_SGSTAmt = (Label)row.FindControl("lblSgstAmt");
+        Label Amount = (Label)row.FindControl("lblAmount");
+        Label lblIGSTAmt = (Label)row.FindControl("lblIGSTAmt");
+
+        if (txt_IGST.Text == "" || txt_IGST.Text == "0")
+        {
+            txt_CGST.Enabled = true;
+            txt_SGST.Enabled = true;
+            //txt_IGST.Enabled = true;
+            txt_SGST.Text = "0";
+            txt_CGST.Text = "0";
+        }
+        else
+        {
+
+            Double IGSTAmt = Convert.ToDouble(Amount.Text) * Convert.ToDouble(txt_IGST.Text) / 100;
+            lblIGSTAmt.Text = IGSTAmt.ToString();
+            txt_CGST.Enabled = false;
+            txt_SGST.Enabled = false;
+            txt_SGST.Text = "0";
+            txt_CGST.Text = "0";
+        }
+    }
+
+    protected void txtdiscountedit_TextChanged(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
+        GRID_GST_Calculation(row);
+    }
+
+    protected void lnkbtnUpdate_Click(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as LinkButton).NamingContainer as GridViewRow;
+
+        string Particulars = ((Label)row.FindControl("lblParticulars")).Text;
+        string Discription = ((TextBox)row.FindControl("txtDescription")).Text;
+        string HSN = ((Label)row.FindControl("lblHSN")).Text;
+        string UOM = ((Label)row.FindControl("txtUOM")).Text;
+        string Qty = ((TextBox)row.FindControl("txtQty")).Text;
+        string Rate = ((TextBox)row.FindControl("txtrate")).Text;
+
+        DataTable Dt = ViewState["ParticularDetails"] as DataTable;
+
+        Dt.Rows[row.RowIndex]["Particular"] = Particulars;
+        Dt.Rows[row.RowIndex]["Description"] = Discription;
+        Dt.Rows[row.RowIndex]["HSN"] = HSN;
+        Dt.Rows[row.RowIndex]["Qty"] = Qty;
+        Dt.Rows[row.RowIndex]["UOM"] = UOM;
+        Dt.Rows[row.RowIndex]["Rate"] = Rate;
+
+        Dt.AcceptChanges();
+
+        ViewState["ParticularDetails"] = Dt;
+        gvinvoiceParticular.EditIndex = -1;
+
+        gvinvoiceParticular.DataSource = (DataTable)ViewState["ParticularDetails"];
+        gvinvoiceParticular.DataBind();
+
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Success", "scrollToElement();", true);
+    }
+
+    protected void lnkCancel_Click(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as LinkButton).NamingContainer as GridViewRow;
+
+        DataTable Dt = ViewState["ParticularDetails"] as DataTable;
+        gvinvoiceParticular.EditIndex = -1;
+
+        ViewState["ParticularDetails"] = Dt;
+        gvinvoiceParticular.EditIndex = -1;
+
+        gvinvoiceParticular.DataSource = (DataTable)ViewState["ParticularDetails"];
+        gvinvoiceParticular.DataBind();
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Success", "scrollToElement();", true);
+    }
+
+    Double qty = 0, rate = 0, Amount = 0, Totalamt1 = 0, GrandTotalamt1 = 0;
+    protected void gvorder_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            TextBox txt_Qty = (TextBox)e.Row.FindControl("lblQty");
+            CheckBox chk = (CheckBox)e.Row.FindControl("chkRow");
+            Label id = (Label)e.Row.FindControl("lblid");
+            Label Headerid = (Label)e.Row.FindControl("lblid");
+            int OAId = Convert.ToInt32(id.Text);
+            int sumofqty;
+
+            SqlCommand cmdmax = new SqlCommand("SELECT Max(Id) FROM DeliveryChallanDtls where OAId='" + OAId + "'", con);
+            con.Open();
+            Object mxid = cmdmax.ExecuteScalar();
+            con.Close();
+
+            SqlCommand cmdsumQty = new SqlCommand("SELECT SUM(CAST(Qty as int)) FROM DeliveryChallanDtls where OAId='" + OAId + "'", con);
+            con.Open();
+            Object smQty = cmdsumQty.ExecuteScalar();
+            //sumofqty = Convert.ToInt32(smQty);
+            con.Close();
+
+            var mxiddd = mxid.ToString() == "" ? null : mxid.ToString();
+            var smquantity = smQty.ToString() == "" ? "0" : smQty.ToString();
+
+            DataTable dtTIDetails = new DataTable();
+            SqlDataAdapter saTIDetails = new SqlDataAdapter("select * from DeliveryChallanDtls where OAId='" + OAId + "' and Id='" + Convert.ToInt32(mxiddd) + "'", con);
+            saTIDetails.Fill(dtTIDetails);
+            if (dtTIDetails.Rows.Count > 0)
+            {
+                //var ExistQty = dtTIDetails.Rows[0]["Qty"].ToString();
+                var Qty = txt_Qty.Text;
+                var minusQty = Convert.ToInt32(Qty) - Convert.ToInt32(smquantity);
+                txt_Qty.Text = minusQty.ToString();
+                if (minusQty == 0)
+                {
+                    chk.Enabled = false;
+                }
+
+            }
+        }
+
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            Label lblAmount1 = (Label)e.Row.FindControl("lblAmount");
+
+            qty = Convert.ToDouble((e.Row.FindControl("lblQty") as TextBox).Text);
+            rate = Convert.ToDouble((e.Row.FindControl("lblRate") as TextBox).Text);
+            Amount = qty * rate;
+            lblAmount1.Text = Amount.ToString();
+            TextBox txt_Qty = (TextBox)e.Row.FindControl("lblQty");
+            TextBox txt_price = (TextBox)e.Row.FindControl("lblRate");
+            TextBox txt_CGST = (TextBox)e.Row.FindControl("lblCGSTPer");
+            TextBox txt_SGST = (TextBox)e.Row.FindControl("lblSGSTPer");
+            TextBox txt_IGST = (TextBox)e.Row.FindControl("lblIGSTPer");
+            Label txt_amount = (Label)e.Row.FindControl("txtGrandTotal");
+            Label taxableamt = (Label)e.Row.FindControl("lblAmount");
+            Label lblCGST = (Label)e.Row.FindControl("lblCGSTAmt");
+            Label lblSGST = (Label)e.Row.FindControl("lblSGSTAmt");
+            Label LblIGST = (Label)e.Row.FindControl("lblIGSTAmt");
+            TextBox txt_discount = (TextBox)e.Row.FindControl("txtdiscount");
+
+            var totalamt = Convert.ToDouble(txt_Qty.Text.Trim()) * Convert.ToDouble(txt_price.Text.Trim());
+            taxableamt.Text = totalamt.ToString();
+            var CGSTamt = totalamt * (Convert.ToDouble(txt_CGST.Text.Trim())) / 100;
+            var SGSTamt = totalamt * (Convert.ToDouble(txt_SGST.Text.Trim())) / 100;
+            var IGSTamt = totalamt * (Convert.ToDouble(txt_IGST.Text.Trim())) / 100;
+            lblCGST.Text = CGSTamt.ToString();
+            lblSGST.Text = SGSTamt.ToString();
+            LblIGST.Text = IGSTamt.ToString();
+            var GSTtotal = SGSTamt + CGSTamt;
+
+            var NetAmt = totalamt + GSTtotal;
+            //var NetAmt = totalamt;
+
+            Double AmtWithDiscount;
+            if (txt_discount.Text != "" || txt_discount.Text != null)
+            {
+                var disc = NetAmt * (Convert.ToDouble(txt_discount.Text.Trim())) / 100;
+
+                AmtWithDiscount = NetAmt - disc;
+            }
+            else
+            {
+                AmtWithDiscount = 0;
+            }
+
+            txt_amount.Text = AmtWithDiscount.ToString("##.00");
+
+            Totalamt1 += Convert.ToDouble(Amount);
+            GrandTotalamt1 += Convert.ToDouble((e.Row.FindControl("txtGrandTotal") as Label).Text);
+            hdnGrandtotal.Value = GrandTotalamt1.ToString();
+            //sumofAmount.Text = Totalamt1.ToString();
+            var Total = Convert.ToDouble(txtCost.Text) + GrandTotalamt1 + Convert.ToDouble(txtTCSAmt.Text);
+            txtGrandTot.Text = Total.ToString("##.00");
+
+        }
+    }
+
+    protected void gvorder_RowEditing(object sender, GridViewEditEventArgs e)
+    {
+        gvinvoiceParticular.EditIndex = e.NewEditIndex;
+        gvinvoiceParticular.DataSource = (DataTable)ViewState["ParticularDetails"];
+        gvinvoiceParticular.DataBind();
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Success", "scrollToElement();", true);
+    }
+
+    protected void chkHeader_CheckedChanged(object sender, EventArgs e)
+    {
+        foreach (GridViewRow row in gvorder.Rows)
+        {
+
+
+            CheckBox chckheader = (CheckBox)gvorder.HeaderRow.FindControl("chkHeader");
+            TextBox discription = (TextBox)row.FindControl("txtDescription");
+            TextBox HSN = (TextBox)row.FindControl("lblHSN");
+            TextBox txtqty = (TextBox)row.FindControl("lblQty");
+            TextBox UOM = (TextBox)row.FindControl("txtUOM");
+            TextBox rate = (TextBox)row.FindControl("lblRate");
+            Label Amount = (Label)row.FindControl("lblAmount");
+            TextBox cgst = (TextBox)row.FindControl("lblCGSTPer");
+            TextBox sgst = (TextBox)row.FindControl("lblSGSTPer");
+            TextBox Igst = (TextBox)row.FindControl("lblIGSTPer");
+            TextBox discount = (TextBox)row.FindControl("txtdiscount");
+            Label grandtotal = (Label)row.FindControl("txtGrandTotal");
+            CheckBox chkrow = (CheckBox)row.FindControl("chkRow");
+
+            if (chckheader.Checked == true)
+
+            {
+
+                chkrow.Checked = true;
+                discription.Enabled = true;
+                HSN.Enabled = true;
+                txtqty.Enabled = true;
+                UOM.Enabled = true;
+                rate.Enabled = true;
+                Amount.Enabled = true;
+                cgst.Enabled = true;
+                sgst.Enabled = true;
+                Igst.Enabled = true;
+                discount.Enabled = true;
+                Double qty1 = Convert.ToDouble(txtqty.Text);
+                Double price1 = Convert.ToDouble(rate.Text);
+                total = (qty1 * price1);
+                Amount.Text = total.ToString();
+                Totalamt += total;
+                sumofAmount.Text = Totalamt.ToString();
+
+                if (qty1 == 0)
+                {
+                    chkrow.Checked = false;
+                    chkrow.Enabled = false;
+                    discription.Enabled = false;
+                    HSN.Enabled = false;
+                    txtqty.Enabled = false;
+                    UOM.Enabled = false;
+                    rate.Enabled = false;
+                    Amount.Enabled = false;
+                    cgst.Enabled = false;
+                    sgst.Enabled = false;
+                    Igst.Enabled = false;
+                    discount.Enabled = false;
+                    sumofAmount.Text = string.Empty;
+                }
+                else
+                {
+                    chkrow.Enabled = true;
+                    chkrow.Checked = true;
+                    discription.Enabled = true;
+                    HSN.Enabled = true;
+                    txtqty.Enabled = true;
+                    UOM.Enabled = true;
+                    rate.Enabled = true;
+                    Amount.Enabled = true;
+                    cgst.Enabled = true;
+                    sgst.Enabled = true;
+                    Igst.Enabled = true;
+                    discount.Enabled = true;
+                }
+            }
+            else
+
+            {
+
+                chkrow.Checked = false;
+                discription.Enabled = false;
+                HSN.Enabled = false;
+                txtqty.Enabled = false;
+                UOM.Enabled = false;
+                rate.Enabled = false;
+                Amount.Enabled = false;
+                cgst.Enabled = false;
+                sgst.Enabled = false;
+                Igst.Enabled = false;
+                discount.Enabled = false;
+                sumofAmount.Text = string.Empty;
+
+
+            }
+        }
+    }
+
+    Double GrandTotal111 = 0, grandtotalt = 0, FinalGrandtotalTcs = 0;
+    Double total = 0;
+
+    protected void chkRow_CheckedChanged(object sender, EventArgs e)
+    {
+        //GridViewRow row = (sender as CheckBox).NamingContainer as GridViewRow;
+        foreach (GridViewRow row in gvorder.Rows)
+        {
+            TextBox discription = (TextBox)row.FindControl("txtDescription");
+            TextBox HSN = (TextBox)row.FindControl("lblHSN");
+            TextBox txtqty = (TextBox)row.FindControl("lblQty");
+            TextBox UOM = (TextBox)row.FindControl("txtUOM");
+            TextBox rate = (TextBox)row.FindControl("lblRate");
+            Label Amount = (Label)row.FindControl("lblAmount");
+            TextBox cgst = (TextBox)row.FindControl("lblCGSTPer");
+            TextBox sgst = (TextBox)row.FindControl("lblSGSTPer");
+            TextBox Igst = (TextBox)row.FindControl("lblIGSTPer");
+            TextBox discount = (TextBox)row.FindControl("txtdiscount");
+            Label grandtotal = (Label)row.FindControl("txtGrandTotal");
+            CheckBox chk = (CheckBox)row.FindControl("chkRow");
+            CheckBox chkheader = (CheckBox)gvorder.HeaderRow.FindControl("chkHeader");
+
+
+            if (chk != null & chk.Checked)
+            {
+
+
+                Double qty1 = Convert.ToDouble(txtqty.Text);
+
+                if (qty1 == 0)
+                {
+                    discription.Enabled = false;
+                    HSN.Enabled = false;
+                    txtqty.Enabled = false;
+                    UOM.Enabled = false;
+                    rate.Enabled = false;
+                    Amount.Enabled = false;
+                    cgst.Enabled = false;
+                    sgst.Enabled = false;
+                    Igst.Enabled = false;
+                    discount.Enabled = false;
+                    chkheader.Checked = false;
+                    chk.Enabled = false;
+                }
+                else
+                {
+                    discription.Enabled = true;
+                    HSN.Enabled = true;
+                    txtqty.Enabled = true;
+                    UOM.Enabled = true;
+                    rate.Enabled = true;
+                    Amount.Enabled = true;
+                    cgst.Enabled = true;
+                    sgst.Enabled = true;
+                    Igst.Enabled = true;
+                    discount.Enabled = true;
+                    chk.Enabled = true;
+                    Double price1 = Convert.ToDouble(rate.Text);
+                    total = (qty1 * price1);
+                    Amount.Text = total.ToString();
+                    Totalamt += total;
+                    sumofAmount.Text = Totalamt.ToString();
+                    grandtotalt = Convert.ToDouble(grandtotal.Text);
+                    FinalGrandtotalTcs += grandtotalt;
+                    //txtGrandTot.Text = FinalGrandtotalTcs.ToString();
+                    hdnGrandtotal.Value = FinalGrandtotalTcs.ToString();
+                    var Total = Convert.ToDouble(txtCost.Text) + FinalGrandtotalTcs + Convert.ToDouble(txtTCSAmt.Text);
+                    txtGrandTot.Text = Total.ToString("##.00");
+                }
+            }
+            else
+            {
+                discription.Enabled = false;
+                HSN.Enabled = false;
+                txtqty.Enabled = false;
+                UOM.Enabled = false;
+                rate.Enabled = false;
+                Amount.Enabled = false;
+                cgst.Enabled = false;
+                sgst.Enabled = false;
+                Igst.Enabled = false;
+                discount.Enabled = false;
+                chkheader.Checked = false;
+
+
+            }
+
+            //GrandTotalamt = Convert.ToDouble(grandtotal.Text);
+        }
+    }
+
+    Double Totalamt111 = 0, GrandTotalamt11 = 0;
+    private void calculationA(GridViewRow row)
+    {
+        TextBox txt_Qty = (TextBox)row.FindControl("lblQty");
+        TextBox txt_price = (TextBox)row.FindControl("lblRate");
+        TextBox txt_CGST = (TextBox)row.FindControl("lblCGSTPer");
+        TextBox txt_SGST = (TextBox)row.FindControl("lblSGSTPer");
+        TextBox txt_IGST = (TextBox)row.FindControl("lblIGSTPer");
+        Label txt_amount = (Label)row.FindControl("txtGrandTotal");
+        TextBox txt_discount = (TextBox)row.FindControl("txtdiscount");
+        Label Amount = (Label)row.FindControl("lblAmount");
+
+        var totalamt = Convert.ToDouble(txt_Qty.Text.Trim()) * Convert.ToDouble(txt_price.Text.Trim());
+        Amount.Text = totalamt.ToString();
+        var CGSTamt = totalamt * (Convert.ToDouble(txt_CGST.Text.Trim())) / 100;
+        var SGSTamt = totalamt * (Convert.ToDouble(txt_SGST.Text.Trim())) / 100;
+        var IGSTamt = totalamt * (Convert.ToDouble(txt_IGST.Text.Trim())) / 100;
+
+        var GSTtotal = SGSTamt + CGSTamt;
+
+        var NetAmt = totalamt + GSTtotal;
+        //var NetAmt = totalamt;
+
+        Double AmtWithDiscount;
+        if (txt_discount.Text != "" || txt_discount.Text != null)
+        {
+            var disc = NetAmt * (Convert.ToDouble(txt_discount.Text.Trim())) / 100;
+
+            AmtWithDiscount = NetAmt - disc;
+        }
+        else
+        {
+            AmtWithDiscount = 0;
+        }
+
+        txt_amount.Text = AmtWithDiscount.ToString("##.00");
+
+        foreach (GridViewRow g1 in gvorder.Rows)
+        {
+
+            Label Amount1 = (Label)g1.FindControl("lblAmount");
+            CheckBox chkrow = (CheckBox)g1.FindControl("chkRow");
+            if (chkrow.Checked == true)
+            {
+                Totalamt111 += Convert.ToDouble(Amount1.Text);
+                GrandTotalamt11 += Convert.ToDouble(txt_amount.Text);
+            }
+
+        }
+
+        hdnGrandtotal.Value = GrandTotalamt11.ToString();
+        sumofAmount.Text = Totalamt111.ToString();
+        var total = Convert.ToDouble(GrandTotalamt11) + Convert.ToDouble(txtCost.Text) + Convert.ToDouble(txtTCSAmt.Text);
+        txtGrandTot.Text = total.ToString();
+
+    }
+
+    protected void lblQty_TextChanged(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
+        Label lblAmount1 = (Label)row.FindControl("lblAmount");
+        calculationA(row);
+    }
+
+    protected void lblRate_TextChanged(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
+        calculationA(row);
+    }
+
+    protected void lblCGSTPer_TextChanged(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
+        TextBox txt_CGST = (TextBox)row.FindControl("lblCGSTPer");
+        TextBox txt_SGST = (TextBox)row.FindControl("lblSGSTPer");
+        TextBox txt_IGST = (TextBox)row.FindControl("lblIGSTPer");
+        calculationA(row);
+        if (txt_CGST.Text == "" || txt_CGST.Text == "0")
+        {
+            txt_IGST.Enabled = true;
+            txt_IGST.Text = "0";
+        }
+        else
+        {
+            txt_IGST.Enabled = false;
+            txt_IGST.Text = "0";
+        }
+    }
+
+    protected void lblSGSTPer_TextChanged(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
+        TextBox txt_CGST = (TextBox)row.FindControl("lblCGSTPer");
+        TextBox txt_SGST = (TextBox)row.FindControl("lblSGSTPer");
+        TextBox txt_IGST = (TextBox)row.FindControl("lblIGSTPer");
+        calculationA(row);
+        if (txt_SGST.Text == "" || txt_SGST.Text == "0")
+        {
+            txt_IGST.Enabled = true;
+            txt_IGST.Text = "0";
+        }
+        else
+        {
+            txt_IGST.Enabled = false;
+            txt_IGST.Text = "0";
+        }
+    }
+
+    protected void lblIGSTPer_TextChanged(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
+        TextBox txt_CGST = (TextBox)row.FindControl("lblCGSTPer");
+        TextBox txt_SGST = (TextBox)row.FindControl("lblSGSTPer");
+        TextBox txt_IGST = (TextBox)row.FindControl("lblIGSTPer");
+        calculationA(row);
+        if (txt_IGST.Text == "" || txt_IGST.Text == "0")
+        {
+            txt_SGST.Enabled = true;
+            txt_CGST.Enabled = true;
+            txt_SGST.Text = "0";
+            txt_CGST.Text = "0";
+        }
+        else
+        {
+            txt_SGST.Enabled = false;
+            txt_CGST.Enabled = false;
+            txt_SGST.Text = "0";
+            txt_CGST.Text = "0";
+        }
+    }
+
+    protected void txtdiscount_TextChanged1(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
+        calculationA(row);
+    }
+
+    protected void txtrateTcs_TextChanged(object sender, EventArgs e)
+    {
+        string Amt = sumofAmount.Text;
+        string Rate = txtrateTcs.Text;
+        if (Rate == "0")
+        {
+            txtBasic.Text = "0";
+            txtCost.Text = "0";
+            CGSTPertcs.Text = "0";
+            SGSTPertcs.Text = "0";
+            IGSTPertcs.Text = "0";
+        }
+        else
+        {
+            var Basic = Convert.ToDouble(Amt) * Convert.ToDouble(Rate) / 100;
+            txtBasic.Text = Basic.ToString("##.00");
+
+            var grandtot = Convert.ToDouble(Basic) + Convert.ToDouble(hdnGrandtotal.Value);
+            txtGrandTot.Text = grandtot.ToString("##.00");
+        }
+    }
+
+    protected void txtBasic_TextChanged(object sender, EventArgs e)
+    {
+        string Amt = sumofAmount.Text;
+        string Basic = txtBasic.Text;
+        if (Basic == "0")
+        {
+            txtBasic.Text = "0";
+            txtCost.Text = "0";
+            CGSTPertcs.Text = "0";
+            SGSTPertcs.Text = "0";
+            IGSTPertcs.Text = "0";
+        }
+        else
+        {
+            var Per = Convert.ToDouble(Basic) / Convert.ToDouble(Amt) * 100;
+            txtrateTcs.Text = Per.ToString("##.00");
+
+            var grandtot = Convert.ToDouble(Basic) + Convert.ToDouble(hdnGrandtotal.Value);
+            txtGrandTot.Text = grandtot.ToString("##.00");
+        }
+    }
+
+    protected void CGSTPertcs_TextChanged(object sender, EventArgs e)
+    {
+        GstCalculationTcs();
+    }
+
+    protected void GstCalculationTcs()
+    {
+        string Basic = txtBasic.Text;
+        string CGST = CGSTPertcs.Text;
+        string SGST = SGSTPertcs.Text;
+        if (CGST == "0" || SGST == "0")
+        {
+            if (CGST == "0" && SGST == "0" && IGSTPertcs.Text == "0")
+            {
+                IGSTPertcs.Enabled = true;
+                CGSTPertcs.Enabled = true;
+                SGSTPertcs.Enabled = true;
+                txtCost.Text = Basic.ToString();
+            }
+            else
+            {
+                if (IGSTPertcs.Text == "0")
+                {
+                    IGSTPertcs.Enabled = false;
+                    CGSTPertcs.Enabled = true;
+                    SGSTPertcs.Enabled = true;
+                    var CGSTAmt = Convert.ToDouble(Basic) * Convert.ToDouble(CGST) / 100;
+                    var SGSTAmt = Convert.ToDouble(Basic) * Convert.ToDouble(SGST) / 100;
+                    var GSTTaxTotal = Convert.ToDouble(Basic) + CGSTAmt + SGSTAmt;
+                    txtCost.Text = GSTTaxTotal.ToString("##.00");
+
+                    var grandtot = Convert.ToDouble(GSTTaxTotal) + Convert.ToDouble(hdnGrandtotal.Value);
+                    txtGrandTot.Text = grandtot.ToString("##.00");
+                }
+                else
+                {
+                    IGSTPertcs.Enabled = true;
+                    CGSTPertcs.Enabled = false;
+                    SGSTPertcs.Enabled = false;
+                    var IGSTAmt = Convert.ToDouble(Basic) * Convert.ToDouble(IGSTPertcs.Text) / 100;
+                    var GSTTaxTotal = Convert.ToDouble(Basic) + IGSTAmt;
+                    txtCost.Text = GSTTaxTotal.ToString("##.00");
+
+                    var grandtot = Convert.ToDouble(GSTTaxTotal) + Convert.ToDouble(hdnGrandtotal.Value) + Convert.ToDouble(txtTCSAmt.Text);
+                    txtGrandTot.Text = grandtot.ToString("##.00");
+                }
+            }
+        }
+        else
+        {
+            IGSTPertcs.Enabled = false;
+            CGSTPertcs.Enabled = true;
+            SGSTPertcs.Enabled = true;
+            var CGSTAmt = Convert.ToDouble(Basic) * Convert.ToDouble(CGST) / 100;
+            var SGSTAmt = Convert.ToDouble(Basic) * Convert.ToDouble(SGST) / 100;
+
+            var GSTTaxTotal = Convert.ToDouble(Basic) + CGSTAmt + SGSTAmt;
+            txtCost.Text = GSTTaxTotal.ToString("##.00");
+
+            var grandtot = Convert.ToDouble(GSTTaxTotal) + Convert.ToDouble(hdnGrandtotal.Value);
+            txtGrandTot.Text = grandtot.ToString("##.00");
+        }
+    }
+
+    protected void SGSTPertcs_TextChanged(object sender, EventArgs e)
+    {
+        GstCalculationTcs();
+    }
+
+    protected void IGSTPertcs_TextChanged(object sender, EventArgs e)
+    {
+        GstCalculationTcs();
+    }
+
+    protected void txtTCSPer_TextChanged(object sender, EventArgs e)
+    {
+        if (txtTCSPer.Text == "0" || txtTCSPer.Text == "")
+        {
+            var tot = Convert.ToDouble(sumofAmount.Text) + Convert.ToDouble(txtCost.Text);
+            var TcsAmt = Convert.ToDouble(txtTCSPer.Text) * tot / 100;
+            txtTCSAmt.Text = TcsAmt.ToString("##.00");
+
+            var grandtot = Convert.ToDouble(txtTCSAmt.Text) + Convert.ToDouble(hdnGrandtotal.Value) + Convert.ToDouble(txtCost.Text);
+            txtGrandTot.Text = grandtot.ToString("##.00");
+            txtTCSAmt.Text = "0";
+        }
+        else
+        {
+            var tot = Convert.ToDouble(sumofAmount.Text) + Convert.ToDouble(txtCost.Text);
+            var TcsAmt = Convert.ToDouble(txtTCSPer.Text) * tot / 100;
+            txtTCSAmt.Text = TcsAmt.ToString("##.00");
+
+            var grandtot = Convert.ToDouble(txtTCSAmt.Text) + Convert.ToDouble(hdnGrandtotal.Value) + Convert.ToDouble(txtCost.Text);
+            txtGrandTot.Text = grandtot.ToString("##.00");
+        }
+    }
+
+    protected void btnSubmit_Click(object sender, EventArgs e)
+    {
+        SaveRecord();
+    }
+
+    public string GenerateCode()
+    {
+        string dchallanNo;
+        DateTime date = DateTime.Now;
+        string currentyeaar = date.ToString();
+
+        string FinYear = null;
+
+        if (DateTime.Today.Month > 3)
+        {
+            //FinYear = DateTime.Today.Year.ToString();
+            FinYear = DateTime.Today.AddYears(1).ToString("yy");
+        }
+        else
+        {
+            var finYear = DateTime.Today.AddYears(1).ToString("yy");
+            FinYear = (Convert.ToInt32(finYear) - 1).ToString();
+        }
+
+
+        string previousyear = (Convert.ToDecimal(FinYear) - 1).ToString();
+
+        SqlDataAdapter ad = new SqlDataAdapter("SELECT max([Id]) as maxid FROM [DeliveryChallanHdr]", con);
+        DataTable dt = new DataTable();
+        ad.Fill(dt);
+        if (dt.Rows.Count > 0)
+        {
+
+            int maxid = dt.Rows[0]["maxid"].ToString() == "" ? 0 : Convert.ToInt32(dt.Rows[0]["maxid"].ToString());
+            dchallanNo = previousyear.ToString() + "-" + FinYear + "/" + (maxid + 1).ToString();
+            if (maxid < 9)
+            {
+                dchallanNo = previousyear.ToString() + "-" + FinYear + "/" + "000" + (maxid + 1).ToString();
+            }
+            else if (maxid <= 100)
+            {
+                dchallanNo = previousyear.ToString() + "-" + FinYear + "/" + "00" + (maxid + 1).ToString();
+            }
+        }
+        else
+        {
+            dchallanNo = string.Empty;
+        }
+        return dchallanNo;
+    }
+
+    protected void SaveRecord()
+    {
+        try
+        {
+            int id, idupdate;
+            string dchallanNo = GenerateCode();
+
+            hiddeninvoiceno.Value = dchallanNo;
+            if (btnSubmit.Text == "Submit")
+            {
+                if (!string.IsNullOrEmpty(txtCustomerNAme.Text))
+                {
+                    SqlCommand cmd = new SqlCommand("SP_DeliveryChallanHdrs", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@ChallanNO", dchallanNo);
+                    cmd.Parameters.AddWithValue("@BillingCustomer", txtCustomerNAme.Text);
+                    cmd.Parameters.AddWithValue("@ShippingCustomer", txtshippingcustomer.Text);
+                    cmd.Parameters.AddWithValue("@ShippingAddress", txtshippingAddress.Text);
+
+                    cmd.Parameters.AddWithValue("@CustChallanNo", txtCustchallanNo.Text);
+                    cmd.Parameters.AddWithValue("@Challandate", txtchallandate.Text);
+                    cmd.Parameters.AddWithValue("@PODate", txtpodate.Text);
+                    cmd.Parameters.AddWithValue("@CustChallanDate", txtCustchallanDate.Text);
+
+                    cmd.Parameters.AddWithValue("@ChallanAgainst", txtchallanagainst.Text);
+                    cmd.Parameters.AddWithValue("@AgainstNumber", txtagainstNumber.SelectedItem.Text);
+                    cmd.Parameters.AddWithValue("@CustomerPONo", txtcustomerPoNo.Text);
+                    cmd.Parameters.AddWithValue("@TransportMode", txttransportMode.Text);
+                    cmd.Parameters.AddWithValue("@VehicalNo", txtvehicalNumber.Text);
+                    cmd.Parameters.AddWithValue("@Remark", txtremark.Text);
+                    cmd.Parameters.AddWithValue("@SumOfProductAmt", sumofAmount.Text);
+                    cmd.Parameters.AddWithValue("@ChargesDescription", txtDescription.Text);
+                    cmd.Parameters.AddWithValue("@HSN", txthsntcs.Text);
+                    cmd.Parameters.AddWithValue("@Rate", txtrateTcs.Text);
+                    cmd.Parameters.AddWithValue("@Basic", txtBasic.Text);
+                    cmd.Parameters.AddWithValue("@CGST", CGSTPertcs.Text);
+                    cmd.Parameters.AddWithValue("@SGST", SGSTPertcs.Text);
+                    cmd.Parameters.AddWithValue("@IGST", IGSTPertcs.Text);
+                    cmd.Parameters.AddWithValue("@Cost", txtCost.Text);
+                    //cmd.Parameters.AddWithValue("@FinalBasic", );
+                    cmd.Parameters.AddWithValue("@TCSPercent", txtTCSPer.Text);
+                    cmd.Parameters.AddWithValue("@TCSAmt", txtTCSAmt.Text);
+                    cmd.Parameters.AddWithValue("@GrandTotal", txtGrandTot.Text);
+                    cmd.Parameters.AddWithValue("@IsEmail", IsSedndMail.Checked);
+                    cmd.Parameters.Add("@Iddd", SqlDbType.Int).Direction = ParameterDirection.Output;
+
+                    cmd.Parameters.AddWithValue("@CreatedBy", Session["name"].ToString());
+                    cmd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@isdeleted", '0');
+                    cmd.Parameters.AddWithValue("@Action", "Insert");
+                    //id8 = Convert.ToInt32(cmd.Parameters["@Iddd"].Value);
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                    id = Convert.ToInt32(cmd.Parameters["@Iddd"].Value);
+                    string idd = id.ToString();
+                    if (txtchallanagainst.Text == "Direct")
+                    {
+                        foreach (GridViewRow g1 in gvinvoiceParticular.Rows)
+                        {
+                            string particular = (g1.FindControl("lblParticulars") as Label).Text;
+                            string Description = (g1.FindControl("txtDescription") as Label).Text;
+                            string HSN = (g1.FindControl("lblHSN") as Label).Text;
+                            string QTY = (g1.FindControl("lblQty") as Label).Text;
+                            string UOM = (g1.FindControl("txtUOM") as Label).Text;
+                            string RATE = (g1.FindControl("lblRate") as Label).Text;
+
+                            SqlCommand cmd1 = new SqlCommand("SP_DeliveryChallanDtls", con);
+                            cmd1.CommandType = CommandType.StoredProcedure;
+                            cmd1.Parameters.AddWithValue("@HeaderID", id);
+                            cmd1.Parameters.AddWithValue("@CustomerName", txtCustomerNAme.Text);
+                            cmd1.Parameters.AddWithValue("@Particular", particular);
+                            cmd1.Parameters.AddWithValue("@HSN", HSN);
+                            cmd1.Parameters.AddWithValue("@Qty", QTY);
+                            cmd1.Parameters.AddWithValue("@UOM", UOM);
+                            cmd1.Parameters.AddWithValue("@Rate", RATE);
+                            cmd1.Parameters.AddWithValue("@Discount", DBNull.Value);
+                            cmd1.Parameters.AddWithValue("@TaxableAmt", DBNull.Value);
+                            cmd1.Parameters.AddWithValue("@CGSTPer", DBNull.Value);
+                            cmd1.Parameters.AddWithValue("@SGSTPer", DBNull.Value);
+                            cmd1.Parameters.AddWithValue("@IGSTPer", DBNull.Value);
+                            cmd1.Parameters.AddWithValue("@CGSTAmt", DBNull.Value);
+                            cmd1.Parameters.AddWithValue("@SGSTAmt", DBNull.Value);
+                            cmd1.Parameters.AddWithValue("@IGSTAmt", DBNull.Value);
+                            // cmd1.Parameters.Add("@Idddup", SqlDbType.Int).Direction = ParameterDirection.Output;
+                            cmd1.Parameters.AddWithValue("@Description", Description);
+                            cmd1.Parameters.AddWithValue("@GrandTotal", DBNull.Value);
+                            cmd1.Parameters.AddWithValue("@OAId", DBNull.Value);
+                            //if (btnSubmit.Text == "Submit")
+                            //{
+
+                            cmd1.Parameters.AddWithValue("@Action", "Insert");
+
+                            //    cmd1.Parameters.AddWithValue("@Action", "Update");
+
+                            con.Open();
+                            cmd1.ExecuteNonQuery();
+                            con.Close();
+                        }
+                    }
+                    else
+                    {
+                        foreach (GridViewRow g2 in gvorder.Rows)
+                        {
+                            string particular = (g2.FindControl("lblParticulars") as TextBox).Text;
+                            string Description = (g2.FindControl("txtDescription") as TextBox).Text;
+                            string HSN = (g2.FindControl("lblHSN") as TextBox).Text;
+                            string QTY = (g2.FindControl("lblQty") as TextBox).Text;
+                            string UOM = (g2.FindControl("txtUOM") as TextBox).Text;
+                            string RATE = (g2.FindControl("lblRate") as TextBox).Text;
+                            string AMOUNT = (g2.FindControl("lblAmount") as Label).Text;
+                            string CGST = (g2.FindControl("lblCGSTPer") as TextBox).Text;
+                            string SGST = (g2.FindControl("lblSGSTPer") as TextBox).Text;
+                            string IGST = (g2.FindControl("lblIGSTPer") as TextBox).Text;
+                            string DISCOUNT = (g2.FindControl("txtdiscount") as TextBox).Text;
+                            string Grandtotal = (g2.FindControl("txtGrandTotal") as Label).Text;
+                            string OAId = (g2.FindControl("lblid") as Label).Text;
+                            bool chk = (g2.FindControl("chkRow") as CheckBox).Checked;
+                            string CGSTAmt = (g2.FindControl("lblCGSTAmt") as Label).Text;
+                            string SGSTAmt = (g2.FindControl("lblSGSTAmt") as Label).Text;
+                            string IGSTAmt = (g2.FindControl("lblIGSTAmt") as Label).Text;
+
+
+                            SqlCommand cmd1 = new SqlCommand("SP_DeliveryChallanDtls", con);
+                            cmd1.CommandType = CommandType.StoredProcedure;
+                            cmd1.Parameters.AddWithValue("@HeaderID", id);
+                            cmd1.Parameters.AddWithValue("@CustomerName", txtCustomerNAme.Text);
+                            cmd1.Parameters.AddWithValue("@Particular", particular);
+                            cmd1.Parameters.AddWithValue("@HSN", HSN);
+                            cmd1.Parameters.AddWithValue("@Qty", QTY);
+                            cmd1.Parameters.AddWithValue("@UOM", UOM);
+                            cmd1.Parameters.AddWithValue("@Rate", RATE);
+                            cmd1.Parameters.AddWithValue("@Discount", DISCOUNT);
+                            cmd1.Parameters.AddWithValue("@TaxableAmt", AMOUNT);
+                            cmd1.Parameters.AddWithValue("@CGSTPer", CGST);
+                            cmd1.Parameters.AddWithValue("@SGSTPer", SGST);
+                            cmd1.Parameters.AddWithValue("@IGSTPer", IGST);
+                            cmd1.Parameters.AddWithValue("@OAId", OAId);
+                            cmd1.Parameters.AddWithValue("@CGSTAmt", CGSTAmt);
+                            cmd1.Parameters.AddWithValue("@SGSTAmt", SGSTAmt);
+                            cmd1.Parameters.AddWithValue("@IGSTAmt", IGSTAmt);
+                            //cmd1.Parameters.Add("@Idddup", SqlDbType.Int).Direction = ParameterDirection.Output;
+                            cmd1.Parameters.AddWithValue("@Description", Description);
+                            cmd1.Parameters.AddWithValue("@GrandTotal", Grandtotal);
+
+                            if (chk == true)
+                            {
+                                cmd1.Parameters.AddWithValue("@Action", "Insert");
+                                con.Open();
+                                cmd1.ExecuteNonQuery();
+                                con.Close();
+                            }
+
+                        }
+                        DataTable dt546665 = new DataTable();
+                        SqlDataAdapter sadparticular = new SqlDataAdapter("select * from DeliveryChallanDtls where HeaderID='" + id + "'", con);
+                        sadparticular.Fill(dt546665);
+                        if (dt546665.Rows.Count > 0)
+                        {
+
+                        }
+                        else
+                        {
+                            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('At Least Select One Record.');", true);
+                        }
+                    }
+
+                    if (IsSedndMail.Checked == true)
+                    {
+                        //Send_Mail(idd);
+                    }
+                    ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Data Saved Sucessfully');window.location.href='DeliveryChallanList.aspx';", true);
+
+                }
+                else
+                {
+                    ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Please Enter Party Name.');", true);
+
+                }
+
+            }
+            else if (btnSubmit.Text == "Update")
+            {
+
+                SqlCommand cmd = new SqlCommand("SP_DeliveryChallanHdrs", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ChallanNO", dchallanNo);
+                cmd.Parameters.AddWithValue("@BillingCustomer", txtCustomerNAme.Text);
+                cmd.Parameters.AddWithValue("@ShippingCustomer", txtshippingcustomer.Text);
+                cmd.Parameters.AddWithValue("@ShippingAddress", txtshippingAddress.Text);
+
+                cmd.Parameters.AddWithValue("@CustChallanNo", txtCustchallanNo.Text);
+                cmd.Parameters.AddWithValue("@Challandate", txtchallandate.Text);
+                cmd.Parameters.AddWithValue("@PODate", txtpodate.Text);
+                cmd.Parameters.AddWithValue("@CustChallanDate", txtCustchallanDate.Text);
+
+                cmd.Parameters.AddWithValue("@ChallanAgainst", txtchallanagainst.Text);
+                cmd.Parameters.AddWithValue("@AgainstNumber", txtagainstNumber.SelectedItem.Text);
+                cmd.Parameters.AddWithValue("@CustomerPONo", txtcustomerPoNo.Text);
+                cmd.Parameters.AddWithValue("@TransportMode", txttransportMode.Text);
+                cmd.Parameters.AddWithValue("@VehicalNo", txtvehicalNumber.Text);
+
+                cmd.Parameters.AddWithValue("@Remark", txtremark.Text);
+
+                cmd.Parameters.AddWithValue("@SumOfProductAmt", sumofAmount.Text);
+                cmd.Parameters.AddWithValue("@ChargesDescription", txtDescription.Text);
+                cmd.Parameters.AddWithValue("@HSN", txthsntcs.Text);
+                cmd.Parameters.AddWithValue("@Rate", txtrateTcs.Text);
+                cmd.Parameters.AddWithValue("@Basic", txtBasic.Text);
+                cmd.Parameters.AddWithValue("@CGST", CGSTPertcs.Text);
+                cmd.Parameters.AddWithValue("@SGST", SGSTPertcs.Text);
+                cmd.Parameters.AddWithValue("@IGST", IGSTPertcs.Text);
+                cmd.Parameters.AddWithValue("@Cost", txtCost.Text);
+                //cmd.Parameters.AddWithValue("@FinalBasic", );
+                cmd.Parameters.AddWithValue("@TCSPercent", txtTCSPer.Text);
+                cmd.Parameters.AddWithValue("@TCSAmt", txtTCSAmt.Text);
+                cmd.Parameters.AddWithValue("@GrandTotal", txtGrandTot.Text);
+                cmd.Parameters.AddWithValue("@IsEmail", IsSedndMail.Checked);
+                cmd.Parameters.Add("@Iddd", SqlDbType.Int).Direction = ParameterDirection.Output;
+
+                cmd.Parameters.AddWithValue("@Updatedby", Session["name"].ToString());
+                cmd.Parameters.AddWithValue("@UpdatedOn", DateTime.Now);
+                cmd.Parameters.AddWithValue("@Action", "Update");
+
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+
+                SqlCommand CmdDelete = new SqlCommand("DELETE FROM DeliveryChallanDtls WHERE HeaderID=@HeaderID", con);
+                CmdDelete.Parameters.AddWithValue("@HeaderID", hidden1.Value);
+                con.Open();
+                CmdDelete.ExecuteNonQuery();
+                con.Close();
+                foreach (GridViewRow g1 in gvinvoiceParticular.Rows)
+                {
+                    string particular = (g1.FindControl("lblParticulars") as Label).Text;
+                    string Description = (g1.FindControl("txtDescription") as Label).Text;
+                    string HSN = (g1.FindControl("lblHSN") as Label).Text;
+                    string QTY = (g1.FindControl("lblQty") as Label).Text;
+                    string UOM = (g1.FindControl("txtUOM") as Label).Text;
+                    string RATE = (g1.FindControl("lblRate") as Label).Text;
+                   
+
+                    SqlCommand cmd1 = new SqlCommand("SP_DeliveryChallanDtls", con);
+                    cmd1.CommandType = CommandType.StoredProcedure;
+                    cmd1.Parameters.AddWithValue("@HeaderID", hidden1.Value);
+                    cmd1.Parameters.AddWithValue("@CustomerName", txtCustomerNAme.Text);
+                    cmd1.Parameters.AddWithValue("@Particular", particular);
+                    cmd1.Parameters.AddWithValue("@HSN", HSN);
+                    cmd1.Parameters.AddWithValue("@Qty", QTY);
+                    cmd1.Parameters.AddWithValue("@UOM", UOM);
+                    cmd1.Parameters.AddWithValue("@Rate", RATE);
+                    cmd1.Parameters.AddWithValue("@Discount", DBNull.Value);
+                    cmd1.Parameters.AddWithValue("@TaxableAmt", DBNull.Value);
+                    cmd1.Parameters.AddWithValue("@CGSTPer", DBNull.Value);
+                    cmd1.Parameters.AddWithValue("@SGSTPer", DBNull.Value);
+                    cmd1.Parameters.AddWithValue("@IGSTPer", DBNull.Value);
+                    cmd1.Parameters.AddWithValue("@Description", Description);
+                    cmd1.Parameters.AddWithValue("@GrandTotal", DBNull.Value);
+                    cmd1.Parameters.AddWithValue("@CGSTAmt", DBNull.Value);
+                    cmd1.Parameters.AddWithValue("@SGSTAmt", DBNull.Value);
+                    cmd1.Parameters.AddWithValue("@IGSTAmt", DBNull.Value);
+                    // cmd1.Parameters.AddWithValue("@OAId", OAId);
+                    cmd1.Parameters.AddWithValue("@Action", "Insert");
+
+                    con.Open();
+                    cmd1.ExecuteNonQuery();
+                    con.Close();
+
+                }
+                // ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Data Updated Sucessfully');window.location.href='TaxInvoiceList.aspx';", true);
+
+                if (IsSedndMail.Checked == true)
+                {
+                    //Send_Mail(hidden1.Value);
+                }
+
+                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Data Updated Sucessfully');window.location.href='DeliveryChallanList.aspx';", true);
+
+            }
+
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+
+    protected void lnkDelete_Click(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as LinkButton).NamingContainer as GridViewRow;
+
+        DataTable dt = ViewState["ParticularDetails"] as DataTable;
+        dt.Rows.Remove(dt.Rows[row.RowIndex]);
+        ViewState["ParticularDetails"] = dt;
+        gvinvoiceParticular.DataSource = (DataTable)ViewState["ParticularDetails"];
+        gvinvoiceParticular.DataBind();
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Data Delete Succesfully !!!');", true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Success", "scrollToElement();", true);
+    }
+
+    protected void Send_Mail(string Id)
+    {
+        string strMessage = "Hello " + txtCustomerNAme.Text.Trim() + "<br/>" +
+
+
+                        "Greetings From " + "<strong>Excel Encloser<strong>" + "<br/>" +
+                        "We sent you  Delivery Challan." + "Tax - " + hiddeninvoiceno.Value.Trim() + "/" + txtchallandate.Text.Trim() + ".pdf" + "<br/>" +
+
+                         "We Look Foward to Conducting Future Business with you." + "<br/>" +
+
+                        "Kind Regards," + "<br/>" +
+                        "<strong>Excel Encloser<strong>";
+        string pdfname = "TaxInv - " + hiddeninvoiceno.Value.Trim() + "/" + txtchallandate.Text.Trim() + ".pdf";
+
+        MailMessage message = new MailMessage();
+        DataTable dt666 = new DataTable();
+        SqlDataAdapter sad = new SqlDataAdapter("select * from Company where cname='" + txtCustomerNAme.Text + "' ", con);
+        sad.Fill(dt666);
+
+        message.To.Add(dt666.Rows[0]["email1"].ToString());// Email-ID of Receiver  
+        if (btnSubmit.Text == "Submit")
+        {
+            message.Subject = "Delivery Challan";// Subject of Email  
+        }
+        else
+        {
+            message.Subject = "Updated Delivery Challan";// Subject of Email  
+        }
+        message.Body = strMessage;
+        message.From = new System.Net.Mail.MailAddress("enquiry@weblinkservices.net");// Email-ID of Sender  
+        message.IsBodyHtml = true;
+
+
+
+        MemoryStream file = new MemoryStream(PDF(Id).ToArray());
+
+        file.Seek(0, SeekOrigin.Begin);
+        Attachment data = new Attachment(file, pdfname, "application/pdf");
+        ContentDisposition disposition = data.ContentDisposition;
+        disposition.CreationDate = System.DateTime.Now;
+        disposition.ModificationDate = System.DateTime.Now;
+        disposition.DispositionType = DispositionTypeNames.Attachment;
+        message.Attachments.Add(data);//Attach the file  
+
+
+        //message.Body = txtmessagebody.Text;
+        SmtpClient SmtpMail = new SmtpClient();
+        SmtpMail.Host = "smtpout.secureserver.net";//name or IP-Address of Host used for SMTP transactions  
+        SmtpMail.Port = 587;//Port for sending the mail  
+        SmtpMail.Credentials = new System.Net.NetworkCredential("enquiry@weblinkservices.net", "wlspl@123");//username/password of network, if apply  
+        SmtpMail.DeliveryMethod = SmtpDeliveryMethod.Network;
+        SmtpMail.EnableSsl = true;
+        SmtpMail.ServicePoint.MaxIdleTime = 0;
+        SmtpMail.ServicePoint.SetTcpKeepAlive(true, 2000, 2000);
+        message.BodyEncoding = Encoding.Default;
+        message.Priority = MailPriority.High;
+        SmtpMail.Send(message); //Smtpclient to send the mail message  
+
+        System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate (object s, System.Security.Cryptography.X509Certificates.X509Certificate certificate, System.Security.Cryptography.X509Certificates.X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
+        };
+
+
+
+    }
+
+    protected MemoryStream PDF(string id)
+    {
+        MemoryStream pdf = new MemoryStream();
+        DataTable Dt = new DataTable();
+        SqlDataAdapter Da = new SqlDataAdapter("select * from vw_DeliveryChallanPDF where Id = '" + id + "'", con);
+
+        Da.Fill(Dt);
+
+        StringWriter sw = new StringWriter();
+        StringReader sr = new StringReader(sw.ToString());
+
+        Document doc = new Document(PageSize.A4, 10f, 10f, 55f, 0f);
+        PdfWriter pdfWriter = PdfWriter.GetInstance(doc, pdf);
+        //string Path = ;
+        PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(Server.MapPath("~/files/") + "DeliveryChallan.pdf", FileMode.Create));
+
+        //iTextSharp.text.pdf.PdfWriter writer = iTextSharp.text.pdf.PdfWriter.GetInstance(doc, new FileStream(Server.MapPath("~/files/") + "TaxInvoice.pdf", FileMode.Create));
+        //PdfWriter writer = PdfWriter.GetInstance(doc, Response.OutputStream);
+        //iTextSharp.tool.xml.XMLWorkerHelper.GetInstance().ParseXHtml(writer, doc, sr);
+        XMLWorkerHelper.GetInstance().ParseXHtml(writer, doc, sr);
+        doc.Open();
+        string imageURL = Server.MapPath("~") + "/img/ExcelEncLogo.png";
+
+
+        iTextSharp.text.Image png = iTextSharp.text.Image.GetInstance(imageURL);
+
+        //Resize image depend upon your need
+
+        png.ScaleToFit(70, 100);
+
+        //For Image Position
+        png.SetAbsolutePosition(40, 718);
+        //var document = new Document();
+
+        //Give space before image
+        //png.ScaleToFit(document.PageSize.Width - (document.RightMargin * 100), 50);
+        png.SpacingBefore = 50f;
+
+        //Give some space after the image
+
+        png.SpacingAfter = 1f;
+
+        png.Alignment = Element.ALIGN_LEFT;
+
+
+        doc.Add(png);
+
+        //PdfContentByte cb = pdfWriter.DirectContent;
+        //cb.Rectangle(17f, 735f, 560f, 60f);
+        //cb.Stroke();
+        if (Dt.Rows.Count > 0)
+        {
+            var CreateDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string ChallanNo = Dt.Rows[0]["ChallanNO"].ToString();
+            string ChallanDate = Dt.Rows[0]["Challandate"].ToString().TrimEnd("0:0".ToCharArray());
+            string customerPoNo = Dt.Rows[0]["CustomerPONo"].ToString();
+            string PODate = Dt.Rows[0]["PODate"].ToString().TrimEnd("0:0".ToCharArray());
+            string transactionmode = Dt.Rows[0]["TransportMode"].ToString();
+            string vehicalNo = Dt.Rows[0]["VehicalNo"].ToString();
+            string placeOfSupply = Dt.Rows[0]["ShippingAddress"].ToString();
+            string dateOfSupply = Dt.Rows[0]["Challandate"].ToString();
+            string billingCustomer = Dt.Rows[0]["BillingCustomer"].ToString();
+            string ShippingCustomer = Dt.Rows[0]["ShippingCustomer"].ToString();
+            string ShippingAddress = Dt.Rows[0]["ShippingAddress"].ToString();
+            string BillingAddress = Dt.Rows[0]["ShippingAddress"].ToString();
+            string grandtotal = Dt.Rows[0]["GrandTotalFinal"].ToString();
+            string GSTNo = "";
+
+
+            DataTable dtgstno = new DataTable();
+            SqlDataAdapter sadgst = new SqlDataAdapter("select * from Company where cname='" + billingCustomer + "'", con);
+            sadgst.Fill(dtgstno);
+            if (dtgstno.Rows.Count > 0)
+            {
+                GSTNo = dtgstno.Rows[0]["gstno"].ToString();
+            }
+
+            PdfContentByte cb = pdfWriter.DirectContent;
+            cb.Rectangle(17f, 710f, 560f, 60f);
+            cb.Stroke();
+            // Header 
+            cb.BeginText();
+            cb.SetFontAndSize(BaseFont.CreateFont(@"C:\Windows\Fonts\Calibrib.ttf", "Identity-H", BaseFont.EMBEDDED), 25);
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Excel Enclosure", 250, 745, 0);
+            cb.SetFontAndSize(BaseFont.CreateFont(@"C:\Windows\Fonts\Calibrib.ttf", "Identity-H", BaseFont.EMBEDDED), 11);
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Gat No. 1567, Shelar Vasti, Dehu-Alandi Road, Chikhali, Pune - 411062", 145, 728, 0);
+            cb.SetFontAndSize(BaseFont.CreateFont(@"C:\Windows\Fonts\Calibrib.ttf", "Identity-H", BaseFont.EMBEDDED), 11);
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "", 227, 740, 0);
+            cb.EndText();
+
+
+            PdfContentByte cbbb = pdfWriter.DirectContent;
+            cbbb.Rectangle(17f, 685f, 560f, 25f);
+            cbbb.Stroke();
+            //Header
+            cbbb.BeginText();
+            cbbb.SetFontAndSize(BaseFont.CreateFont(@"C:\Windows\Fonts\Calibrib.ttf", "Identity-H", BaseFont.EMBEDDED), 10);
+            cbbb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "GSTIN :27ATFPS1959J1Z4" + "", 30, 695, 0);
+            cbbb.SetFontAndSize(BaseFont.CreateFont(@"C:\Windows\Fonts\Calibrib.ttf", "Identity-H", BaseFont.EMBEDDED), 10);
+            cbbb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "PAN NO: ATFPS1959J" + "", 160, 695, 0);
+            cbbb.SetFontAndSize(BaseFont.CreateFont(@"C:\Windows\Fonts\Calibrib.ttf", "Identity-H", BaseFont.EMBEDDED), 10);
+            cbbb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "EMAIL : mktg@excelenclosures.com" + "", 270, 695, 0);
+            cbbb.SetFontAndSize(BaseFont.CreateFont(@"C:\Windows\Fonts\Calibrib.ttf", "Identity-H", BaseFont.EMBEDDED), 10);
+            cbbb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "CONTACT : 9225658662", 440, 695, 0);
+            cbbb.EndText();
+
+            PdfContentByte cd = pdfWriter.DirectContent;
+            cd.Rectangle(17f, 660f, 560f, 25f);
+            cd.Stroke();
+            // Header 
+            cd.BeginText();
+            cd.SetFontAndSize(BaseFont.CreateFont(@"C:\Windows\Fonts\Calibrib.ttf", "Identity-H", BaseFont.EMBEDDED), 14);
+            cd.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "DELIVERY CHALLAN", 240, 667, 0);
+            cd.EndText();
+            //DetailCustomer
+            Paragraph paragraphTable1 = new Paragraph();
+            paragraphTable1.SpacingBefore = 120f;
+            paragraphTable1.SpacingAfter = 1f;
+
+            PdfPTable mtable = new PdfPTable(2);
+            mtable.WidthPercentage = 98;
+            mtable.DefaultCell.Border = iTextSharp.text.Rectangle.NO_BORDER;
+
+            PdfPTable table = new PdfPTable(1);
+            table.TotalWidth = 280f;
+            table.LockedWidth = true;
+            table.HorizontalAlignment = 1;
+            table.SetWidths(new float[] { 180f });
+            table.AddCell(new Phrase(" Details of Receiver/Billed to: \n\n " + billingCustomer + "\n Address: " + ShippingAddress + " \n GSTIN: " + GSTNo + " \n State Name:Maharashtra(27) \n  ", FontFactory.GetFont("Arial", 10, Font.NORMAL)));
+            table.AddCell(new Phrase(" Details of Consignee/Shipped to: \n\n " + ShippingCustomer + ", \n Address: " + ShippingAddress + "\n GSTIN: " + GSTNo + " \n State Name:Maharashtra(27) \n  ", FontFactory.GetFont("Arial", 10, Font.NORMAL)));
+
+            mtable.AddCell(table);
+
+            table = new PdfPTable(2);
+            float[] widths2 = new float[] { 100, 180 };
+            table.SetWidths(widths2);
+            table.TotalWidth = 280f;
+            table.HorizontalAlignment = 2;
+            table.LockedWidth = true;
+            ///end Customer details
+            ///invoice details
+            var date = DateTime.Now.ToString("yyyy-MM-dd");
+
+            table.AddCell(new Phrase("Challan Number : ", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(ChallanNo, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("Challan Date :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(ChallanDate, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("PO. No : ", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(customerPoNo, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("PO Date :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(PODate, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("Transportation Mode", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(transactionmode, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("Vehical Number", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(vehicalNo, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("Place of Supply :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(ShippingAddress, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("Date of Supply :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(ChallanDate, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            //table.AddCell(new Phrase("E-Bill No", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            //table.AddCell(new Phrase(EBillNo, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("Reverse Charge :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase("No", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            mtable.AddCell(table);
+
+
+            paragraphTable1.Add(mtable);
+            doc.Add(paragraphTable1);
+            ///end invoice details
+
+            ///Description Table
+
+            Paragraph paragraphTable2 = new Paragraph();
+            paragraphTable2.SpacingAfter = 0f;
+            table = new PdfPTable(11);
+            float[] widths3 = new float[] { 4f, 40f, 11f, 6f, 10f, 12f, 8f, 10f, 8f, 10f, 15f };
+            table.SetWidths(widths3);
+
+            Double Ttotal_price = 0;
+            Double CGST_price = 0;
+            Double SGST_price = 0;
+            Double GrandTotal1 = 0;
+            string CGSTPer = "";
+            string SGSTPer = "";
+            if (Dt.Rows.Count > 0)
+            {
+                table.TotalWidth = 560f;
+                table.LockedWidth = true;
+                table.AddCell(new Phrase("SN.", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                table.AddCell(new Phrase("Name Of Particulars", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                table.AddCell(new Phrase("Hsn/Sac", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                table.AddCell(new Phrase("Qty", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                table.AddCell(new Phrase("Rate", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                table.AddCell(new Phrase("Amount", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                table.AddCell(new Phrase("CGST(%)", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                table.AddCell(new Phrase("CGST Amt", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                table.AddCell(new Phrase("SGST(%)", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                table.AddCell(new Phrase("SGST Amt", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                table.AddCell(new Phrase("Total", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+
+                int rowid = 1;
+                foreach (DataRow dr in Dt.Rows)
+                {
+                    table.TotalWidth = 560f;
+                    table.LockedWidth = true;
+
+                    Double Ftotal = Convert.ToDouble(dr["GrandTotal"].ToString());
+                    string _ftotal = Ftotal.ToString("##.00");
+
+                    string Description = dr["Particular"].ToString() + "\n" + dr["Description"].ToString();
+
+                    var amt = dr["TaxableAmt"].ToString();
+                    var cgstper = dr["CGSTPer"].ToString();
+                    var sgstper = dr["SGSTPer"].ToString();
+
+                    var cgstamt = Convert.ToDouble(amt) * Convert.ToDouble(cgstper) / 100;
+                    var sgstamt = Convert.ToDouble(amt) * Convert.ToDouble(sgstper) / 100;
+
+                    table.AddCell(new Phrase(rowid.ToString(), FontFactory.GetFont("Arial", 9)));
+                    table.AddCell(new Phrase(Description, FontFactory.GetFont("Arial", 9)));
+                    table.AddCell(new Phrase(dr["HSN"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    table.AddCell(new Phrase(dr["Qty"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    table.AddCell(new Phrase(dr["Rate"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    table.AddCell(new Phrase(dr["TaxableAmt"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    table.AddCell(new Phrase(dr["CGSTPer"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    table.AddCell(new Phrase(cgstamt.ToString(), FontFactory.GetFont("Arial", 9)));
+                    table.AddCell(new Phrase(dr["SGSTPer"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    table.AddCell(new Phrase(sgstamt.ToString(), FontFactory.GetFont("Arial", 9)));
+                    table.AddCell(new Phrase(_ftotal, FontFactory.GetFont("Arial", 9)));
+                    rowid++;
+                    CGSTPer = dr["CGSTPer"].ToString();
+                    SGSTPer = dr["SGSTPer"].ToString();
+                    Ttotal_price += Convert.ToDouble(dr["TaxableAmt"].ToString());
+                    GrandTotal1 += Convert.ToDouble(dr["GrandTotal"].ToString());
+                    CGST_price += Convert.ToDouble(cgstamt);
+                    SGST_price += Convert.ToDouble(sgstamt);
+                }
+
+            }
+            string amount = Ttotal_price.ToString();
+            paragraphTable2.Add(table);
+            doc.Add(paragraphTable2);
+            ///End Description table
+            //Space
+            Paragraph paragraphTable3 = new Paragraph();
+
+            string[] items = { "Goods once sold will not be taken back or exchange. \b",
+                        "Interest at the rate of 18% will be charged if bill is'nt paid within 30 days.\b",
+                        "Our risk and responsibility ceases the moment goods leaves out godown. \n",
+                        };
+
+            Font font12 = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font10 = FontFactory.GetFont("Arial", 10, Font.BOLD);
+            Paragraph paragraph = new Paragraph("", font12);
+
+            for (int i = 0; i < items.Length; i++)
+            {
+                paragraph.Add(new Phrase("", font10));
+            }
+
+            table = new PdfPTable(11);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+            table.SetWidths(new float[] { 4f, 40f, 11f, 6f, 10f, 12f, 8f, 10f, 8f, 10f, 15f });
+            table.AddCell(paragraph);
+            table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            // table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            //table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            table.AddCell(new Phrase("\n\n\n\n\n\n\n\n\n\n\n ", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+
+            doc.Add(table);
+            //Space end
+            //change description
+            Paragraph paragraphTable4 = new Paragraph();
+            paragraphTable4.SpacingAfter = 0f;
+            table = new PdfPTable(11);
+            float[] widths33 = new float[] { 4f, 40f, 11f, 6f, 10f, 12f, 8f, 10f, 8f, 10f, 15f };
+            table.SetWidths(widths3);
+
+            Double Ttotal_price1 = 0;
+            Double CGST_price1 = 0;
+            Double SGST_price1 = 0;
+            int rowidd = 1;
+            Double ValueOFSupply = 0;
+            Double CGStTotal = 0;
+            Double SGStTotal = 0;
+            Double TotalAmount = 0;
+            SqlCommand cmd = new SqlCommand("select * from vw_DeliveryChallanPDF where Id='" + id + "'", con);
+            con.Open();
+            SqlDataReader dr1 = cmd.ExecuteReader();
+            if (dr1.Read())
+            {
+
+                table.TotalWidth = 560f;
+                table.LockedWidth = true;
+
+                Double Ftotal = Convert.ToDouble(dr1["Cost"].ToString());
+                string _ftotal = Ftotal.ToString("##.00");
+
+                string Description1 = dr1["ChargesDescription"].ToString();
+
+                var amt = dr1["TaxableAmt"].ToString();
+                var cgstper1 = dr1["CGST"].ToString();
+                var sgstper1 = dr1["SGST"].ToString();
+
+                var cgstamt1 = Convert.ToDouble(amt) * Convert.ToDouble(cgstper1) / 100;
+                var sgstamt1 = Convert.ToDouble(amt) * Convert.ToDouble(sgstper1) / 100;
+
+                table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 9)));
+                table.AddCell(new Phrase(Description1, FontFactory.GetFont("Arial", 9)));
+                table.AddCell(new Phrase(dr1["HSNTcs"].ToString(), FontFactory.GetFont("Arial", 9)));
+                table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 9)));
+                table.AddCell(new Phrase(dr1["RateTcs"].ToString(), FontFactory.GetFont("Arial", 9)));
+                table.AddCell(new Phrase(dr1["Basic"].ToString(), FontFactory.GetFont("Arial", 9)));
+                table.AddCell(new Phrase(dr1["CGST"].ToString(), FontFactory.GetFont("Arial", 9)));
+                table.AddCell(new Phrase(cgstamt1.ToString(), FontFactory.GetFont("Arial", 9)));
+                table.AddCell(new Phrase(dr1["SGST"].ToString(), FontFactory.GetFont("Arial", 9)));
+                table.AddCell(new Phrase(sgstamt1.ToString(), FontFactory.GetFont("Arial", 9)));
+                table.AddCell(new Phrase(_ftotal, FontFactory.GetFont("Arial", 9)));
+                //rowidd++;
+
+                Ttotal_price1 += Convert.ToDouble(dr1["TaxableAmt"].ToString());
+                CGST_price1 += Convert.ToDouble(cgstamt1);
+                SGST_price1 += Convert.ToDouble(sgstamt1);
+
+                ValueOFSupply = Convert.ToDouble(Ttotal_price) + Convert.ToDouble(dr1["Basic"]);
+                CGStTotal = Convert.ToDouble(CGST_price) + Convert.ToDouble(cgstamt1);
+                SGStTotal = Convert.ToDouble(SGST_price) + Convert.ToDouble(sgstamt1);
+                TotalAmount = Convert.ToDouble(Ftotal) + Convert.ToDouble(GrandTotal1);
+                dr1.Close();
+                con.Close();
+            }
+
+            string amount1 = Ttotal_price1.ToString();
+            paragraphTable4.Add(table);
+            doc.Add(paragraphTable4);
+
+            //end change description
+            ////calculation supply
+            ///value of supply
+            Paragraph paragraphTable5 = new Paragraph();
+
+            string[] itemsss = { "Goods once sold will not be taken back or exchange. \b",
+                        "Interest at the rate of 18% will be charged if bill is'nt paid within 30 days.\b",
+                        "Our risk and responsibility ceases the moment goods leaves out godown. \n",
+                        };
+
+            Font font13 = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font11 = FontFactory.GetFont("Arial", 10, Font.BOLD);
+            Paragraph paragraphh = new Paragraph("", font12);
+
+
+
+            for (int i = 0; i < items.Length; i++)
+            {
+                paragraph.Add(new Phrase("", font10));
+            }
+
+            table = new PdfPTable(3);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+
+            paragraph.Alignment = Element.ALIGN_RIGHT;
+
+            table.SetWidths(new float[] { 0f, 119f, 15f });
+            table.AddCell(paragraph);
+            PdfPCell cell = new PdfPCell(new Phrase("Value of Supply", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell);
+            PdfPCell cell11 = new PdfPCell(new Phrase(ValueOFSupply.ToString("#.00"), FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell11.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell11);
+            doc.Add(table);
+            ///end calculation supply
+            var CGSTAmount = ValueOFSupply * (Convert.ToDouble(CGSTPer)) / 100;
+            var SGSTAmount = ValueOFSupply * (Convert.ToDouble(SGSTPer)) / 100;
+            //Add CGST
+            Paragraph paragraphTable6 = new Paragraph();
+
+            string[] itemsss6 = { "Goods once sold will not be taken back or exchange. \b",
+                        "Interest at the rate of 18% will be charged if bill is'nt paid within 30 days.\b",
+                        "Our risk and responsibility ceases the moment goods leaves out godown. \n",
+                        };
+
+            Font font136 = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font116 = FontFactory.GetFont("Arial", 10, Font.BOLD);
+            Paragraph paragraphh6 = new Paragraph("", font12);
+            for (int i = 0; i < items.Length; i++)
+            {
+                paragraph.Add(new Phrase("", font10));
+            }
+
+            table = new PdfPTable(3);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+
+            paragraph.Alignment = Element.ALIGN_RIGHT;
+
+            table.SetWidths(new float[] { 0f, 119f, 15f });
+            table.AddCell(paragraph);
+            PdfPCell cell6 = new PdfPCell(new Phrase("Add CGST(" + CGSTPer + "%)", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell6.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell6);
+            PdfPCell cell116 = new PdfPCell(new Phrase(CGSTAmount.ToString(), FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell116.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell116);
+            doc.Add(table);
+            ///end CGST
+
+            //Add SGST
+            Paragraph paragraphTable67 = new Paragraph();
+
+            string[] itemsss67 = { "Goods once sold will not be taken back or exchange. \b",
+                        "Interest at the rate of 18% will be charged if bill is'nt paid within 30 days.\b",
+                        "Our risk and responsibility ceases the moment goods leaves out godown. \n",
+                        };
+
+            Font font1367 = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font1167 = FontFactory.GetFont("Arial", 10, Font.BOLD);
+            Paragraph paragraphh67 = new Paragraph("", font12);
+
+
+
+            for (int i = 0; i < items.Length; i++)
+            {
+                paragraph.Add(new Phrase("", font10));
+            }
+
+            table = new PdfPTable(3);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+
+            paragraph.Alignment = Element.ALIGN_RIGHT;
+
+            table.SetWidths(new float[] { 0f, 119f, 15f });
+            table.AddCell(paragraph);
+            PdfPCell cell67 = new PdfPCell(new Phrase("Add SGST(" + SGSTPer + "%)", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell67.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell67);
+            PdfPCell cell1167 = new PdfPCell(new Phrase(SGSTAmount.ToString("#.00"), FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell1167.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell1167);
+            doc.Add(table);
+            ///end SGST
+
+            ///Add Tax Amount
+            //Add SGST
+            Paragraph paragraphTable678 = new Paragraph();
+
+            string[] itemsss678 = { "Goods once sold will not be taken back or exchange. \b",
+                        "Interest at the rate of 18% will be charged if bill is'nt paid within 30 days.\b",
+                        "Our risk and responsibility ceases the moment goods leaves out godown. \n",
+                        };
+
+            Font font13678 = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font11678 = FontFactory.GetFont("Arial", 10, Font.BOLD);
+            Paragraph paragraphh678 = new Paragraph("", font12);
+
+            Double TaxAmount = CGSTAmount + SGSTAmount;
+
+            for (int i = 0; i < items.Length; i++)
+            {
+                paragraph.Add(new Phrase("", font10));
+            }
+
+            table = new PdfPTable(3);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+
+            paragraph.Alignment = Element.ALIGN_RIGHT;
+
+            table.SetWidths(new float[] { 0f, 119f, 15f });
+            table.AddCell(paragraph);
+            PdfPCell cell678 = new PdfPCell(new Phrase("Tax Amount", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell678.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell678);
+            PdfPCell cell11678 = new PdfPCell(new Phrase(TaxAmount.ToString("#.00"), FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell11678.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell11678);
+            doc.Add(table);
+            ///end Tax Amount
+            ///total Amount 
+            /// 
+
+            var totalgrandAmount = ValueOFSupply + TaxAmount;
+            Double grandtotal1 = Convert.ToDouble(totalgrandAmount);
+            string Amtinword = ConvertNumbertoWords(Convert.ToInt32(grandtotal1));
+
+            //Total amount InNumber
+            table = new PdfPTable(3);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+
+            paragraph.Alignment = Element.ALIGN_RIGHT;
+
+            table.SetWidths(new float[] { 0f, 199f, 25f });
+            table.AddCell(paragraph);
+
+            PdfPCell cell443458 = new PdfPCell(new Phrase("Total Amount(Rs) ", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            cell443458.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell443458);
+            //PdfPCell cell443457 = new PdfPCell(new Phrase("Total Amount(Rs): " , FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            ////cell443457.HorizontalAlignment = Element.ALIGN_LEFT;
+            //table.AddCell(cell443457);
+            PdfPCell cell440448 = new PdfPCell(new Phrase(Math.Round(totalgrandAmount).ToString(), FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            cell440448.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell440448);
+            doc.Add(table);
+            ///end Total InNumber
+
+            //Total amount In word
+            table = new PdfPTable(3);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+
+            paragraph.Alignment = Element.ALIGN_RIGHT;
+
+            table.SetWidths(new float[] { 0f, 199f, 0f });
+            table.AddCell(paragraph);
+
+            PdfPCell cell44345 = new PdfPCell(new Phrase("Total Amount(Rs): " + Amtinword + "", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            cell44345.HorizontalAlignment = Element.ALIGN_LEFT;
+            table.AddCell(cell44345);
+            //PdfPCell cell443457 = new PdfPCell(new Phrase("Total Amount(Rs): " , FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            ////cell443457.HorizontalAlignment = Element.ALIGN_LEFT;
+            //table.AddCell(cell443457);
+            PdfPCell cell44044 = new PdfPCell(new Phrase(grandtotal1.ToString(), FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            cell44044.HorizontalAlignment = Element.ALIGN_LEFT;
+            table.AddCell(cell44044);
+            doc.Add(table);
+            ///end Total Amount
+
+            //Declaration
+            Paragraph paragraphTable99 = new Paragraph(" Remarks :\n\n", font12);
+
+            //Puja Enterprises Sign
+            string[] itemss = {
+                "Declaration  : I/We hereby certify that my/our registration certificate under the GST Act, 2017 is in force on the",
+                "date on which the supply of the goods specified in this tax invoice is made by me/us and that the transaction ",
+                "of supplies covered by this tax invoice has been effected by me/us and it shall be accounted for in the ",
+                "turnover of supplies while filing of return and the due tax, if any, payable on the supplies has been paid or ",
+                "shall be paid. \n",
+                        };
+
+            Font font14 = FontFactory.GetFont("Arial", 11);
+            Font font15 = FontFactory.GetFont("Arial", 10);
+            Paragraph paragraphhh = new Paragraph(" Terms & Condition :\n\n", font10);
+
+
+            for (int i = 0; i < itemss.Length; i++)
+            {
+                //paragraphhh.Add(new Phrase("\u2022 \u00a0" + itemss[i] + "\n", font15));
+                paragraphhh.Add(new Phrase(itemss[i] + "\n", font15));
+            }
+
+            table = new PdfPTable(1);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+            table.SetWidths(new float[] { 560f });
+
+            table.AddCell(paragraphhh);
+            //table.AddCell(new Phrase("Puja Enterprises \n\n\n\n         Sign", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            //table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            doc.Add(table);
+            ///end declaration
+            ///
+
+            ///Sign Authorization
+            Paragraph paragraphTable10000 = new Paragraph();
+
+
+            string[] itemss4 = {
+                "Payment Term     ",
+
+                        };
+
+            Font font144 = FontFactory.GetFont("Arial", 11);
+            Font font155 = FontFactory.GetFont("Arial", 8);
+            Paragraph paragraphhhhhff = new Paragraph();
+            table = new PdfPTable(2);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+            table.SetWidths(new float[] { 300f, 100f });
+
+            //table.AddCell(paragraphhhhhff);
+            table.AddCell(new Phrase("\bBANK: HDFC BANK LTD(THERMAX CHOWK)\n\bAcc No.:17958970000057\n\bIFSC:HDFC0001795\n\bCHINCHWAD(Branch Code(1795)\n\bMICR No.:411240031\n\bSWIFT No.:002205 ", FontFactory.GetFont("Arial", 10)));
+            table.AddCell(new Phrase("         For Excel Enclosures \n\n\n\n\n\n         Authorised Signature", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            doc.Add(table);
+            doc.Close();
+            ///end Sign Authorization
+
+        }
+
+        //doc.Close();
+
+        // Byte [] FileBuffer = File.ReadAllBytes(Server.MapPath("~/files/") + "TaxInvoice.pdf");
+
+        //Font blackFont = FontFactory.GetFont("Arial", 12, Font.NORMAL, BaseColor.BLACK);
+        //using (MemoryStream stream = new MemoryStream())
+        //{
+        //    PdfReader reader = new PdfReader(Server.MapPath("~/files/") + "TaxInvoice.pdf");
+        //    using (PdfStamper stamper = new PdfStamper(reader, stream))
+        //    {
+
+        //int pages = 5;
+        //for (int j = 1; j <= pages; j++)
+        //{
+        //    if (j == 1)
+        //    {
+
+        //    }
+        //    else
+        //    {
+        //        Image image = Image.GetInstance(Server.MapPath("~/img/ExcelEncLogo.png"));
+
+        //        image.ScaleToFit(70, 100);
+        //        image.SetAbsolutePosition(40, 792);
+        //        image.SpacingBefore = 50f;
+        //        image.SpacingAfter = 1f;
+        //        image.Alignment = Image.ALIGN_LEFT;
+        //        doc.Add(image);
+        //    }
+        //    var PageName = "Page No. " + j.ToString();
+        //    //    }
+        //    //}
+        //}
+
+
+        string filePath = @Server.MapPath("~/files/") + "DeliveryChallan.pdf";
+        //Response.ContentType = "TaxInvoice.pdf";
+        //Response.WriteFile(filePath);
+        pdfWriter.CloseStream = false;
+        //doc.Close();
+        //pdf.Position = 0;
+        return pdf;
+    }
+
+    public static string ConvertNumbertoWords(int number)
+    {
+        if (number == 0)
+            return "ZERO";
+        if (number < 0)
+            return "minus " + ConvertNumbertoWords(Math.Abs(number));
+        string words = "";
+        if ((number / 1000000) > 0)
+        {
+            words += ConvertNumbertoWords(number / 1000000) + " MILLION ";
+            number %= 1000000;
+        }
+        if ((number / 1000) > 0)
+        {
+            words += ConvertNumbertoWords(number / 1000) + " THOUSAND ";
+            number %= 1000;
+        }
+        if ((number / 100) > 0)
+        {
+            words += ConvertNumbertoWords(number / 100) + " HUNDRED ";
+            number %= 100;
+        }
+        if (number > 0)
+        {
+            if (words != "")
+                words += "AND ";
+            var unitsMap = new[] { "ZERO", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN" };
+            var tensMap = new[] { "ZERO", "TEN", "TWENTY", "THIRTY", "FORTY", "FIFTY", "SIXTY", "SEVENTY", "EIGHTY", "NINETY" };
+
+            if (number < 20)
+                words += unitsMap[number];
+            else
+            {
+                words += tensMap[number / 10];
+                if ((number % 10) > 0)
+                    words += " " + unitsMap[number % 10];
+            }
+        }
+        return words;
+    }
+}

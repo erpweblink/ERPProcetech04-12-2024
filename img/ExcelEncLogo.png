@@ -1,0 +1,258 @@
+DataAdapter("select ID,Quotation_no,Quotation_Date,ExpiryDate,JobNo,Customer_Name,SubCustomer,Address,Mobile_No,Phone_No,GST_No,State_Code,kind_Att,CGST,SGST,AllTotal_price,Total_in_word,IsDeleted,CreatedBy,CreatedOn, DATEDIFF(DAY, CreatedOn, getdate()) AS days from tbl_Quotation_two_Hdr where JobNo='" + jobno + "' AND IsDeleted='0' AND isCompleted='1' AND  (isCreateQuata='1' OR mnQuatation='1')", con);
+    //                    sad111.Fill(dt11);
+    //                    lbldaycount.ForeColor = System.Drawing.Color.Red;
+    //                }
+    //            }
+    //        }
+    //        else if (ddlpendingquatation.SelectedItem.Text == "Pending Quatation")
+    //        {
+    //            foreach (GridViewRow g1 in gv_Quot_List.Rows)
+    //            {
+    //                Label jobnono = (Label)g1.FindControl("lblJobNo");
+    //                Label lbldaycount = (Label)g1.FindControl("lbldaycount");
+    //                string jobno = jobnono.Text;
+    //                con.Open();
+    //                SqlCommand cmdquatationpo = new SqlCommand("select  c.CreatedOn from tbl_Quotation_two_Hdr q inner join CustomerPO_Hdr c on q.JobNo=c.JobNo where c.JobNo='" + jobno + "'", con);
+    //                SqlDataReader reader = cmdquatationpo.ExecuteReader();
+    //                if (reader.Read())
+    //                {
+    //                    DateTime ffff1 = Convert.ToDateTime(reader["CreatedOn"].ToString());
+    //                    string update = ffff1.ToString("yyyy-MM-dd");
+
+    //                    con.Close();
+    //                    sad111 = new SqlDataAdapter("select ID,Quotation_no,Quotation_Date,ExpiryDate,JobNo,Customer_Name,SubCustomer,Address,Mobile_No,Phone_No,GST_No,State_Code,kind_Att,CGST,SGST,AllTotal_price,Total_in_word,IsDeleted,CreatedBy,CreatedOn, DATEDIFF(DAY, CreatedOn, '" + update + "') AS days from tbl_Quotation_two_Hdr where JobNo='" + jobno + "' AND IsDeleted='0' AND isCompleted='1' AND (isCreateQuata is Null AND mnQuatation is null )", con);
+    //                    sad111.Fill(dt11);
+    //                }
+    //                else
+    //                {
+    //                    con.Close();
+    //                    //pending quotation
+    //                    // sad111 = new SqlDataAdapter("select ID,Quotation_no,Quotation_Date,ExpiryDate,JobNo,Customer_Name,SubCustomer,Address,Mobile_No,Phone_No,GST_No,State_Code,kind_Att,CGST,SGST,AllTotal_price,Total_in_word,IsDeleted,CreatedBy,CreatedOn, DATEDIFF(DAY, CreatedOn, getdate()) AS days from tbl_Quotation_two_Hdr where JobNo='" + jobno + "' AND IsDeleted='0' AND isCompleted='1' AND (isCreateQuata is Null)", con);
+    //                    sad111 = new SqlDataAdapter("SELECT * FROM [tbl_Quotation_two_Hdr] WHERE isCreateQuata is NULL AND IsDeleted='0'", con);
+    //                    sad111.Fill(dt11);
+    //                    lbldaycount.ForeColor = System.Drawing.Color.Red;
+    //                }
+    //            }
+    //        }
+
+    //        gv_Quot_List.EmptyDataText = "Not Records Found";
+    //        gv_Quot_List.DataSource = dt11;
+    //        gv_Quot_List.DataBind();
+    //    }
+    //    catch (Exception)
+    //    {
+
+    //        throw;
+    //    }
+    //}
+
+
+    //sorted Grid view start
+    protected void sortedgv_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        if (ViewState["Record"].ToString() == "Vender")
+        {
+            gv_Quot_List.PageIndex = e.NewPageIndex;
+            GetsortedDatewisegrid();
+
+        }
+
+        if (ViewState["Record"].ToString() == "Quation")
+        {
+            gv_Quot_List.PageIndex = e.NewPageIndex;
+            GetsortedQuationgrid();
+
+        }
+
+        if (ViewState["Record"].ToString() == "Customer")
+        {
+            gv_Quot_List.PageIndex = e.NewPageIndex;
+            GetsortedCsutomergrid();
+
+        }
+
+        if (ViewState["Record"].ToString() == "DateWise")
+        {
+            gv_Quot_List.PageIndex = e.NewPageIndex;
+            GetsortedDatewisesearchGrid();
+
+        }
+
+        if (ViewState["Record"].ToString() == "Date")
+        {
+            gv_Quot_List.PageIndex = e.NewPageIndex;
+            GetsortedDatewisegrid();
+
+        }
+
+    }
+
+    public void GetsortedDatewise()
+    {
+        gv_Quot_List.Visible = false;
+        ViewState["Record"] = "Date";
+        DataTable dtt = new DataTable();
+        SqlDataAdapter sad = new SqlDataAdapter("select ID,Quotation_no,Quotation_Date,ExpiryDate,JobNo,Customer_Name,SubCustomer,Address,Mobile_No,Phone_No,GST_No,State_Code,kind_Att,CGST,SGST,AllTotal_price,Total_in_word,IsDeleted,CreatedBy,CreatedOn, DATEDIFF(DAY, Quotation_Date, getdate()) AS days from tbl_Quotation_two_Hdr where IsDeleted='0' and Quotation_Date between '" + txtDateSearchfrom.Text + "' AND  '" + txtDateSearchto.Text + "' ", con);
+        sad.Fill(dtt);
+        sortedgv.EmptyDataText = "Records Not Found";
+        sortedgv.DataSource = dtt;
+        sortedgv.DataBind();
+    }
+
+    public void GetsortedDatewisegrid()
+    {
+        gv_Quot_List.Visible = false;
+        DataTable dtt = new DataTable();
+        SqlDataAdapter sad = new SqlDataAdapter("select ID,Quotation_no,Quotation_Date,ExpiryDate,JobNo,Customer_Name,SubCustomer,Address,Mobile_No,Phone_No,GST_No,State_Code,kind_Att,CGST,SGST,AllTotal_price,Total_in_word,IsDeleted,CreatedBy,CreatedOn, DATEDIFF(DAY, Quotation_Date, getdate()) AS days from tbl_Quotation_two_Hdr where IsDeleted='0' and Quotation_Date between '" + txtDateSearchfrom.Text + "' AND  '" + txtDateSearchto.Text + "' ", con);
+        sad.Fill(dtt);
+        sortedgv.EmptyDataText = "Records Not Found";
+        sortedgv.DataSource = dtt;
+        sortedgv.DataBind();
+    }
+
+    public void GetsortedQuation()
+    {
+        gv_Quot_List.Visible = false;
+        ViewState["Record"] = "Quation";
+        DataTable dtt = new DataTable();
+        SqlDataAdapter sad = new SqlDataAdapter("select ID,Quotation_no,Quotation_Date,ExpiryDate,JobNo,Customer_Name,SubCustomer,Address,Mobile_No,Phone_No,GST_No,State_Code,kind_Att,CGST,SGST,AllTotal_price,Total_in_word,IsDeleted,CreatedBy,CreatedOn, DATEDIFF(DAY, Quotation_Date, getdate()) AS days from tbl_Quotation_two_Hdr where Quotation_no='" + txtquotation.Text + "'", con);
+        sad.Fill(dtt);
+        sortedgv.EmptyDataText = "Records Not Found";
+        sortedgv.DataSource = dtt;
+        sortedgv.DataBind();
+    }
+
+    public void GetsortedQuationgrid()
+    {
+        gv_Quot_List.Visible = false;
+        DataTable dtt = new DataTable();
+        SqlDataAdapter sad = new SqlDataAdapter("select ID,Quotation_no,Quotation_Date,ExpiryDate,JobNo,Customer_Name,SubCustomer,Address,Mobile_No,Phone_No,GST_No,State_Code,kind_Att,CGST,SGST,AllTotal_price,Total_in_word,IsDeleted,CreatedBy,CreatedOn, DATEDIFF(DAY, Quotation_Date, getdate()) AS days from tbl_Quotation_two_Hdr where Quotation_no='" + txtquotation.Text + "'", con);
+        sad.Fill(dtt);
+        sortedgv.EmptyDataText = "Records Not Found";
+        sortedgv.DataSource = dtt;
+        sortedgv.DataBind();
+    }
+
+    public void GetsortedCsutomer()
+    {
+        gv_Quot_List.Visible = false;
+        ViewState["Record"] = "Customer";
+        DataTable dtt = new DataTable();
+        SqlDataAdapter sad = new SqlDataAdapter("select ID,Quotation_no,Quotation_Date,ExpiryDate,JobNo,Customer_Name,SubCustomer,Address,Mobile_No,Phone_No,GST_No,State_Code,kind_Att,CGST,SGST,AllTotal_price,Total_in_word,IsDeleted,CreatedBy,CreatedOn, DATEDIFF(DAY, Quotation_Date, getdate()) AS days from tbl_Quotation_two_Hdr where  Customer_Name='" + txtSearch.Text + "'", con);
+        sad.Fill(dtt);
+        sortedgv.EmptyDataText = "Records Not Found";
+        sortedgv.DataSource = dtt;
+        sortedgv.DataBind();
+    }
+
+
+    public void GetsortedCsutomergrid()
+    {
+        gv_Quot_List.Visible = false;
+        DataTable dtt = new DataTable();
+        SqlDataAdapter sad = new SqlDataAdapter("select ID,Quotation_no,Quotation_Date,ExpiryDate,JobNo,Customer_Name,SubCustomer,Address,Mobile_No,Phone_No,GST_No,State_Code,kind_Att,CGST,SGST,AllTotal_price,Total_in_word,IsDeleted,CreatedBy,CreatedOn, DATEDIFF(DAY, Quotation_Date, getdate()) AS days from tbl_Quotation_two_Hdr where  Customer_Name='" + txtSearch.Text + "'", con);
+        sad.Fill(dtt);
+        sortedgv.EmptyDataText = "Records Not Found";
+        sortedgv.DataSource = dtt;
+        sortedgv.DataBind();
+    }
+
+    public void GetsortedDatewisesearch()
+    {
+        gv_Quot_List.Visible = false;
+        ViewState["Record"] = "DateWise";
+        DataTable dtt = new DataTable();
+        SqlDataAdapter sad = new SqlDataAdapter("select ID,Quotation_no,Quotation_Date,ExpiryDate,JobNo,Customer_Name,SubCustomer,Address,Mobile_No,Phone_No,GST_No,State_Code,kind_Att,CGST,SGST,AllTotal_price,Total_in_word,IsDeleted,CreatedBy,CreatedOn, DATEDIFF(DAY, Quotation_Date, getdate()) AS days from tbl_Quotation_two_Hdr where Quotation_Date='" + txtDateSearch.Text + "' AND isdeleted = '0'", con);
+        sad.Fill(dtt);
+        sortedgv.EmptyDataText = "Records Not Found";
+        sortedgv.DataSource = dtt;
+        sortedgv.DataBind();
+    }
+
+    public void GetsortedDatewisesearchGrid()
+    {
+        DataTable dtt = new DataTable();
+        SqlDataAdapter sad = new SqlDataAdapter("select ID,Quotation_no,Quotation_Date,ExpiryDate,JobNo,Customer_Name,SubCustomer,Address,Mobile_No,Phone_No,GST_No,State_Code,kind_Att,CGST,SGST,AllTotal_price,Total_in_word,IsDeleted,CreatedBy,CreatedOn, DATEDIFF(DAY, Quotation_Date, getdate()) AS days from tbl_Quotation_two_Hdr where Quotation_Date='" + txtDateSearch.Text + "' AND isdeleted = '0'", con);
+        sad.Fill(dtt);
+        sortedgv.EmptyDataText = "Records Not Found";
+        sortedgv.DataSource = dtt;
+        sortedgv.DataBind();
+    }
+
+    public void GetDatewiseCsutomer()
+    {
+        gv_Quot_List.Visible = false;
+        ViewState["Record"] = "DatwiseCustomer";
+        DataTable dtt = new DataTable();
+        SqlDataAdapter sad = new SqlDataAdapter("SELECT ID, Quotation_no, Quotation_Date, ExpiryDate, JobNo, Customer_Name, SubCustomer, Address, Mobile_No, Phone_No, GST_No, State_Code, kind_Att, CGST, SGST, AllTotal_price, Total_in_word, IsDeleted, CreatedBy, CreatedOn, DATEDIFF(DAY, Quotation_Date, GETDATE()) AS days FROM tbl_Quotation_two_Hdr WHERE Quotation_Date BETWEEN '" + txtDateSearchfrom.Text + "' AND '" + txtDateSearchto.Text + "' AND Customer_Name = '" + txtSearch.Text + "'", con);
+
+        sad.Fill(dtt);
+        sortedgv.EmptyDataText = "Records Not Found";
+        sortedgv.DataSource = dtt;
+        sortedgv.DataBind();
+    }
+
+    public void GetDatewiseCsutomergrid()
+    {
+        gv_Quot_List.Visible = false;
+        DataTable dtt = new DataTable();
+        SqlDataAdapter sad = new SqlDataAdapter("SELECT ID, Quotation_no, Quotation_Date, ExpiryDate, JobNo, Customer_Name, SubCustomer, Address, Mobile_No, Phone_No, GST_No, State_Code, kind_Att, CGST, SGST, AllTotal_price, Total_in_word, IsDeleted, CreatedBy, CreatedOn, DATEDIFF(DAY, Quotation_Date, GETDATE()) AS days FROM tbl_Quotation_two_Hdr WHERE Quotation_Date BETWEEN '" + txtDateSearchfrom.Text + "' AND '" + txtDateSearchto.Text + "' AND Customer_Name = '" + txtSearch.Text + "'", con);
+
+        sad.Fill(dtt);
+        sortedgv.EmptyDataText = "Records Not Found";
+        sortedgv.DataSource = dtt;
+        sortedgv.DataBind();
+    }
+
+    public override void VerifyRenderingInServerForm(Control control)
+    {
+        //required to avoid the run time error "  
+        //Control 'GridView1' of type 'Grid View' must be placed inside a form tag with runat=server."  
+    }
+
+    protected void btnexportexcel_Click(object sender, EventArgs e)
+    {
+        ExportGridToExcel();
+    }
+
+    private void ExportGridToExcel()
+    {
+        if (ViewState["Excell"] != null)
+        {
+            string Method = ViewState["Excell"].ToString();
+            if (Method == "GetsortedDatewise")
+            {
+                GetsortedDatewiseForExcell();
+            }
+
+            if (Method == "GetsortedQuation")
+            {
+                GetsortedQuationForExcell();
+            }
+            if (Method == "GetsortedCsutomer")
+            {
+                GetsortedCsutomerForExcell();
+            }
+            if (Method == "DateSearch")
+            {
+                GetDateForexcell();
+            }
+        }
+        else
+        {
+            ExportExcelGrid();
+        }
+
+        Response.Clear();
+        Response.Buffer = true;
+        Response.ClearContent();
+        Response.ClearHeaders();
+        Response.Charset = "";
+        string FileName = "Quotation_List_" + DateTime.Now + ".xls";
+        StringWriter strwritter = new StringWriter();
+        HtmlTextWriter htmltextwrtter = new HtmlTextWriter(strwritter);
+        Response.Cache.SetCacheability(HttpCacheability.NoCache);
+        Response.ContentType = "application/vnd.ms-excel";
+        Response.AddHeader("Content-Disposition", "attachment;filename=" + FileName);
+        ExportGrid.GridLines = GridLines.Both;
+  

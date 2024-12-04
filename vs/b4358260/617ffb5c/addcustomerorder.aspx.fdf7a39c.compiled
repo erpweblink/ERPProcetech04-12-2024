@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/AddCustomerOrder.aspx" hash="fffffffffd45b345" filehash="fbcebd7552375639" flags="110000" assembly="App_Web_xkoymz3o" type="ASP.admin_addcustomerorder_aspx">
+    <filedeps>
+        <filedep name="/Admin/AddCustomerOrder.aspx" />
+        <filedep name="/Admin/AddCustomerOrder.aspx.cs" />
+        <filedep name="/Admin/AdminMasterPage.master" />
+        <filedep name="/Admin/AdminMasterPage.master.cs" />
+    </filedeps>
+</preserve>

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/Welding.aspx" hash="fffffffffd45b345" filehash="5abbfd29412da5ef" flags="110000" assembly="App_Web_derjg5f4" type="ASP.admin_welding_aspx">
+    <filedeps>
+        <filedep name="/Admin/AdminMasterPage.master" />
+        <filedep name="/Admin/AdminMasterPage.master.cs" />
+        <filedep name="/Admin/Welding.aspx" />
+        <filedep name="/Admin/Welding.aspx.cs" />
+    </filedeps>
+</preserve>

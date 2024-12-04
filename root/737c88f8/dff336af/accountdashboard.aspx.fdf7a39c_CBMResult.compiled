@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="7" virtualPath="/Admin/AccountDashboard.aspx" hash="fffffffffd45b345" filehash="9a2dce7a2" flags="100000" CCUpreservationFileName="accountdashboard.aspx.fdf7a39c_CBMResult.ccu">
+    <filedeps>
+        <filedep name="/Admin/AccountDashboard.aspx" />
+        <filedep name="/Admin/AccountDashboard.aspx.cs" />
+        <filedep name="/Admin/AccountMasterPage.master" />
+        <filedep name="/Admin/AccountMasterPage.master.cs" />
+    </filedeps>
+</preserve>

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/PCreditDebitNotePDF.aspx" hash="fffffffffd45b345" filehash="201e8f7e322dc813" flags="110000" assembly="App_Web_vtmro1ph" type="ASP.admin_pcreditdebitnotepdf_aspx">
+    <filedeps>
+        <filedep name="/Admin/PCreditDebitNotePDF.aspx" />
+        <filedep name="/Admin/PCreditDebitNotePDF.aspx.cs" />
+    </filedeps>
+</preserve>

@@ -1,0 +1,54 @@
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        @*
+        Product Details *@
+            $(document).ready(function () {
+                console.log("Document ready");
+                $('#ProuctId').change(function () {
+                    var selectedValue = $(this).val();
+                    console.log("Selected value:", selectedValue);
+                    if (selectedValue) {
+                        $.ajax({
+                            url: '@Url.Action("GetProductDetails", "PurchaseOrder")', // Ensure this URL is correct
+                            type: 'GET',
+                            data: { Value: selectedValue }, // Ensure this matches the expected parameter in your action method
+                            success: function (data) {
+                                console.log("AJAX call success:", data);
+                                if (data) {
+
+                                    // This will pause execution if Developer Tools are open
+                                    if (data.hsn && data.uom && data.rate) {
+                                        // $('#txtHSN').val(data.hsn);
+                                        // $('#txtUOM').val(data.uom);
+                                        // $('#txtRate').val(data.rate);
+
+                                        $('#txtHSN').prop('value', data.hsn);
+                                        $('#txtUOM').prop('value', data.uom);
+                                        $('#txtRate').prop('value', data.rate);
+
+                                        console.log("Fields updated successfully");
+                                    } else {
+                                        console.log("Unexpected data format:", data);
+                                        alert('Unexpected data format.');
+                                    }
+                                } else {
+                                    console.log("No data returned");
+                                    alert('No data returned.');
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.log('Error retrieving product details:', error);
+                                console.log('Status:', status);
+                                console.log('XHR:', xhr);
+                                alert('Error retrieving product details.');
+                            }
+                        });
+                    }
+                });
+            });
+
+        // gstinfo
+       
+    </script>

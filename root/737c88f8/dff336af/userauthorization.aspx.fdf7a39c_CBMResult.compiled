@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="7" virtualPath="/Admin/UserAuthorization.aspx" hash="fffffffffd45b345" filehash="197d95df7" flags="100000" CCUpreservationFileName="userauthorization.aspx.fdf7a39c_CBMResult.ccu">
+    <filedeps>
+        <filedep name="/Admin/AdminMasterPage.master" />
+        <filedep name="/Admin/AdminMasterPage.master.cs" />
+        <filedep name="/Admin/UserAuthorization.aspx" />
+        <filedep name="/Admin/UserAuthorization.aspx.cs" />
+    </filedeps>
+</preserve>

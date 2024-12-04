@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/AccountMasterPage.master" hash="fffffffffd45b345" filehash="d6a7122e6bc54c4a" flags="110000" assembly="App_Web_vzhtofw2" type="ASP.admin_accountmasterpage_master">
+    <filedeps>
+        <filedep name="/Admin/AccountMasterPage.master" />
+        <filedep name="/Admin/AccountMasterPage.master.cs" />
+    </filedeps>
+</preserve>

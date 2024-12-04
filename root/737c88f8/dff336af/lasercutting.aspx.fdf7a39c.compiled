@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/LaserCutting.aspx" hash="fffffffffd45b345" filehash="347526f45af83512" flags="110000" assembly="App_Web_04u0qavm" type="ASP.admin_lasercutting_aspx">
+    <filedeps>
+        <filedep name="/Admin/AdminMasterPage.master" />
+        <filedep name="/Admin/AdminMasterPage.master.cs" />
+        <filedep name="/Admin/LaserCutting.aspx" />
+        <filedep name="/Admin/LaserCutting.aspx.cs" />
+    </filedeps>
+</preserve>

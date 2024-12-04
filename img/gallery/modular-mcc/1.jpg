@@ -1,0 +1,215 @@
+new DataTable();
+        Sda.Fill(Sdt);
+        Grd_MAIL.DataSource = Sdt;
+        Grd_MAIL.DataBind();
+        //int count = 1;
+        //if (Sdt.Rows.Count > 0)
+        //{
+        //    if (Dt_Mail.Columns.Count < 1)
+        //    {
+        //        ShowMAILRecord();
+        //    }
+
+        //    for (int i = 0; i < Sdt.Rows.Count; i++)
+        //    {
+        //        Dt_Mail.Rows.Add(count, Sdt.Rows[i]["EmailID"].ToString());
+        //        count = count + 1;
+        //    }
+        //}
+    }
+
+    private void SaveRecord()
+    {
+        con.Open();
+        int Id;
+        string CretedBy = Session["adminname"].ToString();
+        DateTime Date = DateTime.Now;
+        if (btn_save.Text == "Update")
+        {
+            SqlCommand Cmd = new SqlCommand("UPDATE tbl_Invoice_both_hdr SET InvoiceNo=@InvoiceNo,InvoiceDate=@InvoiceDate,InvoiceAgainst=@InvoiceAgainst,AgainstNo=@AgainstNo,PoNo=@PoNo,PoDate=@PoDate," +
+                "CompName=@CompName,CustName=@CustName,ChallanNo=@ChallanNo,ChallanDate=@ChallanDate,PayTerm=@PayTerm," +
+                "KindAtt=@KindAtt,CompanyAddress=@CompanyAddress,CompanyGstNo=@CompanyGstNo,CompanyPanNo=@CompanyPanNo,ComapyRegType=@ComapyRegType," +
+                "CompanyStateCode=@CompanyStateCode,CustomerShippingAddress=@CustomerShippingAddress,CustomerGstNo=@CustomerGstNo," +
+                "CustomerPanNo=@CustomerPanNo,CustomerRegType=@CustomerRegType,CustomerStateCode=@CustomerStateCode,CGST=@CGST,SGST=@SGST," +
+                "AllTotalAmount=@AllTotalAmount,GrandTotal=@GrandTotal,TotalInWord=@TotalInWord,Term_Condition_1=@Term_Condition_1," +
+                "Term_Condition_2=@Term_Condition_2,Term_Condition_3=@Term_Condition_3,Term_Condition_4=@Term_Condition_4,Term_Condition_5=@Term_Condition_5,Term_Condition_6=@Term_Condition_6," +
+                "ServiceType=@ServiceType,IGST=@IGST,Is_Deleted=@Is_Deleted,UpdatedOn=@UpdatedOn,UpdatedBy=@UpdatedBy,Type ='JobNo'" +
+                "WHERE Id='" + hdnID.Value + "' ", con);  //Remove Delivery Col....
+
+            Cmd.Parameters.AddWithValue("@InvoiceNo", txt_InvoiceNo.Text);
+            Cmd.Parameters.AddWithValue("@InvoiceDate", txt_InvoiceDate.Text);
+            Cmd.Parameters.AddWithValue("@InvoiceAgainst", ddlagainst.SelectedItem.Text);
+            Cmd.Parameters.AddWithValue("@AgainstNo", ddlagainstno.SelectedItem.Text);
+            Cmd.Parameters.AddWithValue("@PoNo", txt_PoNo.Text);
+            Cmd.Parameters.AddWithValue("@PoDate", txt_poDate.Text);
+            Cmd.Parameters.AddWithValue("@CompName", txtCompName.Text);
+            Cmd.Parameters.AddWithValue("@CustName", txtCustName.Text);
+            Cmd.Parameters.AddWithValue("@ChallanNo", txt_challanNo.Text);
+            Cmd.Parameters.AddWithValue("@ChallanDate", txt_ChallanDate.Text);
+            Cmd.Parameters.AddWithValue("@PayTerm", txt_Payterm.Text);
+            Cmd.Parameters.AddWithValue("@KindAtt", txt_KindAtt.Text);
+            Cmd.Parameters.AddWithValue("@CompanyAddress", txt_CompanyAddress.Text);
+            Cmd.Parameters.AddWithValue("@CompanyGstNo", txt_CompanyGSTno.Text);
+            Cmd.Parameters.AddWithValue("@CompanyPanNo", txt_CompanyPanNo.Text);
+            Cmd.Parameters.AddWithValue("@ComapyRegType", drop_CompanyRegisterType.Text);
+            Cmd.Parameters.AddWithValue("@CompanyStateCode", txt_CompanyStateCode.Text);
+            Cmd.Parameters.AddWithValue("@CustomerShippingAddress", txt_ShipingAdddesss.Text);
+            Cmd.Parameters.AddWithValue("@CustomerGstNo", txt_CustomerGstNo.Text);
+            Cmd.Parameters.AddWithValue("@CustomerPanNo", txt_CustomerPanNo.Text);
+            Cmd.Parameters.AddWithValue("@CustomerRegType", drop_CustomerRagisterType.Text);
+            Cmd.Parameters.AddWithValue("@CustomerStateCode", txt_CustomerStateCode.Text);
+            Cmd.Parameters.AddWithValue("@CGST", txt_cgst_amt.Text);
+            Cmd.Parameters.AddWithValue("@SGST", txt_sgst_amt.Text);
+            Cmd.Parameters.AddWithValue("@IGST", txt_igst_amt.Text);
+            Cmd.Parameters.AddWithValue("@AllTotalAmount", txt_subtotal.Text);
+            Cmd.Parameters.AddWithValue("@GrandTotal", txt_grand_total.Text);
+            Cmd.Parameters.AddWithValue("@TotalInWord", lbl_Amount_In_Word.Text);
+            Cmd.Parameters.AddWithValue("@Term_Condition_1", txt_term_1.Text + "-" + txt_condition_1.Text);
+            Cmd.Parameters.AddWithValue("@Term_Condition_2", txt_term_2.Text + "-" + txt_condition_2.Text);
+            Cmd.Parameters.AddWithValue("@Term_Condition_3", txt_term_3.Text + "-" + txt_condition_3.Text);
+            Cmd.Parameters.AddWithValue("@Term_Condition_4", txt_term_4.Text + "-" + txt_condition_4.Text);
+            Cmd.Parameters.AddWithValue("@Term_Condition_5", txt_term_5.Text + "-" + txt_condition_5.Text);
+            Cmd.Parameters.AddWithValue("@Term_Condition_6", txt_term_6.Text + "-" + txt_condition_6.Text);
+            Cmd.Parameters.AddWithValue("@ServiceType", ddlservicetype.SelectedItem.Text);
+            Cmd.Parameters.AddWithValue("@Is_Deleted", '0');
+            //Cmd.Parameters.AddWithValue("@status", txtstatus.Text);
+            Cmd.Parameters.AddWithValue("@UpdatedBy", CretedBy);
+            Cmd.Parameters.AddWithValue("@UpdatedOn", DateTime.Now);
+
+            Cmd.ExecuteNonQuery();
+
+            DataTable Dt = new DataTable();
+            SqlDataAdapter daa = new SqlDataAdapter("SELECT JobNo,Description,Hsn,TaxPercentage,Quntity,Unit,Rate," +
+                "DiscountPercentage,Total FROM tbl_Invoice_both_Dtls WHERE Id='" + hdnID.Value + "'", con);
+            daa.Fill(Dt);
+
+            SqlCommand CmdDelete = new SqlCommand("DELETE FROM tbl_Invoice_both_Dtls WHERE InvoiceId=@InvoiceId", con);
+            CmdDelete.Parameters.AddWithValue("@InvoiceId", hdnID.Value);
+
+            CmdDelete.ExecuteNonQuery();
+
+            foreach (GridViewRow g1 in gvPurchaseRecord.Rows)
+            {
+                string JobNo = (g1.FindControl("txt_Jobno_grd") as Label).Text;
+                string Discription = (g1.FindControl("lblcomp") as Label).Text;
+                string HSN = (g1.FindControl("lblHsn") as Label).Text;
+                string TAX = (g1.FindControl("lbl_tax_grd") as Label).Text;
+                string Quntity = (g1.FindControl("lbl_quntity_grd") as Label).Text;
+                string unit = (g1.FindControl("lblUnit") as Label).Text;
+                string Rate = (g1.FindControl("lbl_rate_grd") as Label).Text;
+                string Discount = (g1.FindControl("lbl_discount_grd") as Label).Text;
+                string Total_Amount = (g1.FindControl("lbl_total_amount_grd") as Label).Text;
+                string MateName = (g1.FindControl("lblproduct") as Label).Text;
+                string PrintDescription = (g1.FindControl("LblPrintdescription") as Label).Text;
+                SqlCommand Cmd2 = new SqlCommand("INSERT INTO tbl_Invoice_both_Dtls (InvoiceId,JobNo,Description,Hsn,TaxPercentage,Quntity,Unit,Rate,DiscountPercentage, MateName, PrintDescription,Total) " +
+                    "VALUES ('" + hdnID.Value + "','" + JobNo + "','" + Discription + "','" + HSN + "','" + TAX + "','" + Quntity + "'," +
+                    "'" + unit + "','" + Rate + "','" + Discount + "',  '" + MateName + "',  '" + PrintDescription + "','" + Total_Amount + "')", con);
+
+                Cmd2.ExecuteNonQuery();
+            }
+
+            SqlDataAdapter Sda = new SqlDataAdapter("SELECT * FROM InvoiceMail WHERE InvoiceNo='" + txt_InvoiceNo.Text + "'", con);
+            DataTable DTMAIL = new DataTable();
+            Sda.Fill(DTMAIL);
+
+            foreach (GridViewRow g1 in Grd_MAIL.Rows)
+            {
+                con.Close();
+                string MAIL = (g1.FindControl("lblmultMail") as Label).Text;
+                string lbldesignation = (g1.FindControl("lbldesignation") as Label).Text;
+                bool chkmail = (g1.FindControl("chkmail") as CheckBox).Checked;
+
+                SqlCommand cmdtable = new SqlCommand("UPDATE InvoiceMail SET Email=@Email, UpdatedBy=@UpdatedBy, UpdatedOn=@UpdatedOn,InvoiceId=@InvoiceId,chkEmail=@chkEmail,designation=@designation WHERE InvoiceNo=@InvoiceNo AND Email=@Email", con);
+                cmdtable.Parameters.AddWithValue("@InvoiceNo", txt_InvoiceNo.Text);
+                cmdtable.Parameters.AddWithValue("@Email", MAIL);
+                cmdtable.Parameters.AddWithValue("@chkEmail", chkmail);
+                cmdtable.Parameters.AddWithValue("@UpdatedBy", CretedBy);
+                cmdtable.Parameters.Add("@InvoiceId", hdnID.Value);
+                cmdtable.Parameters.Add("@designation", lbldesignation);
+                cmdtable.Parameters.AddWithValue("@UpdatedOn", Date);
+                con.Open();
+                cmdtable.ExecuteNonQuery();
+                con.Close();
+            }
+
+            ClientScript.RegisterStartupScript(this.GetType(), "alert", "HideLabel('Data Updated Sucessfully')", true);
+        }
+        else if (btn_save.Text == "Save")
+        {
+            try
+            {
+                con.Close();
+
+                SqlCommand Cmd = new SqlCommand("SP_Invoice_both", con);
+                Cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                Cmd.Parameters.AddWithValue("@InvoiceNo", txt_InvoiceNo.Text);
+                Cmd.Parameters.AddWithValue("@InvoiceDate", txt_InvoiceDate.Text);
+                Cmd.Parameters.AddWithValue("@InvoiceAgainst", ddlagainst.SelectedItem.Text);
+                if (ddlagainst.Text == "Direct")
+                {
+                    Cmd.Parameters.AddWithValue("@AgainstNo", "Direct");
+                }
+                if (ddlagainst.Text == "Order")
+                {
+                    Cmd.Parameters.AddWithValue("@AgainstNo", txt_PoNo.Text);
+                }
+                Cmd.Parameters.AddWithValue("@PoNo", txt_PoNo.Text);
+                Cmd.Parameters.AddWithValue("@PoDate", txt_poDate.Text);
+                Cmd.Parameters.AddWithValue("@CompName", txtCompName.Text);
+                Cmd.Parameters.AddWithValue("@CustName", txtCustName.Text);
+                Cmd.Parameters.AddWithValue("@ChallanNo", txt_challanNo.Text);
+                Cmd.Parameters.AddWithValue("@ChallanDate", txt_ChallanDate.Text);
+                Cmd.Parameters.AddWithValue("@PayTerm", txt_Payterm.Text);
+                Cmd.Parameters.AddWithValue("@KindAtt", txt_KindAtt.Text);
+                Cmd.Parameters.AddWithValue("@CompanyAddress", txt_CompanyAddress.Text);
+                Cmd.Parameters.AddWithValue("@CompanyGstNo", txt_CompanyGSTno.Text);
+                Cmd.Parameters.AddWithValue("@CompanyPanNo", txt_CompanyPanNo.Text);
+                Cmd.Parameters.AddWithValue("@ComapyRegType", drop_CompanyRegisterType.Text);
+                Cmd.Parameters.AddWithValue("@CompanyStateCode", txt_CompanyStateCode.Text);
+                Cmd.Parameters.AddWithValue("@CustomerShippingAddress", txt_ShipingAdddesss.Text);
+                Cmd.Parameters.AddWithValue("@CustomerGstNo", txt_CustomerGstNo.Text);
+                Cmd.Parameters.AddWithValue("@CustomerPanNo", txt_CustomerPanNo.Text);
+                Cmd.Parameters.AddWithValue("@CustomerRegType", drop_CustomerRagisterType.Text);
+                Cmd.Parameters.AddWithValue("@CustomerStateCode", txt_CustomerStateCode.Text);
+                Cmd.Parameters.AddWithValue("@CGST", txt_cgst_amt.Text);
+                Cmd.Parameters.AddWithValue("@SGST", txt_sgst_amt.Text);
+                Cmd.Parameters.AddWithValue("@IGST", txt_igst_amt.Text);
+                //  Cmd.Parameters.AddWithValue("@InvoiceId", txt_sgst_amt.Text);
+                Cmd.Parameters.AddWithValue("@AllTotalAmount", txt_subtotal.Text);
+                Cmd.Parameters.AddWithValue("@GrandTotal", txt_grand_total.Text);
+                Cmd.Parameters.AddWithValue("@TotalInWord", lbl_Amount_In_Word.Text);
+                Cmd.Parameters.AddWithValue("@Term_Condition_1", txt_term_1.Text + "-" + txt_condition_1.Text);
+                Cmd.Parameters.AddWithValue("@Term_Condition_2", txt_term_2.Text + "-" + txt_condition_2.Text);
+                Cmd.Parameters.AddWithValue("@Term_Condition_3", txt_term_3.Text + "-" + txt_condition_3.Text);
+                Cmd.Parameters.AddWithValue("@Term_Condition_4", txt_term_4.Text + "-" + txt_condition_4.Text);
+                Cmd.Parameters.AddWithValue("@Term_Condition_5", txt_term_4.Text + "-" + txt_condition_5.Text);
+                Cmd.Parameters.AddWithValue("@Term_Condition_6", txt_term_4.Text + "-" + txt_condition_6.Text);
+                Cmd.Parameters.AddWithValue("@ServiceType", ddlservicetype.SelectedItem.Text);
+                Cmd.Parameters.AddWithValue("@Is_Deleted", '0');
+                Cmd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
+                Cmd.Parameters.AddWithValue("@CreatedBy", CretedBy);
+                Cmd.Parameters.AddWithValue("@Type", "JobNo");
+                //Cmd.Parameters.AddWithValue("@JobNo", );
+                // Cmd.Parameters.AddWithValue("@status", txtstatus.Text);
+                Cmd.Parameters.Add("@InvoiceId", SqlDbType.Int).Direction = ParameterDirection.Output;
+                con.Open();
+                Cmd.ExecuteNonQuery();
+                con.Close();
+
+                Id = Convert.ToInt32(Cmd.Parameters["@InvoiceId"].Value);
+
+                foreach (GridViewRow G1 in gvPurchaseRecord.Rows)
+                {
+                    string JobNo = (G1.FindControl("txt_Jobno_grd") as Label).Text;
+                    string Discription = (G1.FindControl("LblPrintdescription") as Label).Text;
+                    string HSN = (G1.FindControl("lblHsn") as Label).Text;
+                    string Tax = (G1.FindControl("lbl_tax_grd") as Label).Text;
+                    string Quntity = (G1.FindControl("lbl_quntity_grd") as Label).Text;
+                    string Unit = (G1.FindControl("lblUnit") as Label).Text;
+                    string Rate = (G1.FindControl("lbl_rate_grd") as Label).Text;
+                    string Discount = (G1.FindControl("lbl_discount_grd") as Label).Text;
+                    string Total_Amount = (G1.FindControl("lbl_total_amount_grd") as Label).Text;
+                    string InvoiceNo = txt_InvoiceNo.Text;
+                    string MateName = (G1.FindControl("lblproduct") as Label).Text;
+                    string PrintDescription = (G1.FindControl("LblPrintdescription") as Label).Text;
+                    SqlCommand Cmd1 = new SqlCommand("INSERT INTO tbl_Invoice_both_Dtls (InvoiceId,JobNo,Description,Hsn,TaxPercentage,Quntity,Unit,Rate,DiscountPercentage,Total,MateName,PrintDescription ,Inv

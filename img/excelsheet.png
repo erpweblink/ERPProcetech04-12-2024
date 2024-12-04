@@ -1,0 +1,308 @@
+pe_TextChanged(object sender, EventArgs e)
+    {
+        DataTable dtt = new DataTable();
+        SqlDataAdapter sad = new SqlDataAdapter("select ID,Quotation_no,Quotation_Date,ExpiryDate,JobNo,Customer_Name,SubCustomer,Address,Mobile_No,Phone_No,GST_No,State_Code,kind_Att,CGST,SGST,AllTotal_price,Total_in_word,IsDeleted,CreatedBy,CreatedOn, DATEDIFF(DAY, Quotation_Date, getdate()) AS days from tbl_Quotation_two_Hdr where ServiceType ='" + ddlservicetype.Text + "' AND isdeleted = '0'", con);
+        //  SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_Quotation_two_Hdr] WHERE ServiceType ='" + ddlservicetype.Text + "' AND isdeleted = '0'", con);
+        sad.Fill(dtt);
+        gv_Quot_List.EmptyDataText = "Records Not Found";
+        gv_Quot_List.DataSource = dtt;
+        gv_Quot_List.DataBind();
+
+    }
+
+
+    // Nikhil Changes
+    protected void Gridrecord()
+    {
+        DataTable dt = new DataTable();
+        SqlDataAdapter sad = new SqlDataAdapter("SELECT Id,JobNo,CustName,FinalStatus,FinalCost,SiteVisitCharges,OtherCharges,EstimatedQuotation,Componetstatus,CreatedBy,CompRecDate,Convert(varchar,A.CreatedDate,103) " +
+            "as CreatedDate from tblEstimationHdr as A where isdeleted='0'order by A.CreatedDate DESC", con);
+        sad.Fill(dt);
+        gv_EstimationList.DataSource = dt;
+        gv_EstimationList.EmptyDataText = "Record Not Found";
+        gv_EstimationList.DataBind();
+    }
+
+    protected void gv_EstimationList_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e.CommandName == "RowEdit")
+        {
+            Response.Redirect("EstimationMaster.aspx?JobNo=" + encrypt(e.CommandArgument.ToString()) + "");
+        }
+
+        if (e.CommandName == "RowDelete")
+        {
+
+            SqlCommand cmddelete = new SqlCommand("update tblEstimationHdr set isdeleted='1' where Id=@Id", con);
+            cmddelete.Parameters.AddWithValue("@Id", Convert.ToInt32(e.CommandArgument.ToString()));
+            cmddelete.Parameters.AddWithValue("@isdeleted", '1');
+            con.Open();
+            cmddelete.ExecuteNonQuery();
+            con.Close();
+            ClientScript.RegisterStartupScript(this.GetType(), "alert", "HideLabel('Data Deleted Successfully');", true);
+
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Delete sucessfully!!');window.location ='CustomerList.aspx';", true);
+
+            //Gridrecord();
+        }
+        //if (e.CommandName == "Expand")
+        //{
+        //    string customerName = e.CommandArgument.ToString();
+
+        //    DataTable dt = new DataTable();
+        //    SqlDataAdapter sad = new SqlDataAdapter(
+        //        "SELECT JobNo FROM tblEstimationHdr " +
+        //        "WHERE isdeleted = '0' AND CustName = @CustName", con);
+
+        //    sad.SelectCommand.Parameters.AddWithValue("@CustName", customerName);
+        //    sad.Fill(dt);
+
+        //    GridViewRow row = ((LinkButton)e.CommandSource).NamingContainer as GridViewRow;
+        //    GridView penJobDetails = row.FindControl("penJobDetails") as GridView;
+        //    Panel PenJobs = row.FindControl("PenJobs") as Panel;
+
+        //    penJobDetails.DataSource = dt;
+        //    penJobDetails.DataBind();
+        //    //PenJobs.Style["display"] = "block";
+        //}
+    }
+    protected void gv_EstimationList_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        gv_EstimationList.PageIndex = e.NewPageIndex;
+        //Gridrecord();
+    }
+
+    protected void lnkshow_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            DateTime startDate = DateTime.Now.Date.AddDays(-30);
+            DateTime endDate = DateTime.Now.Date;
+
+            string formattedStartDate = startDate.ToString("yyyy-MM-dd");
+            string formattedEndDate = endDate.ToString("yyyy-MM-dd");
+
+            DataTable dt = new DataTable();
+            string query = "SELECT CustName, COUNT(JobNo) AS JobCount " +
+                           "FROM tblEstimationHdr " +
+                           "WHERE isdeleted = '0' AND QuotationStatus = 'Pending' " +
+                           "AND CreatedDate >= @StartDate AND CreatedDate <= @EndDate " +
+                           "GROUP BY CustName " +
+                           "ORDER BY MIN(CreatedDate) DESC";
+
+            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString))
+            {
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@StartDate", formattedStartDate);
+                cmd.Parameters.AddWithValue("@EndDate", formattedEndDate);
+
+                SqlDataAdapter sad = new SqlDataAdapter(cmd);
+                sad.Fill(dt);
+            }
+
+            gv_EstimationList.DataSource = dt;
+            gv_EstimationList.EmptyDataText = "Record Not Found";
+            gv_EstimationList.DataBind();            
+            modelprofile.Show();
+        }
+        catch (Exception ex)
+        {
+            
+            throw ex;
+        }
+    }
+
+    protected void gv_EstimationList_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            LinkButton lnkExpand = e.Row.FindControl("lnkExpand") as LinkButton;
+            Panel PenJobs = e.Row.FindControl("PenJobs") as Panel;
+            GridView penJobDetails = e.Row.FindControl("penJobDetails") as GridView;
+            GridView createdDateDetails = e.Row.FindControl("CreatedDateDetails") as GridView;
+
+            string customerName = DataBinder.Eval(e.Row.DataItem, "CustName").ToString();
+
+            if (!string.IsNullOrEmpty(customerName))
+            {
+                DateTime startDate = DateTime.Now.Date.AddDays(-30);
+                DateTime endDate = DateTime.Now.Date;
+
+                string formattedStartDate = startDate.ToString("yyyy-MM-dd");
+                string formattedEndDate = endDate.ToString("yyyy-MM-dd");
+
+              
+                DataTable dt = new DataTable();
+                using (SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString))
+                {
+                    conn.Open();
+
+                    using (SqlCommand cmd = new SqlCommand(
+                        "SELECT JobNo, CreatedDate, DATEDIFF(DAY, CreatedDate, GETDATE()) AS DaysSinceCreated " +
+                        "FROM tblEstimationHdr " +
+                        "WHERE isdeleted = '0' AND QuotationStatus = 'Pending'" +
+                        "AND CustName = @CustName " +
+                        "AND CreatedDate >= @StartDate AND CreatedDate <= @EndDate " +
+                        "ORDER BY CreatedDate DESC", conn))
+                    {
+                        cmd.Parameters.AddWithValue("@CustName", customerName);
+                        cmd.Parameters.AddWithValue("@StartDate", formattedStartDate);
+                        cmd.Parameters.AddWithValue("@EndDate", formattedEndDate);
+
+                        SqlDataAdapter sad = new SqlDataAdapter(cmd);
+                        sad.Fill(dt);
+                    }
+                }
+              
+                if (penJobDetails != null)
+                {
+                    foreach (GridViewRow row in penJobDetails.Rows)
+                    {
+                        DropDownList ddlJobSelect = row.FindControl("JobSelect") as DropDownList;
+                        if (ddlJobSelect != null)
+                        {
+                           
+                            ddlJobSelect.Items.Clear();
+                            ddlJobSelect.Items.Add(new ListItem("Select Job", ""));
+                            ddlJobSelect.Items.Add(new ListItem("Job A", "JobA"));
+                            ddlJobSelect.Items.Add(new ListItem("Job B", "JobB"));
+                           
+                        }
+                    }
+                }
+               
+                if (dt.Rows.Count > 0)
+                {
+                    
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        row["CreatedDate"] = Convert.ToDateTime(row["CreatedDate"]).ToString("yyyy-MM-dd");
+                    }
+
+                    penJobDetails.DataSource = dt;
+                    penJobDetails.DataBind();
+                    PenJobs.Visible = true;
+
+                    
+                    createdDateDetails.DataSource = dt;
+                    createdDateDetails.DataBind();
+                    createdDateDetails.Visible = true; 
+                }
+                else
+                {
+                    penJobDetails.DataSource = null;
+                    penJobDetails.DataBind();
+                    PenJobs.Visible = false;
+
+                    createdDateDetails.DataSource = null;
+                    createdDateDetails.DataBind();
+                    createdDateDetails.Visible = false;
+                }
+            }
+        }
+    }
+
+    public static int GetJobCount()
+    {
+        int jobCount = 0;
+        DateTime startDate = DateTime.Now.Date.AddDays(-30);
+        DateTime endDate = DateTime.Now.Date;
+
+        string formattedStartDate = startDate.ToString("yyyy-MM-dd");
+        string formattedEndDate = endDate.ToString("yyyy-MM-dd");        
+        string connString = System.Configuration.ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+
+        using (SqlConnection con = new SqlConnection(connString))
+        {
+
+            SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM tblEstimationHdr WHERE isdeleted = '0' AND QuotationStatus = 'Pending' AND CreatedDate >= '" + formattedStartDate + "' AND CreatedDate <= '" + formattedEndDate + "'", con);
+            con.Open();
+            jobCount = (int)cmd.ExecuteScalar();
+        }
+
+        return jobCount;
+    }
+
+    protected void lnkbtnCorrect_Click(object sender, EventArgs e)
+    {
+        LinkButton clickedButton = (LinkButton)sender;
+        string customerName = clickedButton.CommandArgument;
+
+        Response.Redirect("Quotation_Master.aspx?CustName=" + encrypt(customerName) + "");
+    }
+
+    // Delete functionality 
+
+    [System.Web.Services.WebMethod]
+    public static bool ProcessJobNos(List<string> jobNos)
+    {
+        try
+        {           
+            foreach (var jobNo in jobNos)
+            {
+                string connString = System.Configuration.ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+                using (SqlConnection con = new SqlConnection(connString))
+                {
+                    SqlCommand cmd = new SqlCommand("UPDATE tblEstimationHdr SET QuotationStatus = 'Closed' WHERE JobNo = '"+ jobNo +"'", con);
+                    con.Open();
+                    cmd.ExecuteScalar();
+                }
+            }            
+            return true; 
+        }
+        catch (Exception)
+        {           
+            return false; 
+        }
+    }
+
+
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <svg xmlns="http://www.w3.org/2000/svg" id="flag-icon-css-mz" viewBox="0 0 512 512">
+  <defs>
+    <clipPath id="a">
+      <path fill-opacity=".7" d="M0 0h496v496H0z"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#a)" transform="scale(1.0321)">
+    <path fill="#009a00" fill-rule="evenodd" d="M0 0h744v155H0z"/>
+    <path fill="#fff" fill-rule="evenodd" d="M0 155h744v15.5H0z"/>
+    <path fill-rule="evenodd" d="M0 170.5h744v155H0z"/>
+    <path fill="#fff" fill-rule="evenodd" d="M0 325.5h744V341H0z"/>
+    <path fill="#ffca00" fill-rule="evenodd" d="M0 341h744v155H0z"/>
+    <path fill="red" fill-rule="evenodd" d="M0 0v496l325.6-248L0 0z"/>
+    <path fill="#ffca00" fill-rule="evenodd" d="M192.3 322.6l-49.6-36.3-49.5 36.3 19.2-58.4-50-36 61.6.3 18.7-58.5 18.8 58.5 61.5-.3-50 36z"/>
+    <path fill="#fff" fill-rule="evenodd" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.1" d="M99.6 281.9h35.8c2.9 3.2 9.3 4.5 15.4 0 11.2-6.2 32.9 0 32.9 0l4.3-4.6-10.4-34.1-3.8-4s-8-4.8-23.2-3.2c-15.2 1.6-20.5-.6-20.5-.6S116.7 237 113 239l-4.3 4.3-9 38.7z"/>
+    <path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.1" d="M106.8 273s34.2-4.2 44 8.9c-5.5 3.8-10.4 4-15.7.2.9-1.4 12.3-13.3 41.4-9.3"/>
+    <path fill="none" stroke="#000" stroke-width="1.1" d="M143.4 238.9l-.3 37.6m30.7-37l6.4 29.8"/>
+    <path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.1" d="M113.3 239l-3.5 15.4"/>
+    <path fill-rule="evenodd" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.1" d="M76.4 286l8.4 9.8c1 .6 1.9.6 2.8 0l12.4-15 5.3-6.4a4.1 4.1 0 001-3l10-9c.8.2 1.3.3 2 .3-.9-.3-1.6-.7-.8-1.8l2.2-1.7 1.8 2.2s-2.5 3.3-2.8 3.3H116l-5.3 4.7 2.3 2 3.5 9.5 4.2-3-2.7-9.7 6-6.5-2.3-3.5 1.5-2s20.7 13 28.7 9.5c.2.1.5-9.3.5-9.3s-21.5-2.2-22-6.4c-.5-4.3 4.8-4.8 4.8-4.8l-2.3-3.2.5-1.8 3.8 4.8 8.4-7.3 49.9 56.9c2.7-1.1 3.3-1.8 3.5-4.5L150 234l3.8-4c.7-.8 1-1.2 1-2.5l5.7-5a7.1 7.1 0 013.7 3l15.8-13.3c.4.4 1.7.8 2.5.3l26-25-28.3 20-1-.7c0-.8 1-1 0-2.5-1.1-1.3-2.8 1.3-3 1.3s-4.1-1.4-5-3.1l-.2 4.6-7.3 6.7-5.5-.2-8 7.7-1 3 1.3 2.5s-4.2 3.7-4.2 3.5c0-.3-.9-1.1-1-1.3l3.7-3.2.5-2.3-1.2-1.9c-.4.3-5 5.2-5.3 4.7L129.7 211l.7-2.8-8.5-9.2c-3-1-8-1.2-9 5.5-.7 1.6-7.2.2-7.2.2l-3.4.8-19.7 27.9 11 13.2 22.4-28.4.6-8 4.7 5.2c1.6.2 3.1.2 4.5-.5l13.3 14.8-2.2 2.2 2 2.2 2.2-1.6 1 1.3c-1.2.6-2 1.4-3 2-1.9-1.1-3.6-2.6-3.4-4.9l-7.5 6.2-.3 1.3-22.2 18.4-2 .3-.5 5.7 14.5-12v-1.7l1.5 1.2 11.2-9s.8 1 .5 1-10 9-10 9l-.2 1-1.7 1.5-1-.7-13.5 12h-2l-7.5 7.4c-1.9.2-3.6.4-5.2 1.5l-13.4 12z"/>
+  </g>
+</svg>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           <svg xmlns="http://www.w3.org/2000/svg" id="flag-icon-css-na" viewBox="0 0 512 512">
+  <defs>
+    <clipPath id="a">
+      <path fill-opacity=".7" d="M0 0h512v512H0z"/>
+    </clipPath>
+  </defs>
+  <g fill-rule="evenodd" clip-path="url(#a)">
+    <path fill="#fff" d="M0 0h512v512H0z"/>
+    <path fill="#3662a2" d="M-108.2.2l.8 368.6L466.6 0l-574.8.2z"/>
+    <path fill="#38a100" d="M630.7 511.5l-1.4-383.2-579 383.5 580.4-.3z"/>
+    <path fill="#c70000" d="M-107.9 396.6l.5 115.4 125.3-.2 611.7-410.1L629 1.4 505.2.2l-613 396.4z"/>
+    <path fill="#ffe700" d="M154 183.4l-23.1-14-13.4 23.6-13-23.8L81 183l.6-27.1-27 .2 14-23.2L45 119.5l23.8-13L55 83l27 .6-.1-27.1 23.2 14 13.4-23.6 13 23.7L155.2 57l-.6 27 27-.1-14 23.2 23.6 13.3-23.8 13.1 13.7 23.4-27-.5z"/>
+    <path fill="#3662a2" d="M167.8 120c0 27.2-22.3 49.3-49.8 49.3s-49.7-22.1-49.7-49.4 22.3-49.3 49.8-49.3 49.7 22 49.7 49.3z"/>
+    <path fill="#ffe700" d="M157 120a39 39 0 11-77.9 0 39 39 0 0177.9 0z"/>
+  </g>
+</svg>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               INDX( 	 ù&Ï
+          (   ¸  è           Û    Û          :ø    ` N     ¦÷    c®4ä¾<Û Ý8‚„×4 a%€6ÛQÖ4ä¾<Û(      $               m f . s v g   ;ø    ` N     ¦÷    Fý4ä¾<Û Ý8‚„×*'a%€6Ûý;5ä¾<Û0      .               m g . s v g   <ø    ` N     ¦÷    »y5ä¾<Û Ý8‚„×Na%€6Ûœ5ä¾<Û       û               m h . s v g   =ø    ` N     ¦÷    µÄ5ä¾<Û Ý8‚„×ua%€6Ûýä5ä¾<Û       š               m k . s v g   >ø    ` N     ¦÷     6ä¾<Û Ý8‚„×œa%€6ÛÔ-6ä¾<Û                    m l . s v g   ?ø    ` N     ¦÷    åU6ä¾<Û Ý8‚„× Ãa%€6Û€v6ä¾<Û       a               m m . s v g   @ø    ` N     ¦÷    ž6ä¾<Û Ý8‚„×öéa%€6Û}Ä6ä¾<Û       ã               m n . s v g   Aø    ` N     ¦÷    ?7ä¾<Û Ý8‚„×êb%€6Ûg7ä¾<Û       Ù               m o . s v g   Bø    ` N     ¦÷    ’Z7ä¾<Û Ý8‚„×ß7b%€6ÛV†7ä¾<Û `      L\               m p . s v g   Cø    ` N     ¦÷    R®7ä¾<Û Ý8‚„×Õ^b%€6ÛÛÔ7ä¾<Û(      $               m q . s v g  Dø    ` N     ¦÷    ¨8ä¾<Û Ý8‚„×_¬b%€6Ûœ08ä¾<Û°      ¯               m r . s v g   Eø    ` N     ¦÷    ¯X8ä¾<Û Ý8‚„×$Âb%€6Û8ä¾<Û 0      l/               m s . s v g   Fø    ` N     ¦÷    ©8ä¾<Û Ý8‚„×0éb%€6ÛÔÏ8ä¾<Û 0      ¶(               m t . s v g   Gø    ` N     ¦÷    Ò÷8ä¾<Û Ý8‚„×"c%€6Û69ä¾<Û@      ?               m u . s v g   Hø    ` N     ¦÷    1F9ä¾<Û Ý8‚„×7c%€6ÛÏ~9ä¾<Û8      3               m v . s v g   Iø    ` N     ¦÷    Nœ9ä¾<  Ý8‚„×^c%€6ÛƒÞ9ä¾<Û       Õ               m w . s v g   Jø    ` N     ¦÷    ƒ:ä¾<Û Ý8‚„×ö«c%€6ÛtB:ä¾<Û p     ‰a              m x . s v g   Kø    ` N     ¦÷    xj:ä¾<Û Ý8‚„×ìÒc%€6Ûn:ä¾<Û       î               m y . s v g   Lø    ` N     ¦÷    eÎ:ä¾<Û Ý8‚„×âùc%€6Û²ò:ä¾<Û       %
+               m z . s v g   Mø    ` N     ¦÷    ²;ä¾<Û Ý8‚„×Ø d%€6Û€;;ä¾<Û       Ñ               n a . s v g                 ¦÷    |c;ä¾<Û Ý8‚„×ÍGd%€6Ûô”;ä¾<Û      k               n c . s v g   Oø    ` N     ¦÷    ò¼;ä¾<Û Ý8‚„×Ând%€6Ûò¼;ä¾<Û                      n e . s v g   Pø    ` N     ¦÷    ×
+<ä¾<Û Ý8‚„×·•d%€6Ût)<ä¾<Û        ×               n f . s v g   Qø    ` N     ¦÷    Zm<ä¾<Û Ý8‚„×¬¼d%€6ÛÉ<ä¾<Û                     n g . s v g   Rø    ` N     ¦÷    Ý¸<ä¾<Û Ý8‚„×¡ãd%€6Û7ã<ä¾<Û P      H               n i . s v g   Sø    ` N     ¦÷    -=ä¾<Û Ý8‚„×…1e%€6Û/=ä¾<Ûè       ä                n l . s v g  Tø    ` N     ¦÷    ðl=ä¾<Û Ý8‚„×yXe%€6Ûz’=ä¾<ÛH      A               n o . s v g   Uø    ` N     ¦÷    rº=ä¾<Û Ý8‚„×ve%€6ÛÜ=ä¾<Û       ©               n p . s v g   Vø    ` N     ¦÷    ’>ä¾<Û Ý8‚„×m¦e%€6Û-4>ä¾<Û       œ               n r . s v g   Wø    ` N     ¦÷    ,\>ä¾<Û Ý8‚„×Oôe%€6Û,\>ä¾<Û       ¿               n u . s v g   Xø    ` N     ¦÷    ÿ·>ä¾<Û Ý8‚„×Ef%€6Û6Ô>ä¾<Û       ·               n z . s v g   Yø    ` N     ¦÷    4ü>ä¾<  Ý8‚„×GBf%€6ÛË.?ä¾<Û `      VX               o m . s v g   Zø    ` N     ¦÷    W?ä¾<Û Ý8‚„×:if%€6Û|?ä¾<Û       “               p a . s v g   [ø    ` N     ¦÷    {§?ä¾<Û Ý8‚„×%·f%€6ÛmÎ?ä¾<Û       Ë              p e . s v g   \ø    ` N     ¦÷    ,@ä¾<Û Ý8‚„×Þf%€6ÛN@ä¾<Û        …               p f . s v g   ]ø    ` N     ¦÷    v@ä¾<Û Ý8‚„×g%€6Ûæ›@ä¾<Û       /               p g . s v g   ^ø    ` N     ¦÷    èÃ@ä¾<Û Ý8‚„×,g%€6ÛOÕ@ä¾<Û      æ               p h . s v g   _ø    ` N     ¦÷    Bý@ä¾<Û Ý8‚„×ïRg%€6Û'>Aä¾<Û       ¬               p k . s v g   `ø    ` N     ¦÷    ï†Aä¾<Û Ý8‚„×íyg%€6Û§Aä¾<Ûà       Þ                p l . s v g   aø    ` N     ¦÷    ÿÎAä¾<Û Ý8‚„×å g%€6ÛõAä¾<Û(      $               p m . s v g   bø    ` N     ¦÷    çBä¾<Û Ý8‚„×Íîg%€6ÛEBä¾<Û 0      E!               p n . s v g                                                                                                INDX( 	 `j&Ï
+   	       (   ¸  è           Û    Û          Oø    ` N     ¦÷    ò¼;ä¾<Û Ý8‚„×Ând%€6Ûò¼;ä¾<Û                      n e . s v g   Pø    ` N     ¦÷    ×
+<ä¾<Û Ý8‚„×·•d%€6Ût)<ä¾<Û        ×               n f . s v g   Qø    ` N     ¦÷    Zm<ä¾<Û Ý8‚„×¬¼d%€6ÛÉ<ä¾<Û                     n g . s v g   Rø    ` N     ¦÷    Ý¸<ä¾<Û Ý8‚„×¡ãd%€6Û7ã<ä¾<Û P      H               n i . s v g   Sø    ` N     ¦÷    -=ä¾<Û Ý8‚„×…1e%€6Û/=ä¾<Ûè      ä                n l . s v g   Tø    ` N     ¦÷    ðl=ä¾<Û Ý8‚„×yXe%€6Ûz’=ä¾<ÛH      A               n o . s v g   Uø    ` N     ¦÷    rº=ä¾<Û Ý8‚„×ve%€6ÛÜ=ä¾<Û       ©               n p . s v g   Vø    ` N     ¦÷    ’>ä¾<Û Ý8‚„×m¦e%€6Û-4>ä¾<Û       œ               n r . s v g   Wø    ` N     ¦÷    ,\>ä¾<Û Ý8‚„×Oôe%€6Û,\>ä¾<Û       ¿               n u . s v g   Xø    ` N     ¦÷    ÿ·>ä¾<Û Ý8‚„×Ef%€6Û6Ô>ä¾<Û       ·               n z . s v g  Yø    ` N     ¦÷    4ü>ä¾<Û Ý8‚„×GBf%€6ÛË.?ä¾<Û `      VX               o m . s v g   Zø    ` N     ¦÷    W?ä¾<Û Ý8‚„×:if%€6Û|?ä¾<Û       “               p a . s v g   [ø    ` N     ¦÷    {§?ä¾<Û Ý8‚„×%·f%€6ÛmÎ?ä¾<Û       Ë              p e . s v g   \ø    ` N     ¦÷    ,@ä¾<Û Ý8‚„×Þf%€6ÛN@ä¾<Û        …               p f . s v g   ]ø    ` N     ¦÷    v@ä¾<Û Ý8‚„×g%€6Ûæ›@ä¾<Û       /               p g . s v g   ^ø    ` N     ¦÷    èÃ@ä¾<  Ý8‚„×,g%€6ÛOÕ@ä¾<Û       æ               p h . s v g   _ø    ` N     ¦÷    Bý@ä¾<Û Ý8‚„×ïRg%€6Û'>Aä¾<Û       ¬               p k . s v g   `ø    ` N     ¦÷    ï†Aä¾<Û Ý8‚„×íyg%€6Û§Aä¾<Ûà       Þ                p l . s v g   aø    ` N     ¦÷    ÿÎAä¾<Û Ý8‚„×å g%€6ÛõAä¾<Û(      $               p m . s v g   bø    ` N     ¦÷    çBä¾<Û Ý8‚„×Íîg%€6ÛEBä¾<Û 0      E!               p n . s v g                 ¦÷    mBä¾<Û Ý8‚„×Áh%€6Û«Bä¾<Ûp     k               p r . s v g   dø    ` N     ¦÷    ÍÍBä¾<Û Ý8‚„×¶<h%€6ÛòBä¾<Û                      p s . s v g   eø    ` N     ¦÷    2Cä¾<Û Ý8‚„×¤Šh%€6Û.BCä¾<Û 0      Õ!               p t . s v g   fø    ` N     ¦÷    4jCä¾<Û Ý8‚„×˜±h%€6Û4jCä¾<Û       û               p w . s v g   gø    ` N     ¦÷    ·Cä¾<Û Ý8‚„×Øh%€6ÛñÖCä¾<Û P      ^C               p y . s v g   hø    ` N     ¦÷    âDä¾<Û Ý8‚„×‚ÿh%€6ÛÌFDä¾<Ûh      d               q a . s v g  iø    ` N     ¦÷    ¾›Dä¾<Û Ý8‚„×w&i%€6Û¸½Dä¾<Û(      $               r e . s v g   jø    ` N     ¦÷    ÎåDä¾<Û Ý8‚„×lMi%€6Û
+Eä¾<Û8      1               r o . s v g   kø    ` N     ¦÷    !4Eä¾<Û Ý8‚„×W›i%€6Ûw{Eä¾<Û à     mÚ              r s . s v g   lø    ` N     ¦÷    ú¸Eä¾<Û Ý8‚„×KÂi%€6ÛEÛEä¾<Û(      "               r u . s v g   mø    ` N     ¦÷    CFä¾<Û Ý8‚„×Béi%€6ÛCFä¾<Û       ì               r w . s v g   nø    ` N     ¦÷    9PFä¾<  Ý8‚„×07j%€6Û>bFä¾<Û 0      Ã'               s a . s v g   oø    ` N     ¦÷    ï¦Fä¾<Û Ý8‚„×!^j%€6Û›ËFä¾<Û       ¸               s b . s v g   pø    ` N     ¦÷    E	Gä¾<Û Ý8‚„×…j%€6Û(Gä¾<Û@      :               s c . s v g   qø    ` N     ¦÷    PGä¾<Û Ý8‚„×¬j%€6ÛËqGä¾<Ûð      í               s d . s v g   rø    ` N     ¦÷    ß™Gä¾<Û Ý8‚„×Ój%€6ÛA¾Gä¾<Ûð       ï                s e . s v g   sø    ` N     ¦÷    DæGä¾<Û Ý8‚„×ùùj%€6ÛCHä¾<Û      ´               s g . s v g   tø    ` N     ¦÷    ÌBHä¾<Û Ý8‚„×âGk%€6ÛOlHä¾<Û €      ¡u               s h . s v g   uø    ` N     ¦÷    P”Hä¾<Û Ý8‚„×Ønk%€6ÛdºHä¾<Û                      s i . s v g   vø    ` N     ¦÷    ~åHä¾<Û Ý8‚„×W‹k%€6ÛˆIä¾<ÛH      A               s j . s v g   wø    ` N     ¦÷    y4Iä¾<Û Ý8‚„×]³k%€6Û¤bIä¾<Û       •               s k . s v g                                                                                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="flag-icon-css-nc" viewBox="0 0 512 512">
+  <path fill="#009543" stroke-width=".8" d="M0 0h512v512H0z"/>
+  <path fill="#ed4135" stroke-width=".8" d="M0 0h512v341.3H0z"/>
+  <path fill="#0035ad" stroke-width=".8" d="M0 0h512v170.7H0z"/>
+  <circle cx="225.6" cy="256" r="167.8" fill="#fae600" stroke="#000" stroke-width="5.7"/>
+  <path stroke="#000" stroke-width="6.8" d="M197.2 281h56.9

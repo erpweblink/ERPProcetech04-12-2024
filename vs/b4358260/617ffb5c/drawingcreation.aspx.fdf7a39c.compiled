@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/DrawingCreation.aspx" hash="fffffffffd45b345" filehash="e5072ab7d60eacf9" flags="110000" assembly="App_Web_p0upcrdz" type="ASP.admin_drawingcreation_aspx">
+    <filedeps>
+        <filedep name="/Admin/AdminMasterPage.master" />
+        <filedep name="/Admin/AdminMasterPage.master.cs" />
+        <filedep name="/Admin/DrawingCreation.aspx" />
+        <filedep name="/Admin/DrawingCreation.aspx.cs" />
+    </filedeps>
+</preserve>

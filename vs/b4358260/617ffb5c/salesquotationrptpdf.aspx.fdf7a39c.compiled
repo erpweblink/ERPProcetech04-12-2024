@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/SalesQuotationRptPDF.aspx" hash="fffffffffd45b345" filehash="a4d3b7ccdd8e9181" flags="110000" assembly="App_Web_vtmro1ph" type="ASP.admin_salesquotationrptpdf_aspx">
+    <filedeps>
+        <filedep name="/Admin/SalesQuotationRptPDF.aspx" />
+        <filedep name="/Admin/SalesQuotationRptPDF.aspx.cs" />
+    </filedeps>
+</preserve>

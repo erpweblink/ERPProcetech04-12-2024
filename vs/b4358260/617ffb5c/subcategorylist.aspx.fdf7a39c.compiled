@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/SubCategoryList.aspx" hash="fffffffffd45b345" filehash="56e45aaa834231cd" flags="110000" assembly="App_Web_ia4qvvsb" type="ASP.admin_subcategorylist_aspx">
+    <filedeps>
+        <filedep name="/Admin/AdminMasterPage.master" />
+        <filedep name="/Admin/AdminMasterPage.master.cs" />
+        <filedep name="/Admin/SubCategoryList.aspx" />
+        <filedep name="/Admin/SubCategoryList.aspx.cs" />
+    </filedeps>
+</preserve>

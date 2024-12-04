@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/FinalAssembly.aspx" hash="fffffffffd45b345" filehash="55d91a0dddba3068" flags="110000" assembly="App_Web_44mmzjaj" type="ASP.admin_finalassembly_aspx">
+    <filedeps>
+        <filedep name="/Admin/AdminMasterPage.master" />
+        <filedep name="/Admin/AdminMasterPage.master.cs" />
+        <filedep name="/Admin/FinalAssembly.aspx" />
+        <filedep name="/Admin/FinalAssembly.aspx.cs" />
+    </filedeps>
+</preserve>

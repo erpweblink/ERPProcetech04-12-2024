@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="7" virtualPath="/Admin/QuotationList.aspx" hash="fffffffffd45b345" filehash="cb7e589d4" flags="100000" CCUpreservationFileName="quotationlist.aspx.fdf7a39c_CBMResult.ccu">
+    <filedeps>
+        <filedep name="/Admin/AdminMasterPage.master" />
+        <filedep name="/Admin/AdminMasterPage.master.cs" />
+        <filedep name="/Admin/QuotationList.aspx" />
+        <filedep name="/Admin/QuotationList.aspx.cs" />
+    </filedeps>
+</preserve>

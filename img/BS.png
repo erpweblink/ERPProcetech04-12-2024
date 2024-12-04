@@ -1,0 +1,2276 @@
+     if (txt_CompanyStateCode.Text == "27 MAHARASHTRA")
+                {
+                    TextBox4.Text = ((Convert.ToDecimal(Totaltx28) * Convert.ToDecimal(lbltotaltax) / 100) / 2).ToString("0.00");
+                    TextBox5.Text = ((Convert.ToDecimal(Totaltx28) * Convert.ToDecimal(lbltotaltax) / 100) / 2).ToString("0.00");
+                    TextBox6.Text = Convert.ToDecimal(00).ToString("0.00");
+                }
+                else
+                {
+                    TextBox6.Text = ((Convert.ToDecimal(Totaltx28) * Convert.ToDecimal(lbltotaltax) / 100)).ToString("0.00");
+                    TextBox4.Text = Convert.ToDecimal(00).ToString("0.00");
+                    TextBox5.Text = Convert.ToDecimal(00).ToString("0.00");
+                }
+            }
+
+            decimal grd_total;
+            if (!string.IsNullOrEmpty(txt_total_amount.Text))
+            {
+                grd_total = 0;
+            }
+            else
+            {
+                decimal val1 = Convert.ToDecimal(txt_subtotal.Text);
+                decimal val2 = Convert.ToDecimal(txt_sgst_amt.Text);
+                decimal val3 = Convert.ToDecimal(txt_cgst_amt.Text);
+                decimal val4 = Convert.ToDecimal(txt_igst_amt.Text);
+                decimal val5 = Convert.ToDecimal(Label.Text);
+                decimal val6 = Convert.ToDecimal(TextBox2.Text);
+                decimal val7 = Convert.ToDecimal(TextBox3.Text);
+                decimal val8 = Convert.ToDecimal(TextBox4.Text);
+                decimal val9 = Convert.ToDecimal(TextBox5.Text);
+                decimal val10 = Convert.ToDecimal(TextBox6.Text);
+                grd_total = (val1 + val2 + val3 + val4 + val5 + val6 + val7 + val8 + val9 + val10);
+
+                //Temp change 
+                //var Cgst_Total_Amt1 = (val3 * 9 / 100);
+                //decimal Cgst_Total_Amt = Cgst_Total_Amt1;
+                //var Sgst_Total_Amt1 = (val2 * 9 / 100);
+                //decimal Sgst_Total_Amt = Sgst_Total_Amt1;
+                //decimal SubTotal_Amt = (val1);
+                //txt_grand_total.Text = (SubTotal_Amt + Cgst_Total_Amt + Sgst_Total_Amt).ToString();
+
+            }
+            //txt_grand_total.Text = grd_total.ToString();
+            txt_grand_total.Text = grd_total.ToString("##.00");
+            hfTotal.Value = txt_grand_total.Text;
+
+            string isNegative = "";
+            try
+            {
+                string number = hfTotal.Value;
+                number = Convert.ToDouble(number).ToString();
+
+                lbl_Amount_In_Word.Text = isNegative + ConvertToWords(number);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            //Round Off
+            var Totalamtfff = Convert.ToDouble(txt_grand_total.Text);
+            var totalgrand = Math.Round(Totalamtfff);
+            System.Globalization.CultureInfo info = System.Globalization.CultureInfo.GetCultureInfo("en-IN");
+            string FinaleTotalamt = Totalamtfff.ToString("N2", info);
+            double GetVal = 0;  // to know rounded value
+            GetVal -= Convert.ToDouble(Totalamtfff) - Convert.ToDouble(totalgrand);
+            Double roundoff = Math.Round(GetVal, 2);
+            txtroundoff.Text = roundoff.ToString();
+            //txt_grand_total.Text = totalgrand.ToString();
+            txt_grand_total.Text = totalgrand.ToString("##.00");
+        }
+    }
+
+    protected void gv_update_Click(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as LinkButton).NamingContainer as GridViewRow;
+
+        string printdescription = ((TextBox)row.FindControl("txt_printdescription_grd")).Text;
+        string Tax = ((TextBox)row.FindControl("txt_tax_grd")).Text;
+        string Quntity = ((TextBox)row.FindControl("txt_quntity_grd")).Text;
+        string Rate = ((TextBox)row.FindControl("txt_rate_grd")).Text;
+        string Discount = ((TextBox)row.FindControl("txt_discount_grd")).Text;
+        string TotalAmount = ((TextBox)row.FindControl("txt_total_amount_grd")).Text;
+
+        DataTable Dt = ViewState["Invoice"] as DataTable;
+
+        Dt.Rows[row.RowIndex]["printdescription"] = printdescription;
+        Dt.Rows[row.RowIndex]["Tax"] = Tax;
+        Dt.Rows[row.RowIndex]["Quntity"] = Quntity;
+        Dt.Rows[row.RowIndex]["Rate"] = Rate;
+        Dt.Rows[row.RowIndex]["Discount"] = Discount;
+        Dt.Rows[row.RowIndex]["TotalAmount"] = TotalAmount;
+
+        Dt.AcceptChanges();
+
+        ViewState["Invoice"] = Dt;
+        gvPurchaseRecord.EditIndex = -1;
+
+        gvPurchaseRecord.DataSource = (DataTable)ViewState["Invoice"];
+        gvPurchaseRecord.DataBind();
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Success", "scrollToElement();", true);
+    }
+
+    protected void txt_rate_grd_TextChanged(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
+
+        GriCalculation(row);
+    }
+
+    protected void txt_quntity_grd_TextChanged(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
+
+        GriCalculation(row);
+    }
+
+    protected void txt_tax_grd_TextChanged(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
+
+        GriCalculation(row);
+    }
+
+    protected void txt_discount_grd_TextChanged(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
+
+        GriCalculation(row);
+    }
+
+    protected void btn_save_Click(object sender, EventArgs e)
+    {
+        if (btn_save.Text == "Save")
+        {
+            if (ChkSendQuotation.Checked == true)
+            {
+                SaveRecord();
+                Send_Mail();
+            }
+            else
+            {
+                SaveRecord();
+            }
+        }
+        if (btn_save.Text == "Update")
+        {
+            if (ChkSendQuotation.Checked == true)
+            {
+                SaveRecord();
+                Send_Mail();
+                //foreach (GridViewRow g1 in Grd_MAIL.Rows)
+                //{
+                //    string MAIL = (g1.FindControl("lblmultMail") as Label).Text;
+                //    bool chkmail = (g1.FindControl("chkmail") as CheckBox).Checked;
+
+                //    if (chkmail == false)
+                //    {
+                //        //ScriptManager.RegisterStartupScript(this, GetType(), "showalert", "alert('Select Atleast One Mail_ID');", true);
+                //        //ClientScript.RegisterStartupScript(this.GetType(), "alert", "HideLabe('Select Atleast One Mail_ID');", true);
+                //    }
+                //    else
+                //    {
+
+                //        string ChallanNo = ToString();
+                //        Send_Mail();
+                //    }
+                //}
+                //Checmail();
+                //SaveRecord();
+                //string ChallanNo = ToString();
+                //Send_Mail();
+            }
+            else
+            {
+                SaveRecord();
+            }
+        }
+        //if (ChkSendQuotation.Checked == true)
+        //{
+
+        //    SaveRecord();
+        //    string InvoiceNo = ToString();
+        //    Send_Mail();
+        //}
+        //else
+        //{
+        //    SaveRecord();
+        //}
+    }
+
+    protected void Send_Mail()
+    {
+        string strMessage =
+
+               "<strong>Dear Sir," + "<br/><br/>" +
+
+                      "Greetings from " + "<strong>Endeavour  Automation...!" + "<br/><br/>" +
+
+                       "Please find the attached offer for your reference." + " <br/><br/>" +
+
+                        "Please find the attached offer for your reference. " + "Invoice No. - " + txt_InvoiceNo.Text.Trim() + ".pdf" + "<br/><br/>" +
+
+                       "We hope that we will receive a Purchase Order Soon." + " <br/><br/>" +
+
+                       "Please do not hesitate to contact us for any query or clarification." + " <br/><br/>" +
+
+                      "ThanksÂ &Â Regards." + "<br/>" +
+                      "<strong>ENDEAVOUR AUTOMATION<strong>";
+
+        string pdfname = "TaxInv - " + txt_InvoiceNo.Text.Trim() + "/" + txt_InvoiceDate.Text.Trim() + ".pdf";
+
+        MailMessage message = new MailMessage();
+        //MailMessage msgendeaour = new MailMessage();
+        //MailMessage msgenaccount = new MailMessage();
+        //msgendeaour.To.Add("erp@weblinkservices.net");
+        //msgenaccount.To.Add("erp@weblinkservices.net");
+        foreach (GridViewRow g1 in Grd_MAIL.Rows)
+        {
+            string MAIL = (g1.FindControl("lblmultMail") as Label).Text;
+            bool chkmail = (g1.FindControl("chkmail") as CheckBox).Checked;
+            if (chkmail == true)
+            {
+                message.To.Add(MAIL);// Email-ID of Receiver  
+            }
+        }
+        //message.To.Add(txt_Mail.Text);// Email-ID of Receiver  
+        message.Subject = "Tax Invoice";// Subject of Email  
+        message.Body = strMessage;
+        //msgendeaour.Subject = "Tax Invoice";// Subject of Email  
+        //msgendeaour.Body = strMessage;
+        //msgenaccount.Subject = "Tax Invoice";// Subject of Email  
+        //msgenaccount.Body = strMessage;
+
+        message.From = new MailAddress("enquiry@weblinkservices.net", "info@endeavours.in");
+        //message.From = new System.Net.Mail.MailAddress("info@endeavours.in");// Email-ID of Sender  
+        // message.From = new System.Net.Mail.MailAddress("enquiry@weblinkservices.net");// Email-ID of Sender  
+        message.IsBodyHtml = true;
+        //msgendeaour.From = new System.Net.Mail.MailAddress("enquiry@weblinkservices.net");// Email-ID of Sender  
+        //msgendeaour.IsBodyHtml = true;
+        //msgenaccount.From = new System.Net.Mail.MailAddress("enquiry@weblinkservices.net");// Email-ID of Sender  
+        //msgenaccount.IsBodyHtml = true;
+
+        MemoryStream file = new MemoryStream(PDF("This is pdf file text", Server.MapPath("~/Files/")).ToArray());
+
+        file.Seek(0, SeekOrigin.Begin);
+        Attachment data = new Attachment(file, pdfname, "application/pdf");
+        ContentDisposition disposition = data.ContentDisposition;
+        disposition.CreationDate = System.DateTime.Now;
+        disposition.ModificationDate = System.DateTime.Now;
+        disposition.DispositionType = DispositionTypeNames.Attachment;
+        message.Attachments.Add(data);//Attach the file  
+                                      //msgendeaour.Attachments.Add(data);//Attach the file
+                                      //msgenaccount.Attachments.Add(data);//Attach the file
+
+
+        //message.Body = txtmessagebody.Text;
+        SmtpClient SmtpMail = new SmtpClient();
+        SmtpMail.Host = "smtpout.secureserver.net"; // Name or IP-Address of Host used for SMTP transactions  
+        SmtpMail.Port = 587; // Port for sending the mail  
+        SmtpMail.Credentials = new System.Net.NetworkCredential("enquiry@weblinkservices.net", "wlspl@123"); // Username/password of network, if apply  
+        SmtpMail.DeliveryMethod = SmtpDeliveryMethod.Network;
+        SmtpMail.EnableSsl = false;
+
+        SmtpMail.ServicePoint.MaxIdleTime = 0;
+        SmtpMail.ServicePoint.SetTcpKeepAlive(true, 2000, 2000);
+        message.BodyEncoding = Encoding.Default;
+        message.Priority = MailPriority.High;
+        SmtpMail.Send(message);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Mail Send Successfully !!');", true);
+        Response.Write("Email has been sent");
+    }
+
+    private MemoryStream PDF(string InvoiceNo, string message)
+    {
+        MemoryStream pdf = new MemoryStream();
+
+        //foreach (GridViewRow g1 in Grd_MAIL.Rows)
+        //{
+        //    string MAIL = (g1.FindControl("lblmultMail") as Label).Text;
+        //    bool chkmail = (g1.FindControl("chkmail") as CheckBox).Checked;
+        //    if (chkmail == true)
+        //    {
+        //SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM vw_Taxinvoice_pdf WHERE InvoiceNo='" + txt_InvoiceNo.Text + "' AND Email='" + MAIL + "'   ", con);
+
+        //Changes for Temparay
+        SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM vw_Taxinvoice_pdf As TP Inner join tbl_Invoice_both_Dtls As TD on TP.Id= TD.InvoiceId WHERE TP.InvoiceNo='" + txt_InvoiceNo.Text + "' ", con);
+        // SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM vw_Taxinvoice_pdf WHERE InvoiceNo='" + txt_InvoiceNo.Text + "' ", con);
+        DataTable Dt = new DataTable();
+        Da.Fill(Dt);
+        StringWriter sw = new StringWriter();
+        StringReader sr = new StringReader(sw.ToString());
+
+        Document doc = new Document(PageSize.A4, 10f, 10f, 55f, 0f);
+        PdfWriter pdfWriter = PdfWriter.GetInstance(doc, pdf);
+
+        PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(Server.MapPath("~/Files/") + "TaxInvoice.pdf", FileMode.Create));
+        //PdfWriter writer = PdfWriter.GetInstance(doc, Response.OutputStream);
+        XMLWorkerHelper.GetInstance().ParseXHtml(writer, doc, sr);
+
+        doc.Open();
+        //byte[] file;
+        //file = System.IO.File.ReadAllBytes(message);
+        //iTextSharp.text.Image jpg = iTextSharp.text.Image.GetInstance(file);
+
+        //jpg.ScaleToFit(550F, 200F);
+        //doc.Add(jpg);
+
+        string imageURL = Server.MapPath("~") + "/image/AA.png";
+
+        iTextSharp.text.Image png = iTextSharp.text.Image.GetInstance(imageURL);
+
+        //Resize image depend upon your need
+
+        png.ScaleToFit(70, 100);
+
+        //For Image Position
+        png.SetAbsolutePosition(40, 745);
+        //var document = new Document();
+
+        //Give space before image
+        //png.ScaleToFit(document.PageSize.Width - (document.RightMargin * 100), 50);
+        png.SpacingBefore = 50f;
+
+        //Give some space after the image
+
+        png.SpacingAfter = 1f;
+
+        png.Alignment = Element.ALIGN_LEFT;
+
+        //paragraphimage.Add(png);
+        //doc.Add(paragraphimage);
+        doc.Add(png);
+
+        PdfContentByte cb = pdfWriter.DirectContent;
+        cb.Rectangle(17f, 735f, 560f, 60f);
+        cb.Stroke();
+        // Header 
+        cb.BeginText();
+        cb.SetFontAndSize(BaseFont.CreateFont(@"C:\Windows\Fonts\Calibrib.ttf", "Identity-H", BaseFont.EMBEDDED), 20);
+        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "ENDEAVOUR AUTOMATION", 185, 773, 0);
+        cb.SetFontAndSize(BaseFont.CreateFont(@"C:\Windows\Fonts\Calibrib.ttf", "Identity-H", BaseFont.EMBEDDED), 11);
+        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Survey No. 27, Nilambkar Nagar, Near Raghunandan Karyalay,", 155, 755, 0);
+        cb.SetFontAndSize(BaseFont.CreateFont(@"C:\Windows\Fonts\Calibrib.ttf", "Identity-H", BaseFont.EMBEDDED), 11);
+        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Tathawade, Pune-411033", 232, 740, 0);
+        cb.EndText();
+
+        PdfContentByte cbb = pdfWriter.DirectContent;
+        cbb.Rectangle(17f, 710f, 560f, 25f);
+        cbb.Stroke();
+        // Header 
+        cbb.BeginText();
+        cbb.SetFontAndSize(BaseFont.CreateFont(@"C:\Windows\Fonts\Calibrib.ttf", "Identity-H", BaseFont.EMBEDDED), 10);
+        cbb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, " Mob: 9860502108    Email: endeavour.automations@gmail.com ", 153, 722, 0);
+        cbb.EndText();
+
+        PdfContentByte cbbb = pdfWriter.DirectContent;
+        cbbb.Rectangle(17f, 685f, 560f, 25f);
+        cbbb.Stroke();
+        // Header 
+        cbbb.BeginText();
+        cbbb.SetFontAndSize(BaseFont.CreateFont(@"C:\Windows\Fonts\Calibrib.ttf", "Identity-H", BaseFont.EMBEDDED), 10);
+        cbbb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "GSTIN :  27AFYPJ3488G1ZQ ", 30, 695, 0);
+        cbbb.SetFontAndSize(BaseFont.CreateFont(@"C:\Windows\Fonts\Calibrib.ttf", "Identity-H", BaseFont.EMBEDDED), 10);
+        cbbb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "W.E.F. :  01/07/2017", 185, 695, 0);
+        cbbb.SetFontAndSize(BaseFont.CreateFont(@"C:\Windows\Fonts\Calibrib.ttf", "Identity-H", BaseFont.EMBEDDED), 10);
+        cbbb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "PAN No. :  AFYPJ3488G", 310, 695, 0);
+        cbbb.SetFontAndSize(BaseFont.CreateFont(@"C:\Windows\Fonts\Calibrib.ttf", "Identity-H", BaseFont.EMBEDDED), 10);
+        cbbb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "State Code :  27 Maharashtra", 440, 695, 0);
+        cbbb.EndText();
+
+        PdfContentByte cd = pdfWriter.DirectContent;
+        cd.Rectangle(17f, 660f, 560f, 25f);
+        cd.Stroke();
+        // Header 
+        cd.BeginText();
+        cd.SetFontAndSize(BaseFont.CreateFont(@"C:\Windows\Fonts\Calibrib.ttf", "Identity-H", BaseFont.EMBEDDED), 17);
+        cd.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Tax Invoice", 260, 667, 0);
+        cd.EndText();
+
+        Paragraph paragraphTable1 = new Paragraph();
+        paragraphTable1.SpacingBefore = 120f;
+        paragraphTable1.SpacingAfter = 10f;
+
+        PdfPTable table = new PdfPTable(4);
+
+        float[] widths2 = new float[] { 100, 180, 100, 180 };
+        table.SetWidths(widths2);
+        table.TotalWidth = 560f;
+        table.LockedWidth = true;
+
+        if (Dt.Rows.Count > 0)
+        {
+            var CreateDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string CustName = Dt.Rows[0]["CustName"].ToString();
+            string Invoicen = Dt.Rows[0]["InvoiceNo"].ToString();
+            string PoDate = Dt.Rows[0]["PoDate"].ToString().TrimEnd("0:0".ToCharArray());
+            string PoNumber = Dt.Rows[0]["PoNo"].ToString();
+            string CompanyAddress = Dt.Rows[0]["CompanyAddress"].ToString();
+            string Address = Dt.Rows[0]["CustomerShippingAddress"].ToString();
+            string InvoiceDate = Dt.Rows[0]["InvoiceDate"].ToString().TrimEnd("0:0".ToCharArray());
+            string ChallanNo = Dt.Rows[0]["ChallanNo"].ToString();
+            string GSTNo = Dt.Rows[0]["CustomerGstNo"].ToString();
+            string KindAtt = Dt.Rows[0]["KindAtt"].ToString();
+            string TotalInWord = Dt.Rows[0]["TotalInWord"].ToString();
+            string GrandTotal = Dt.Rows[0]["GrandTotal"].ToString();
+            string CGST = Dt.Rows[0]["CGST"].ToString();
+            string SGST = Dt.Rows[0]["SGST"].ToString();
+            string Total = Dt.Rows[0]["AllTotalAmount"].ToString();
+
+            DateTime ffff1 = Convert.ToDateTime(Dt.Rows[0]["InvoiceDate"].ToString());
+            string datee = ffff1.ToString("dd-MM-yyyy");
+
+            DateTime ffff2 = Convert.ToDateTime(Dt.Rows[0]["PoDate"].ToString());
+            string podate = ffff1.ToString("dd-MM-yyyy");
+
+            table.AddCell(new Phrase("Buyer : ", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(CustName, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("Consignee :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(CustName, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("Shipping Address : ", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(CompanyAddress, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("Billing Address : ", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(Address, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("Invoice Number : ", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(Invoicen, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("Invoice Date :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(datee, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            //table.AddCell(new Phrase("Address", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            //table.AddCell(new Phrase(Address, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("P.O. Number :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(PoNumber, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("P.O. Date :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(podate, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("Challan No. :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(ChallanNo, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("GST No. :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(GSTNo, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("Created Date :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(CreateDate, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            table.AddCell(new Phrase("Kind Attn. :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            table.AddCell(new Phrase(KindAtt, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            //table.AddCell(new Phrase("Invoice Number : ", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            //table.AddCell(new Phrase(Invoicen, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            //table.AddCell(new Phrase("PO Number :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            //table.AddCell(new Phrase(PoNumber, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            //table.AddCell(new Phrase("Address", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            //table.AddCell(new Phrase(Address, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            //table.AddCell(new Phrase("Invoice Date :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            //table.AddCell(new Phrase(InvoiceDate, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            //table.AddCell(new Phrase("Challan No :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            //table.AddCell(new Phrase(ChallanNo, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            //table.AddCell(new Phrase("GST No :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            //table.AddCell(new Phrase(GSTNo, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            //table.AddCell(new Phrase("Created Date :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            //table.AddCell(new Phrase(CreateDate, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            //table.AddCell(new Phrase("Kind Attn. :", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            //table.AddCell(new Phrase(KindAtt, FontFactory.GetFont("Arial", 9, Font.BOLD)));
+
+            paragraphTable1.Add(table);
+            doc.Add(paragraphTable1);
+
+            Paragraph paragraphTable2 = new Paragraph();
+            paragraphTable2.SpacingAfter = 0f;
+            table = new PdfPTable(9);
+            float[] widths3 = new float[] { 4f, 19f, 10f, 8f, 8f, 8f, 11f, 8f, 12f };
+            table.SetWidths(widths3);
+
+            double Ttotal_price = 0;
+            //DataTable Dt = Read_Table("SELECT * FROM vw_Quotation_Invoice");
+
+            if (Dt.Rows.Count > 0)
+            {
+                table.TotalWidth = 560f;
+                table.LockedWidth = true;
+                table.AddCell(new Phrase("SN.", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                table.AddCell(new Phrase("Description", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                table.AddCell(new Phrase("Hsn / Sac", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                table.AddCell(new Phrase("Tax %", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                table.AddCell(new Phrase("Quantity", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                table.AddCell(new Phrase("Unit", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                table.AddCell(new Phrase("Rate", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                table.AddCell(new Phrase("Disc %", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                table.AddCell(new Phrase("Total", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+
+                int rowid = 1;
+                foreach (DataRow dr in Dt.Rows)
+                {
+
+                    table.TotalWidth = 560f;
+                    table.LockedWidth = true;
+
+                    //// double Ftotal = Convert.ToDouble(dr["Total"].ToString());
+                    // string _ftotal = Ftotal.ToString("##.00");
+                    // table.AddCell(new Phrase(rowid.ToString(), FontFactory.GetFont("Arial", 9)));
+                    // table.AddCell(new Phrase(dr["Description"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    // table.AddCell(new Phrase(dr["Hsn"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    // table.AddCell(new Phrase(dr["TaxPercentage"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    // table.AddCell(new Phrase(dr["Quntity"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    // table.AddCell(new Phrase(dr["Unit"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    // table.AddCell(new Phrase(dr["Rate"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    // table.AddCell(new Phrase(dr["DiscountPercentage"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    // table.AddCell(new Phrase(_ftotal, FontFactory.GetFont("Arial", 9)));
+                    // rowid++;
+
+                    // //Ttotal_price += Convert.ToDouble(dr["Total"].ToString());
+
+                    // //Ttotal_price += Convert.ToDouble(dr["AllTotalAmount"].ToString());
+
+
+                    //Temp changes
+
+
+                    // double Ftotal = Convert.ToDouble(dr["Total"].ToString());
+                    double Ftotal = Convert.ToDouble(dr["Total1"].ToString());
+                    //double Ftotal = Convert.ToDouble(dr["AllTotalAmount"].ToString());
+                    string _ftotal = Ftotal.ToString("##.00");
+                    table.AddCell(new Phrase(rowid.ToString(), FontFactory.GetFont("Arial", 9)));
+                    table.AddCell(new Phrase(dr["Description1"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    table.AddCell(new Phrase(dr["Hsn1"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    table.AddCell(new Phrase(dr["TaxPercentage1"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    table.AddCell(new Phrase(dr["Quntity1"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    table.AddCell(new Phrase(dr["Unit1"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    table.AddCell(new Phrase(dr["Rate1"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    table.AddCell(new Phrase(dr["DiscountPercentage1"].ToString(), FontFactory.GetFont("Arial", 9)));
+                    table.AddCell(new Phrase(_ftotal, FontFactory.GetFont("Arial", 9)));
+                    rowid++;
+
+                    //Ttotal_price += Convert.ToDouble(dr["Total"].ToString());
+                    Ttotal_price += Convert.ToDouble(dr["Total1"].ToString());
+                    //Ttotal_price += Convert.ToDouble(dr["AllTotalAmount"].ToString());
+                }
+            }
+            paragraphTable2.Add(table);
+            doc.Add(paragraphTable2);
+
+            //Space
+            Paragraph paragraphTable3 = new Paragraph();
+
+            string[] items = { "Goods once sold will not be taken back or exchange. \b",
+                        "Interest at the rate of 18% will be charged if bill is'nt paid within 30 days.\b",
+                        "Our risk and responsibility ceases the moment goods leaves out godown. \n",
+                        };
+
+            Font font12 = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font10 = FontFactory.GetFont("Arial", 10, Font.BOLD);
+            Paragraph paragraph = new Paragraph("", font12);
+
+            for (int i = 0; i < items.Length; i++)
+            {
+                paragraph.Add(new Phrase("", font10));
+            }
+
+            table = new PdfPTable(9);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+            table.SetWidths(new float[] { 4f, 19f, 10f, 8f, 8f, 8f, 11f, 8f, 12f });
+            table.AddCell(paragraph);
+            table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            //table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            //table.AddCell(new Phrase("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+
+            //doc.Add(table);
+            if (Dt.Rows.Count >= 10)
+            {
+                table.AddCell(new Phrase("  \n\n\n\n\n\n", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+                //doc.Add(table);
+            }
+            else if (Dt.Rows.Count >= 7 && Dt.Rows.Count <= 9)
+            {
+                table.AddCell(new Phrase("  \n\n\n\n\n", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+
+            }
+            else if (Dt.Rows.Count >= 4 && Dt.Rows.Count <= 6)
+            {
+                table.AddCell(new Phrase("  \n\n\n\n\n\n\n\n\n\n", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+
+            }
+            else if (Dt.Rows.Count < 4)
+            {
+
+                table.AddCell(new Phrase("  \n\n\n\n\n\n\n\n\n\n", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+
+            }
+            doc.Add(table);
+            //Add Total Row start
+            Paragraph paragraphTable5 = new Paragraph();
+
+            //paragraphTable5.SpacingAfter = 10f;   
+
+            string[] itemsss = { "Goods once sold will not be taken back or exchange. \b",
+                        "Interest at the rate of 18% will be charged if bill is'nt paid within 30 days.\b",
+                        "Our risk and responsibility ceases the moment goods leaves out godown. \n",
+                        };
+
+            Font font13 = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font11 = FontFactory.GetFont("Arial", 10, Font.BOLD);
+            Paragraph paragraphh = new Paragraph("", font12);
+
+            //paragraphh.SpacingAfter = 10f;
+
+            for (int i = 0; i < items.Length; i++)
+            {
+                paragraph.Add(new Phrase("", font10));
+            }
+
+            table = new PdfPTable(3);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+
+            paragraph.Alignment = Element.ALIGN_RIGHT;
+
+            table.SetWidths(new float[] { 0f, 76f, 12f });
+            table.AddCell(paragraph);
+            PdfPCell cell = new PdfPCell(new Phrase("Sub Total", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell);
+            PdfPCell cell11 = new PdfPCell(new Phrase(Ttotal_price.ToString("##.00"), FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell11.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell11);
+            doc.Add(table);
+            // add total row end
+
+            //CGST 9% Row STart
+            Paragraph paragraphTable15 = new Paragraph();
+            paragraphTable5.SpacingAfter = 0f;
+            //paragraphTable15
+            //paragraphTable5.SpacingAfter = 10f;
+
+            string[] itemss = { "Goods once sold will not be taken back or exchange. \b",
+                        "Interest at the rate of 18% will be charged if bill is'nt paid within 30 days.\b",
+                        "Our risk and responsibility ceases the moment goods leaves out godown. \n",
+                        };
+
+            Font font1 = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font2 = FontFactory.GetFont("Arial", 10, Font.BOLD);
+            Paragraph paragraphhh = new Paragraph("", font12);
+
+            //paragraphh.SpacingAfter = 10f;
+
+            for (int i = 0; i < items.Length; i++)
+            {
+                paragraph.Add(new Phrase("", font10));
+            }
+
+            table = new PdfPTable(3);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+
+            //var Cgst_9 = Convert.ToDecimal(Ttotal_price) * 9 / 100;
+
+            table.SetWidths(new float[] { 0f, 76f, 12f });
+            table.AddCell(paragraph);
+            PdfPCell cell2 = new PdfPCell(new Phrase("CGST %", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell2.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell2);
+            PdfPCell cell3 = new PdfPCell(new Phrase(CGST, FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell3.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell3);
+
+            doc.Add(table);
+            //CGST 9% Row End
+
+            //SGST 9% Row STart
+            Paragraph paragraphTable16 = new Paragraph();
+            paragraphTable5.SpacingAfter = 10f;
+
+            //paragraphTable5.SpacingAfter = 10f;
+
+            string[] item = { "Goods once sold will not be taken back or exchange. \b",
+                        "Interest at the rate of 18% will be charged if bill is'nt paid within 30 days.\b",
+                        "Our risk and responsibility ceases the moment goods leaves out godown. \n",
+                        };
+
+            Font font14 = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font15 = FontFactory.GetFont("Arial", 10, Font.BOLD);
+            Paragraph paragraphhhh = new Paragraph("", font12);
+
+            //paragraphh.SpacingAfter = 10f;
+
+            for (int i = 0; i < items.Length; i++)
+            {
+                paragraph.Add(new Phrase("", font10));
+            }
+
+            table = new PdfPTable(3);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+
+            //var Sgst_9 = Convert.ToDecimal(Ttotal_price) * 9 / 100;
+
+
+            table.SetWidths(new float[] { 0f, 76f, 12f });
+            table.AddCell(paragraph);
+            PdfPCell cell22 = new PdfPCell(new Phrase("SGST %", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell22.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell22);
+            PdfPCell cell33 = new PdfPCell(new Phrase(SGST, FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell33.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell33);
+
+
+            doc.Add(table);
+            //SGST 9% Row End
+
+            //Grand total Row STart
+            Paragraph paragraphTable17 = new Paragraph();
+            paragraphTable5.SpacingAfter = 10f;
+
+            //paragraphTable5.SpacingAfter = 10f;
+
+            string[] itemm = { "Goods once sold will not be taken back or exchange. \b",
+                        "Interest at the rate of 18% will be charged if bill is'nt paid within 30 days.\b",
+                        "Our risk and responsibility ceases the moment goods leaves out godown. \n",
+                        };
+
+            Font font16 = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font17 = FontFactory.GetFont("Arial", 10, Font.BOLD);
+            Paragraph paragraphhhhh = new Paragraph("", font12);
+
+            //paragraphh.SpacingAfter = 10f;
+
+            for (int i = 0; i < items.Length; i++)
+            {
+                paragraph.Add(new Phrase("", font10));
+            }
+
+            table = new PdfPTable(3);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+
+            //var Grndttl = Convert.ToDecimal(Ttotal_price) + Convert.ToDecimal(Cgst_9) + Convert.ToDecimal(Sgst_9);
+
+            table.SetWidths(new float[] { 0f, 76f, 12f });
+            table.AddCell(paragraph);
+            PdfPCell cell44 = new PdfPCell(new Phrase("Grand Total", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell44.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell44);
+            PdfPCell cell55 = new PdfPCell(new Phrase(GrandTotal, FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell55.HorizontalAlignment = Element.ALIGN_RIGHT;
+            table.AddCell(cell55);
+
+
+            doc.Add(table);
+            //Grand total Row End
+
+
+
+
+
+            //Grand total in word Row STart
+            Paragraph paragraphTable18 = new Paragraph();
+            paragraphTable18.SpacingAfter = 50f;
+
+            //paragraphTable5.SpacingAfter = 10f;
+
+            string[] itemmm = { "Goods once sold will not be taken back or exchange. \b",
+                        "Interest at the rate of 18% will be charged if bill is'nt paid within 30 days.\b",
+                        "Our risk and responsibility ceases the moment goods leaves out godown. \n",
+                        };
+
+            Font font18 = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font19 = FontFactory.GetFont("Arial", 10, Font.BOLD);
+            Paragraph paragraphhmhhh = new Paragraph("", font12);
+
+
+
+            for (int i = 0; i < items.Length; i++)
+            {
+                paragraph.Add(new Phrase("", font10));
+            }
+
+            table = new PdfPTable(3);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+
+
+
+            table.SetWidths(new float[] { 0f, 25f, 63f });
+            table.AddCell(paragraph);
+            PdfPCell cell66 = new PdfPCell(new Phrase("Amount In Words Rs. ", FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell66.HorizontalAlignment = Element.ALIGN_CENTER;
+            table.AddCell(cell66);
+            PdfPCell cell77 = new PdfPCell(new Phrase(TotalInWord, FontFactory.GetFont("Arial", 10, Font.BOLD)));
+            cell77.HorizontalAlignment = Element.ALIGN_CENTER;
+            table.AddCell(cell77);
+
+            doc.Add(table);
+            //Grand total in word Row End
+
+            /////////new code //////////14 start
+            ///  ///////////term And Condition
+
+            string[] items90term = { "Dear Sir/Madam,\b", "We acknowledge with thanks the receipt of your above enquiry and have great pleasure in submitting our lowest quotation,\b", "subject to the conditions printed below.\n" };
+
+            Font font12112term = FontFactory.GetFont("Arial", 8);
+            Font font10111term = FontFactory.GetFont("Arial", 8);
+            Font fontWithSize = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+            // Paragraph paragraph110term = new Paragraph("\bTerms & Conditions:", font12112term);
+            Paragraph paragraph110term = new Paragraph("I / we certify that our registration certficate under the GST Act, 2017 is in force on the date on which the supply of goods specified In This Tax Invoiceis made by me / us & the transaction of supply covered by this Tax Invoice had been effected by me / us & it shall be accounted for in the turnover ofsupplies while filling of return &the due tax if any payable on the supplies has been paid or shall be paid.Further certified that the particulars givenabove are true and correct &the amount indicated represents the prices actually charged and that there is no flow additional consideration directly orindirectly from the buyer. Interest @ 18 % p.a.charged on all outstanding more than one month after invoice has been rendered", fontWithSize);
+
+            for (int i = 0; i < items90term.Length; i++)
+            {
+                paragraph110term.Add(new Phrase(" ", fontWithSize));
+            }
+
+            table = new PdfPTable(1);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+            table.SetWidths(new float[] { 150f });
+
+            table.AddCell(paragraph110term);
+            //table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 10)));
+            //table.AddCell(new Phrase("", FontFactory.GetFont("Arial", 11, Font.BOLD)));
+
+            doc.Add(table);
+
+            /////////////////////////////////////////////////term condition in Database
+
+            string[] items90termdata = { "Dear Sir/Madam,\b", "We acknowledge with thanks the receipt of your above enquiry and have great pleasure in submitting our lowest quotation,\b", "subject to the conditions printed below.\n" };
+
+            Font font12112termdata = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font10111termdata = FontFactory.GetFont("Arial", 10);
+            Paragraph paragraph110termdata = new Paragraph("", font12112termdata);
+
+            for (int i = 0; i < items90termdata.Length; i++)
+            {
+                paragraph110termdata.Add(new Phrase(" ", font10111termdata));
+            }
+
+            table = new PdfPTable(2);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+            table.SetWidths(new float[] { 150f, 350f });
+
+
+
+            doc.Add(table);
+            ////////term condition in Database end
+            string[] items91 = { "Dear Sir/Madam,\b", "We acknowledge with thanks the receipt of your above enquiry and have great pleasure in submitting our lowest quotation,\b", "subject to the conditions printed below.\n" };
+
+            Font font12111 = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font101111 = FontFactory.GetFont("Arial", 10);
+            Paragraph paragraph111 = new Paragraph("", font12111);
+
+            for (int i = 0; i < items91.Length; i++)
+            {
+                paragraph111.Add(new Phrase(" ", font101111));
+            }
+
+            table = new PdfPTable(1);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+            table.SetWidths(new float[] { 560f });
+
+            table.AddCell(new Phrase("\b Subject To Pune Jurisdiction Only \n Payment to be made by A/c. Payee Cheque Only. \n Interest @18 % will be charged on bill not paid within due date", FontFactory.GetFont("Arial", 10)));
+
+            doc.Add(table);
+            /////////////////////////////
+
+            ///////////Add Bank details Titles
+
+            string[] items90 = { "Dear Sir/Madam,\b", "We acknowledge with thanks the receipt of your above enquiry and have great pleasure in submitting our lowest quotation,\b", "subject to the conditions printed below.\n" };
+
+            Font font12112 = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font10111 = FontFactory.GetFont("Arial", 10);
+            Paragraph paragraph110 = new Paragraph("\bBank Account Details", font12112);
+
+            for (int i = 0; i < items90.Length; i++)
+            {
+                paragraph110.Add(new Phrase(" ", font10111));
+            }
+
+            table = new PdfPTable(1);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+            table.SetWidths(new float[] { 310f });
+
+            table.AddCell(paragraph110);
+            doc.Add(table);
+            /////////////////////////////////////////////////
+            string[] items9 = { "Dear Sir/Madam,\b", "We acknowledge with thanks the receipt of your above enquiry and have great pleasure in submitting our lowest quotation,\b", "subject to the conditions printed below.\n" };
+
+            Font font1211 = FontFactory.GetFont("Arial", 12, Font.BOLD);
+            Font font1011 = FontFactory.GetFont("Arial", 10);
+            Paragraph paragraph11 = new Paragraph("", font1211);
+
+            for (int i = 0; i < items9.Length; i++)
+            {
+                paragraph11.Add(new Phrase(" ", font1011));
+            }
+
+            table = new PdfPTable(2);
+            table.TotalWidth = 560f;
+            table.LockedWidth = true;
+            table.SetWidths(new float[] { 310f, 250f });
+
+            //table.AddCell(paragraph11);
+            table.AddCell(new Phrase("\bBank Name : BANK OF BARODA\n\n\bAccount Name : ENDEAVOUR AUTOMATION\n\n\bBranch : KALEWADI\n\n\bA/c No. : 46180200000214\n\n\bIFSC/Neft Code :BARB0KALEWA\n", FontFactory.GetFont("Arial", 10)));
+            table.AddCell(new Phrase("\b      For,\n\n\b\b\b\b\b\b\b\b\b            ENDEAVOUR AUTOMATION\n\n\n\n\n                                       Authorised Signatory", FontFactory.GetFont("Arial", 11, Font.BOLD)));
+
+            doc.Add(table);
+            /////////////////////////////
+            PdfPCell celll = null;
+            Paragraph paragraphTable4 = new Paragraph();
+            paragraphTable4.SpacingBefore = 10f;
+            table = new PdfPTable(1);
+            table.TotalWidth = 560f;
+            float[] widths = new float[] { 560f };
+            table.SetWidths(widths);
+            table.LockedWidth = true;
+            cell = new PdfPCell(new Phrase("                                                                                           *Subject to Pune Jurisdiction Only*", FontFactory.GetFont("Arial", 9, Font.BOLD)));
+            cell.Border = Rectangle.NO_BORDER;
+            table.AddCell(cell);
+            doc.Add(table);
+            doc.Close();
+            Byte[] FileBuffer = File.ReadAllBytes(Server.MapPath("~/Files/") + "TaxInvoice.pdf");
+        }
+        //    }
+        //}
+        return pdf;
+    }
+
+    protected void check_address_CheckedChanged(object sender, EventArgs e)
+    {
+        if (check_address.Checked == true)
+        {
+            txtCustName.Text = txtCompName.Text;
+            txt_ShipingAdddesss.Text = txt_CompanyAddress.Text;
+            txt_CustomerGstNo.Text = txt_CompanyGSTno.Text;
+            txt_CustomerPanNo.Text = txt_CompanyPanNo.Text;
+            txt_CustomerStateCode.Text = txt_CompanyStateCode.Text;
+            drop_CustomerRagisterType.Text = drop_CustomerRagisterType.Text;
+        }
+    }
+
+    protected void btn_Cancel_Click(object sender, EventArgs e)
+    {
+        if (Request.QueryString["InvoiceNo"] != null)
+        {
+            Response.Redirect("Taxinvoicereport.aspx");
+        }
+        else
+        {
+            Response.Redirect("TaxInvoiceList.aspx");
+        }
+
+    }
+
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetPONOList(string prefixText, int count)
+    {
+        return AutoFillPONOlist(prefixText);
+    }
+    public static List<string> AutoFillPONOlist(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.CommandText = "select DISTINCT Pono from CustomerPO_Hdr where " + "Pono like @Search + '%' AND Is_Deleted='0' ";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> Pono = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        Pono.Add(sdr["Pono"].ToString());
+                    }
+                }
+                con.Close();
+                return Pono;
+            }
+        }
+    }
+
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetCompanyList(string prefixText, int count)
+    {
+        return AutoFillCompanylist(prefixText);
+    }
+    public static List<string> AutoFillCompanylist(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                // com.CommandText = "select DISTINCT JobNo from CustomerPO_Hdr where " + "JobNo like @Search + '%' AND Is_Deleted='0'  ";
+                com.CommandText = "select DISTINCT CustomerName from [tblCustomer] where " + "CustomerName like @Search + '%' AND isdeleted='0'  ";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> Customer_Name = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        Customer_Name.Add(sdr["CustomerName"].ToString());
+                    }
+                }
+                con.Close();
+                return Customer_Name;
+            }
+        }
+    }
+
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetJobNOList(string prefixText, int count)
+    {
+        return AutoFillJOBNOlist(prefixText);
+    }
+    public static List<string> AutoFillJOBNOlist(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.CommandText = "select DISTINCT JobNo from CustomerPO_Hdr where " + "JobNo like @Search + '%' AND Is_Deleted='0'  ";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> JobNo = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        JobNo.Add(sdr["JobNo"].ToString());
+                    }
+                }
+                con.Close();
+                return JobNo;
+            }
+        }
+    }
+
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetDescriptionList(string prefixText, int count)
+    {
+        return AutoFillDescriptionlist(prefixText);
+    }
+
+    public static List<string> AutoFillDescriptionlist(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.CommandText = "select DISTINCT CompName from tblComponent where " + "CompName like @Search + '%' AND isdeleted='0'";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> CompName = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        CompName.Add(sdr["CompName"].ToString());
+                    }
+                }
+                con.Close();
+                return CompName;
+            }
+
+        }
+    }
+
+    //protected void txt_PoNo_TextChanged(object sender, EventArgs e)
+    //{
+    //try
+    //{
+    //    DataTable Dt = new DataTable();
+    //    SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM CustomerPO_Hdr WHERE Pono='" + txt_PoNo.Text + "'", con);
+    //    Da.Fill(Dt);
+    //    if (Dt.Rows.Count > 0)
+    //    {
+    //        DateTime ffff1 = Convert.ToDateTime(Dt.Rows[0]["PoDate"].ToString());
+    //        txt_poDate.Text = ffff1.ToString("yyyy-MM-dd");
+
+    //        txt_CompanyGSTno.Text = Dt.Rows[0]["GstNo"].ToString();
+    //        txt_KindAtt.Text = Dt.Rows[0]["KindAtt"].ToString();
+    //        txt_CompanyAddress.Text = Dt.Rows[0]["DeliveryAddress"].ToString();
+    //        txt_Payterm.Text = Dt.Rows[0]["PayTerm"].ToString();
+    //        TXtMailtbl.Text = Dt.Rows[0]["EmailId"].ToString();
+    //        //txt_subtotal.Text = Dt.Rows[0]["AllTotalPrice"].ToString();
+    //        //txt_cgst_amt.Text = Dt.Rows[0]["Cgst"].ToString();
+    //        //txt_sgst_amt.Text = Dt.Rows[0]["Sgst"].ToString();    
+    //        //txt_grand_total.Text = Dt.Rows[0]["GrandTotal"].ToString();
+    //    }
+
+    //    con.Open();
+    //    DataTable SDt = new DataTable();
+    //    SqlDataAdapter SDA = new SqlDataAdapter("SELECT  * FROM vw_Tax_Invoice WHERE Pono='" + txt_PoNo.Text + "'", con);
+    //    SDA.Fill(SDt);
+    //    grd_getDTLS.EmptyDataText = "Not Records Found";
+    //    grd_getDTLS.DataSource = SDt;
+    //    grd_getDTLS.DataBind();
+    //    con.Close();
+    //}
+    //catch (Exception)
+    //{
+
+    //    throw;
+    //}
+
+    //}
+
+    protected void txt_discription_TextChanged(object sender, EventArgs e)
+    {
+        SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM tblComponent WHERE CompName='" + txt_discription.Text + "'", con);
+        DataTable Dt = new DataTable();
+        Da.Fill(Dt);
+        if (Dt.Rows.Count > 0)
+        {
+            txt_total_amount.Text = "0";
+            txt_discount.Text = "0";
+
+            txt_hsn.Text = Dt.Rows[0]["HSN"].ToString();
+            txt_rate.Text = Dt.Rows[0]["Rate"].ToString();
+            txt_unit.Text = Dt.Rows[0]["Units"].ToString();
+            txt_tax.Text = Dt.Rows[0]["Tax"].ToString();
+        }
+        txtprintdescription.Text = txt_discription.Text;
+    }
+    private decimal TTotal;
+    decimal totaltax = 0;
+
+    decimal Total11177 = 0, Qty = 0, rate111111 = 0, totalrateqty = 0, Totaltax12 = 0, Totaltax18 = 0, Totaltx28 = 0;
+    protected void grd_getDTLS_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            // cast the current row to a datarowview
+            DataRowView row = e.Row.DataItem as DataRowView;
+            TTotal += Convert.ToDecimal(DataBinder.Eval(e.Row.DataItem, "Total"));
+            hdnPoProductTot.Value = TTotal.ToString();
+            txt_subtotal.Text = TTotal.ToString("##.00");
+
+            string lbltotaltax = (e.Row.FindControl("lbl_tax_GET") as Label).Text;
+            string lblrate = (e.Row.FindControl("lbl_rate_GET") as Label).Text;
+            string lblqty = (e.Row.FindControl("lbl_quntity_GET") as Label).Text;
+            string lblAmount = (e.Row.FindControl("lbl_total_amount_GET") as Label).Text;
+            totaltax = Convert.ToDecimal(lbltotaltax);
+            if (lbltotaltax == "12")
+            {
+                TaxPanel2.Visible = true;
+                Totaltax12 += Convert.ToDecimal(lblAmount);
+                hdn12.Value = Totaltax12.ToString();
+                if (txt_CompanyStateCode.Text == "27 MAHARASHTRA")
+                {
+                    Label.Text = ((Convert.ToDecimal(Totaltax12) * Convert.ToDecimal(lbltotaltax) / 100) / 2).ToString("0.00");
+                    TextBox2.Text = ((Convert.ToDecimal(Totaltax12) * Convert.ToDecimal(lbltotaltax) / 100) / 2).ToString("0.00");
+                    TextBox3.Text = Convert.ToDecimal(00).ToString("0.00");
+                }
+                else
+                {
+                    TextBox3.Text = ((Convert.ToDecimal(Totaltax12) * Convert.ToDecimal(lbltotaltax) / 100)).ToString("0.00");
+                    TextBox2.Text = Convert.ToDecimal(00).ToString("0.00");
+                    Label.Text = Convert.ToDecimal(00).ToString("0.00");
+                }
+            }
+            if (lbltotaltax == "18")
+            {
+                TaxPanel1.Visible = true;
+                Totaltax18 += Convert.ToDecimal(lblAmount);
+                hdn18.Value = Totaltax18.ToString();
+                if (txt_CompanyStateCode.Text == "27 MAHARASHTRA")
+                {
+                    txt_cgst_amt.Text = ((Convert.ToDecimal(Totaltax18) * Convert.ToDecimal(lbltotaltax) / 100) / 2).ToString("0.00");
+                    txt_sgst_amt.Text = ((Convert.ToDecimal(Totaltax18) * Convert.ToDecimal(lbltotaltax) / 100) / 2).ToString("0.00");
+                    txt_igst_amt.Text = Convert.ToDecimal(00).ToString("0.00");
+                }
+                else
+                {
+                    txt_cgst_amt.Text = ((Convert.ToDecimal(Totaltax18) * Convert.ToDecimal(lbltotaltax) / 100) / 2).ToString("0.00");
+                    txt_sgst_amt.Text = ((Convert.ToDecimal(Totaltax18) * Convert.ToDecimal(lbltotaltax) / 100) / 2).ToString("0.00");
+                    txt_igst_amt.Text = Convert.ToDecimal(00).ToString("0.00");
+                    //txt_igst_amt.Text = ((Convert.ToDecimal(Totaltax18) * Convert.ToDecimal(lbltotaltax) / 100)).ToString("0.00");
+                    //txt_cgst_amt.Text = Convert.ToDecimal(00).ToString("0.00");
+                    //txt_sgst_amt.Text = Convert.ToDecimal(00).ToString("0.00");
+                }
+            }
+            if (lbltotaltax == "28")
+            {
+                TaxPanel3.Visible = true;
+                Totaltx28 += Convert.ToDecimal(lblAmount);
+                hdn28.Value = Totaltx28.ToString();
+                if (txt_CompanyStateCode.Text == "27 MAHARASHTRA")
+                {
+                    TextBox4.Text = ((Convert.ToDecimal(Totaltx28) * Convert.ToDecimal(lbltotaltax) / 100) / 2).ToString("0.00");
+                    TextBox5.Text = ((Convert.ToDecimal(Totaltx28) * Convert.ToDecimal(lbltotaltax) / 100) / 2).ToString("0.00");
+                    TextBox6.Text = Convert.ToDecimal(00).ToString("0.00");
+                }
+                else
+                {
+                    TextBox6.Text = ((Convert.ToDecimal(Totaltx28) * Convert.ToDecimal(lbltotaltax) / 100)).ToString("0.00");
+                    TextBox4.Text = Convert.ToDecimal(00).ToString("0.00");
+                    TextBox5.Text = Convert.ToDecimal(00).ToString("0.00");
+                }
+            }
+
+            taxhidden.Value = totalrateqty.ToString();
+
+            decimal grd_total;
+            if (!string.IsNullOrEmpty(txt_total_amount.Text))
+            {
+                grd_total = 0;
+            }
+            else
+            {
+                decimal val1 = Convert.ToDecimal(txt_subtotal.Text);
+                decimal val2 = Convert.ToDecimal(txt_sgst_amt.Text);
+                decimal val3 = Convert.ToDecimal(txt_cgst_amt.Text);
+                decimal val4 = Convert.ToDecimal(Label.Text);
+                decimal val5 = Convert.ToDecimal(TextBox2.Text);
+                decimal val6 = Convert.ToDecimal(TextBox3.Text);
+                decimal val7 = Convert.ToDecimal(TextBox4.Text);
+                decimal val8 = Convert.ToDecimal(TextBox5.Text);
+                decimal val9 = Convert.ToDecimal(TextBox6.Text);
+                decimal val10 = Convert.ToDecimal(txt_igst_amt.Text);
+                grd_total = (val1 + val2 + val3 + val4 + val5 + val6 + val7 + val8 + val9 + val10);
+            }
+            //txt_grand_total.Text = grd_total.ToString();
+            txt_grand_total.Text = grd_total.ToString("##.00");
+
+
+            hfTotal.Value = txt_grand_total.Text;
+            string isNegative = "";
+            try
+            {
+                string number = hfTotal.Value;
+                number = Convert.ToDouble(number).ToString();
+
+                lbl_Amount_In_Word.Text = isNegative + ConvertToWords(number);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            //Round Off
+            var Totalamtfff = Convert.ToDouble(txt_grand_total.Text);
+            var totalgrand = Math.Round(Totalamtfff);
+            System.Globalization.CultureInfo info = System.Globalization.CultureInfo.GetCultureInfo("en-IN");
+            string FinaleTotalamt = Totalamtfff.ToString("N2", info);
+            double GetVal = 0;  // to know rounded value
+            GetVal -= Convert.ToDouble(Totalamtfff) - Convert.ToDouble(totalgrand);
+            Double roundoff = Math.Round(GetVal, 2);
+            txtroundoff.Text = roundoff.ToString();
+            txt_grand_total.Text = totalgrand.ToString();
+        }
+    }
+
+    protected void gv_cancel_Click(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as LinkButton).NamingContainer as GridViewRow;
+
+        string Tax = ((TextBox)row.FindControl("txt_tax_grd")).Text;
+        string Quntity = ((TextBox)row.FindControl("txt_quntity_grd")).Text;
+        string Rate = ((TextBox)row.FindControl("txt_rate_grd")).Text;
+        string Discount = ((TextBox)row.FindControl("txt_discount_grd")).Text;
+        string TotalAmount = ((TextBox)row.FindControl("txt_total_amount_grd")).Text;
+
+        DataTable Dt = ViewState["Invoice"] as DataTable;
+        gvPurchaseRecord.EditIndex = -1;
+        //Show_Grid();
+        //gvPurchaseRecord.DataBind();
+        ViewState["Invoice"] = Dt;
+        gvPurchaseRecord.EditIndex = -1;
+
+        gvPurchaseRecord.DataSource = (DataTable)ViewState["Invoice"];
+        gvPurchaseRecord.DataBind();
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Success", "scrollToElement();", true);
+    }
+
+    protected void gvPurchaseRecord_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+    {
+        //gvPurchaseRecord.EditIndex = -1;
+        //gvPurchaseRecord.DataSource = (DataTable)ViewState["Invoice"];
+        //gvPurchaseRecord.DataBind();
+        //ScriptManager.RegisterStartupScript(this, this.GetType(), "Success", "scrollToElement();", true);
+    }
+
+    protected void lnkMAILDelete_Click(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as LinkButton).NamingContainer as GridViewRow;
+
+        DataTable dt = ViewState["MULTMail"] as DataTable;
+        dt.Rows.Remove(dt.Rows[row.RowIndex]);
+        ViewState["MULTMail"] = dt;
+        Grd_MAIL.DataSource = (DataTable)ViewState["MULTMail"];
+        Grd_MAIL.DataBind();
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Mail ID Delete Succesfully !!!');", true);
+    }
+
+    protected void ShowMAILRecord()
+    {
+        ViewState["RowNo"] = (int)ViewState["RowNo"] + 1;
+        DataTable Dt = (DataTable)ViewState["MULTMail"];
+        Dt.Rows.Add(ViewState["RowNo"], TXtMailtbl.Text);
+        ViewState["MULTMail"] = Dt;
+
+        TXtMailtbl.Text = string.Empty;
+
+        Grd_MAIL.DataSource = (DataTable)ViewState["MULTMail"];
+        Grd_MAIL.DataBind();
+    }
+
+    protected void Lnkbtn_Addmail_Click(object sender, EventArgs e)
+    {
+        if (TXtMailtbl.Text == "")
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Please fill Mail ID  !!!');", true);
+        }
+        else
+        {
+            ShowMAILRecord();
+        }
+    }
+
+    //protected void txtJobNo_TextChanged(object sender, EventArgs e)
+    //{
+    //    ////customer information 
+    //    SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM CustomerPO_Hdr WHERE JobNo='" + txtJobNo.Text + "'  ", con);
+    //    DataTable Dt = new DataTable();
+    //    Da.Fill(Dt);
+    //    if (Dt.Rows.Count > 0)
+    //    {
+    //        txtCompName.Text = Dt.Rows[0]["CustomerName"].ToString();
+    //        txt_PoNo.Text = Dt.Rows[0]["Pono"].ToString();
+    //        DateTime ffff1 = Convert.ToDateTime(Dt.Rows[0]["PoDate"].ToString());
+    //        txt_poDate.Text = ffff1.ToString("yyyy-MM-dd");
+    //        txt_CompanyGSTno.Text = Dt.Rows[0]["GstNo"].ToString();
+    //        txt_KindAtt.Text = Dt.Rows[0]["KindAtt"].ToString();
+    //        txt_CompanyAddress.Text = Dt.Rows[0]["DeliveryAddress"].ToString();
+    //        txt_Payterm.Text = Dt.Rows[0]["PayTerm"].ToString();
+    //        TXtMailtbl.Text = Dt.Rows[0]["EmailId"].ToString();
+    //    }
+    //    ///pan number information in customer table
+    //    SqlDataAdapter Daa = new SqlDataAdapter("SELECT * FROM tblCustomer WHERE CustomerName='" + txtCompName.Text + "'  ", con);
+    //    DataTable Dtt = new DataTable();
+    //    Daa.Fill(Dtt);
+    //    if (Dtt.Rows.Count > 0)
+    //    {
+    //        txt_CompanyPanNo.Text = Dtt.Rows[0]["PanNo"].ToString();
+    //        txt_CompanyStateCode.Text = Dtt.Rows[0]["StateCode"].ToString();
+    //    }
+    //    ///bind grid in automatic in customer po table.
+    //    con.Open();
+    //    DataTable SDt = new DataTable();
+    //    SqlDataAdapter SDA = new SqlDataAdapter("SELECT [Description],[Hsn_Sac],[TaxPercenteage],[Quantity],[Unit],[Rate],[DiscountPercentage],[Total] FROM vw_Tax_Invoice WHERE Pono='" + txt_PoNo.Text + "'", con);
+    //    SDA.Fill(SDt);
+    //    int count = 1;
+    //    if (SDt.Rows.Count > 0)
+    //    {
+    //        ViewState["RowNo"] = 0;
+    //        Dt_Itemsdetails.Columns.AddRange(new DataColumn[9] { new DataColumn("Id"),
+    //            new DataColumn("Description"),  new DataColumn("Hsn_Sac"),
+    //            new DataColumn("TaxPercenteage"), new DataColumn("Quantity"),
+    //            new DataColumn("Unit"), new DataColumn("Rate"),
+    //            new DataColumn("DiscountPercentage"), new DataColumn("Total")
+    //          });
+
+    //        ViewState["Invoicedetails"] = Dt_Itemsdetails;
+    //        for (int i = 0; i < SDt.Rows.Count; i++)
+    //        {
+    //            Dt_Itemsdetails.Rows.Add(count, SDt.Rows[i]["Description"].ToString(), SDt.Rows[i]["Hsn_Sac"].ToString(), SDt.Rows[i]["TaxPercenteage"].ToString(), SDt.Rows[i]["Quantity"].ToString(), SDt.Rows[i]["Unit"].ToString(), SDt.Rows[i]["Rate"].ToString(), SDt.Rows[i]["DiscountPercentage"].ToString(), SDt.Rows[i]["Total"].ToString());
+
+    //            count = count + 1;
+    //        }
+    //    }
+
+    //    grd_getDTLS.DataSource = Dt_Itemsdetails;
+    //    grd_getDTLS.DataBind();
+    //    grd_getDTLS.EmptyDataText = "Not Records Found";
+    //    con.Close();
+    //    //kint attence bind
+    //    DataTable dt1 = new DataTable();
+    //    SqlDataAdapter sad1 = new SqlDataAdapter("select * from tblCustomerContactPerson where CustName='" + txtCompName.Text + "'", con);
+    //    sad1.Fill(dt1);
+    //    if (dt1.Rows.Count>0)
+    //    {
+    //        txt_KindAtt.DataTextField = "ContactPerName";
+    //        txt_KindAtt.DataSource = dt1;
+    //        txt_KindAtt.DataBind();
+    //        txt_KindAtt.Items.Insert(0, "-- Select Kind Att. --");
+    //    }
+
+    //    //email gridview bind
+    //    DataTable dt2 = new DataTable();
+    //    SqlDataAdapter sad2 = new SqlDataAdapter("select * from tblCustomerContactPerson where CustName='" + txtCompName.Text + "'", con);
+    //    sad2.Fill(dt2);
+    //    Grd_MAIL.DataSource = dt2;
+    //    Grd_MAIL.DataBind();
+    //    Grd_MAIL.EmptyDataText = "Record Not Found";
+
+    //}
+
+    protected void Grd_MAIL_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (btn_save.Text == "Update")
+        {
+
+
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                con.Open();
+                int id = Convert.ToInt32(Grd_MAIL.DataKeys[e.Row.RowIndex].Values[0]);
+                CheckBox chkmailupdate = (CheckBox)e.Row.FindControl("chkmail");
+                Label mail = (Label)e.Row.FindControl("lblmultMail");
+                SqlCommand cmd = new SqlCommand("select chkEmail from InvoiceMail where InvoiceNo='" + txt_InvoiceNo.Text + "' AND id='" + id + "'", con);
+
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.Read())
+                {
+
+                    chkupdate = dr["chkEmail"].ToString();
+                    con.Close();
+                }
+                chkmailupdate.Checked = chkupdate == "True" ? true : false;
+                con.Close();
+            }
+        }
+    }
+
+    protected void lnkbtnDelete_Click(object sender, EventArgs e)
+    {
+        GridViewRow row = (sender as LinkButton).NamingContainer as GridViewRow;
+
+        DataTable dt = ViewState["Invoicedetails"] as DataTable;
+        dt.Rows.Remove(dt.Rows[row.RowIndex]);
+        ViewState["Invoicedetails"] = dt;
+        grd_getDTLS.DataSource = (DataTable)ViewState["Invoicedetails"];
+        grd_getDTLS.DataBind();
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Data Delete Succesfully !!!');", true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "Success", "scrollToElement();", true);
+    }
+
+    protected void txtCompName_TextChanged(object sender, EventArgs e)
+    {
+        SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM [tbl_Quotation_Hdr] WHERE Customer_Name='" + txtCompName.Text + "'  ", con);
+        DataTable Dt = new DataTable();
+        Da.Fill(Dt);
+        if (Dt.Rows.Count > 0)
+        {
+            // txt_CompanyGSTno.Text = Dt.Rows[0]["GST_No"].ToString();
+            txt_KindAtt.Text = Dt.Rows[0]["kind_Att"].ToString();
+            // txt_CompanyAddress.Text = Dt.Rows[0]["Address"].ToString();
+        }
+
+        ///pan number information in customer table
+        SqlDataAdapter Daa = new SqlDataAdapter("SELECT * FROM tblCustomer WHERE CustomerName='" + txtCompName.Text + "'  ", con);
+        DataTable Dtt = new DataTable();
+        Daa.Fill(Dtt);
+        if (Dtt.Rows.Count > 0)
+        {
+            txt_CompanyGSTno.Text = Dtt.Rows[0]["GSTNo"].ToString();
+            //txt_KindAtt.Text = Dtt.Rows[0]["kind_Att"].ToString();
+            txt_CompanyAddress.Text = Dtt.Rows[0]["AddresLine1"].ToString();
+            txt_CompanyPanNo.Text = Dtt.Rows[0]["PanNo"].ToString();
+            txt_CompanyStateCode.Text = Dtt.Rows[0]["StateCode"].ToString();
+        }
+
+        SqlDataAdapter Daaa = new SqlDataAdapter("SELECT * FROM CustomerPO_Hdr WHERE CustomerName='" + txtCompName.Text + "'  ", con);
+        DataTable Dttt = new DataTable();
+        Daaa.Fill(Dttt);
+        if (Dttt.Rows.Count > 0)
+        {
+
+            //txt_PoNo.Text = Dttt.Rows[0]["Pono"].ToString();
+            DateTime ffff1 = Convert.ToDateTime(Dttt.Rows[0]["PoDate"].ToString());
+            //txt_poDate.Text = ffff1.ToString("yyyy-MM-dd");
+            txt_Payterm.Text = Dttt.Rows[0]["PayTerm"].ToString();
+            txt_KindAtt.Text = Dttt.Rows[0]["KindAtt"].ToString();
+        }
+
+        //email gridview bind
+        DataTable dt2 = new DataTable();
+        SqlDataAdapter sad2 = new SqlDataAdapter("select * from tblCustomerContactPerson where CustName='" + txtCompName.Text + "'", con);
+        sad2.Fill(dt2);
+        Grd_MAIL.DataSource = dt2;
+        Grd_MAIL.DataBind();
+        Grd_MAIL.EmptyDataText = "Record Not Found";
+        GetJobNO();
+
+        ddljobnobind();
+
+        //kint attence bind
+        //DataTable dt1 = new DataTable();
+        //SqlDataAdapter sad1 = new SqlDataAdapter("select * from tblCustomerContactPerson where CustName='" + txtCompName.Text + "'", con);
+        //sad1.Fill(dt1);
+        //if (dt1.Rows.Count > 0)
+        //{
+        //    txt_KindAtt.Text = Dttt.Rows[0]["KindAtt"].ToString();
+        //}
+    }
+
+    protected void ddlagainst_TextChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!String.IsNullOrEmpty(txtCompName.Text))
+            {
+                if (ddlagainst.SelectedItem.Text == "Direct")
+                {
+                    ddlagainstno.Enabled = false;
+                }
+                else if (ddlagainst.Text == "Order")
+                {
+                    //TableDirect.Visible = false;
+                    //TableOrder.Visible = true;
+
+                    ddlagainstno.Enabled = true;
+                    // SqlDataAdapter ad = new SqlDataAdapter("SELECT [Quotationno] FROM [tbl_QuotationHdr] WHERE Companyname = '" + txtCompName.Text + "'", con);
+                    SqlDataAdapter ad = new SqlDataAdapter("SELECT [Pono] FROM [CustomerPO_Hdr] WHERE CustomerName = '" + txtCompName.Text + "' AND  Is_Deleted = 0 ", con);
+                    DataTable dt = new DataTable();
+                    ad.Fill(dt);
+                    if (dt.Rows.Count > 0)
+                    {
+                        ddlagainstno.DataSource = dt;
+                        ddlagainstno.DataTextField = "Pono";
+                        ddlagainstno.DataBind();
+                        ddlagainstno.Items.Insert(0, "-- Select Product --");
+                    }
+                }
+                else
+                {
+                    ddlagainst.SelectedValue = "0";
+                }
+            }
+            else
+            {
+                // ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Enter Customer Name First');window.location.href='TaxInvoice.aspx';", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+
+
+        //if (ddlagainst.SelectedItem.Text == "Order")
+        //{
+        //    ///bind grid in automatic in customer po table.
+        //    con.Open();
+        //    DataTable SDt = new DataTable();
+        //    SqlDataAdapter SDA = new SqlDataAdapter("SELECT JobNo,[Description],[Hsn_Sac],[Rate],[Unit],[Quantity],[TaxPercenteage],[DiscountPercentage],[Total] FROM vw_Tax_Invoice WHERE Pono='" + txt_PoNo.Text + "'", con);
+        //    SDA.Fill(SDt);
+        //    int count = 1;
+        //    if (SDt.Rows.Count > 0)
+        //    {
+
+        //        ViewState["RowNo"] = 0;
+        //        Dt_Itemsdetails.Columns.AddRange(new DataColumn[10] { new DataColumn("Id"),new DataColumn("JobNo"),
+        //        new DataColumn("Description"),  new DataColumn("Hsn_Sac"),
+        //        new DataColumn("Rate"),  new DataColumn("Unit"),
+        //        new DataColumn("Quantity"),  new DataColumn("TaxPercenteage"),
+        //        new DataColumn("DiscountPercentage"),  new DataColumn("Total"),
+        //      });
+
+        //        ViewState["Invoicedetails"] = Dt_Itemsdetails;
+        //        for (int i = 0; i < SDt.Rows.Count; i++)
+        //        {
+        //            Dt_Itemsdetails.Rows.Add(count, SDt.Rows[i]["JobNo"].ToString(), SDt.Rows[i]["Description"].ToString(), SDt.Rows[i]["Hsn_Sac"].ToString(), SDt.Rows[i]["Rate"].ToString(), SDt.Rows[i]["Unit"].ToString(), SDt.Rows[i]["Quantity"].ToString(), SDt.Rows[i]["TaxPercenteage"].ToString(), SDt.Rows[i]["DiscountPercentage"].ToString(), SDt.Rows[i]["Total"].ToString());
+
+        //            count = count + 1;
+        //        }
+        //    }
+
+        //    grd_getDTLS.DataSource = Dt_Itemsdetails;
+        //    grd_getDTLS.DataBind();
+        //    grd_getDTLS.EmptyDataText = "Not Records Found";
+        //    con.Close();
+        //}
+    }
+
+    protected void ddlagainstno_TextChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            ///bind grid in automatic in customer po table.
+            con.Open();
+            DataTable SDt = new DataTable();
+            SqlDataAdapter SDA = new SqlDataAdapter("SELECT JobNo, MateName, [Description], PrintDescription,[Hsn_Sac],[Rate],[Unit],[Quantity],[TaxPercenteage],[DiscountPercentage],[Total] FROM vw_Tax_Invoice WHERE Pono='" + ddlagainstno.Text + "'", con);
+            SDA.Fill(SDt);
+            int count = 1;
+            if (SDt.Rows.Count > 0)
+            {
+                ViewState["RowNo"] = 0;
+                Dt_Itemsdetails.Columns.AddRange(new DataColumn[13] { new DataColumn("Id"),new DataColumn("JobNo"), new DataColumn("MateName"),
+                    new DataColumn("Description"), new DataColumn("PrintDescription"),  new DataColumn("Hsn_Sac"),
+                    new DataColumn("Rate"),  new DataColumn("Unit"),
+                    new DataColumn("Quantity"),  new DataColumn("TaxPercenteage"),
+                    new DataColumn("DiscountPercentage"),  new DataColumn("Total"), new DataColumn("JobDaysCount"),
+                  });
+
+                ViewState["Invoicedetails"] = Dt_Itemsdetails;
+                for (int i = 0; i < SDt.Rows.Count; i++)
+                {
+                    Dt_Itemsdetails.Rows.Add(count, SDt.Rows[i]["JobNo"].ToString(), SDt.Rows[i]["MateName"].ToString(), SDt.Rows[i]["Description"].ToString(), SDt.Rows[i]["PrintDescription"].ToString(), SDt.Rows[i]["Hsn_Sac"].ToString(), SDt.Rows[i]["Rate"].ToString(), SDt.Rows[i]["Unit"].ToString(), SDt.Rows[i]["Quantity"].ToString(), SDt.Rows[i]["TaxPercenteage"].ToString(), SDt.Rows[i]["DiscountPercentage"].ToString(), SDt.Rows[i]["Total"].ToString());
+
+                    count = count + 1;
+                }
+            }
+
+            grd_getDTLS.DataSource = Dt_Itemsdetails;
+            grd_getDTLS.DataBind();
+            grd_getDTLS.EmptyDataText = "Not Records Found";
+            con.Close();
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+        //txt_PoNo.Text = ddlagainstno.Text.Trim();
+        GetPODate();
+    }
+
+    protected void txt_jobno_TextChanged(object sender, EventArgs e)
+    {
+        SqlDataAdapter Da = new SqlDataAdapter("SELECT Id,JobNo,MateName FROM tblInwardEntry WHERE JobNo ='" + txt_jobno.Text + "'", con);
+        DataTable Dt = new DataTable();
+        Da.Fill(Dt);
+        txtpoduct.Text = Dt.Rows[0]["MateName"].ToString();
+    }
+
+    //Job No Against Quation No For componnt details
+    public void GetJobNO()
+    {
+        DataTable dt = new DataTable();
+        SqlDataAdapter sd = new SqlDataAdapter("select JobNo from  tblInwardEntry  where CustName='" + txtCompName.Text + "'", con);
+        sd.Fill(dt);
+
+        if (dt.Rows.Count > 0)
+        {
+            txt_jobno.DataTextField = "JobNo";
+            txt_jobno.DataSource = dt;
+            txt_jobno.DataBind();
+        }
+        else
+        {
+
+        }
+    }
+
+    private void Show_Grid1()
+    {
+        try
+        {
+
+            ViewState["RowNo"] = (int)ViewState["RowNo"] + 1;
+            DataTable Dt = (DataTable)ViewState["Invoice"];
+
+            Dt.Rows.Add(ViewState["RowNo"], txt_jobno.Text.Trim(), txtpoduct.Text, txt_discription.Text.Trim(), txtprintdescription.Text, txt_hsn.Text, txt_rate.Text, txt_unit.Text, txt_quntity.Text, txt_tax.Text, txt_discount.Text, txt_total_amount.Text);
+            ViewState["Invoice"] = Dt;
+
+            //txt_jobno.Text = string.Empty;
+            txt_discription.Text = string.Empty;
+            txt_hsn.Text = string.Empty;
+            txtpoduct.Text = string.Empty;
+            txtprintdescription.Text = string.Empty;
+            txt_rate.Text = string.Empty;
+            txt_unit.Text = string.Empty;
+            txt_quntity.Text = string.Empty;
+            txt_tax.Text = string.Empty;
+            txt_discount.Text = string.Empty;
+            txt_total_amount.Text = string.Empty;
+
+            gvPurchaseRecord.DataSource = Dt;
+            gvPurchaseRecord.DataBind();
+
+        }
+        catch (Exception ex)
+        {
+            //  Block of code to handle errors
+        }
+
+
+    }
+
+
+    public void GetPODate()
+    {
+
+        SqlDataAdapter Daaa = new SqlDataAdapter("SELECT * FROM CustomerPO_Hdr WHERE Pono ='" + ddlagainstno.Text + "'  ", con);
+        DataTable Dttt = new DataTable();
+        Daaa.Fill(Dttt);
+        if (Dttt.Rows.Count > 0)
+        {
+
+            txt_PoNo.Text = Dttt.Rows[0]["Pono"].ToString();
+            DateTime ffff1 = Convert.ToDateTime(Dttt.Rows[0]["PoDate"].ToString());
+            txt_poDate.Text = ffff1.ToString("yyyy-MM-dd");
+
+        }
+
+    }
+
+    protected void ShowHeaderDtls(string ID)
+    {
+        SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM [CustomerPO_Hdr_Both] WHERE id='" + ID + "'", con);
+        DataTable Dt = new DataTable();
+        Da.Fill(Dt);
+        if (Dt.Rows.Count > 0)
+        {
+
+            ddlagainst.Enabled = false;
+            ddlagainstno.Enabled = false;
+            ddlagainst.SelectedItem.Text = "Order";
+            //ddlagainstno.SelectedItem.Text = Dt.Rows[0]["Pono"].ToString(); 
+            txtJobNoCount.Text = Dt.Rows[0]["JobNoCount"].ToString();
+            txtCompName.Text = Dt.Rows[0]["CustomerName"].ToString();
+            txtCompName.ReadOnly = true;
+
+            txt_CompanyAddress.Text = Dt.Rows[0]["ShippingAddress"].ToString();
+            txt_CompanyAddress.ReadOnly = true;
+
+            txt_PoNo.Text = Dt.Rows[0]["Pono"].ToString();
+            txt_PoNo.ReadOnly = true;
+
+            DateTime ffff18 = Convert.ToDateTime(Dt.Rows[0]["PoDate"].ToString());
+            txt_poDate.Text = ffff18.ToString("yyyy-MM-dd");
+            txt_poDate.ReadOnly = true;
+
+
+            //  txt_mobile_no.Text = Dt.Rows[0]["Mobile_No"].ToString();
+            //  txt_kind_att.Text = Dt.Rows[0]["kind_Att"].ToString();
+
+            string str = Dt.Rows[0]["Term_Condition_1"].ToString();
+            string str1 = Dt.Rows[0]["Term_Condition_2"].ToString();
+            string str2 = Dt.Rows[0]["Term_Condition_3"].ToString();
+            string str3 = Dt.Rows[0]["Term_Condition_4"].ToString();
+            string str4 = Dt.Rows[0]["Term_Condition_5"].ToString();
+            string str5 = Dt.Rows[0]["Term_Condition_6"].ToString();
+            string[] arrstr = str.ToString().Split('-');
+            string[] arrstr1 = str1.ToString().Split('-');
+            string[] arrstr2 = str2.ToString().Split('-');
+            string[] arrstr3 = str3.ToString().Split('-');
+            string[] arrstr4 = str4.ToString().Split('-');
+            string[] arrstr5 = str5.ToString().Split('-');
+
+            if (arrstr.Length > 0)
+            {
+                txt_term_1.Text = arrstr[0].ToString();
+                txt_condition_1.Text = arrstr[1].ToString();
+            }
+            if (arrstr1.Length > 0)
+            {
+                txt_term_2.Text = arrstr1[0].ToString();
+                txt_condition_2.Text = arrstr1[1].ToString();
+            }
+            if (arrstr2.Length > 0)
+            {
+                txt_term_3.Text = arrstr2[0].ToString();
+                txt_condition_3.Text = arrstr2[1].ToString();
+            }
+            if (arrstr3.Length > 0)
+            {
+                txt_term_4.Text = arrstr3[0].ToString();
+                txt_condition_4.Text = arrstr3[1].ToString();
+            }
+
+            if (arrstr4.Length > 0)
+            {
+                txt_term_5.Text = arrstr4[0].ToString();
+                txt_condition_5.Text = arrstr4[1].ToString();
+            }
+            if (arrstr5.Length > 0)
+            {
+                txt_term_6.Text = arrstr5[0].ToString();
+                txt_condition_6.Text = arrstr5[1].ToString();
+            }
+        }
+
+        SqlDataAdapter Daa = new SqlDataAdapter("SELECT * FROM [tblCustomer] WHERE CustomerName ='" + txtCompName.Text + "'", con);
+        DataTable Dtt = new DataTable();
+        Daa.Fill(Dtt);
+        if (Dtt.Rows.Count > 0)
+        {
+            txt_CompanyPanNo.Text = Dtt.Rows[0]["PanNo"].ToString();
+            txt_CompanyPanNo.ReadOnly = true;
+            txt_CompanyGSTno.Text = Dtt.Rows[0]["GSTNo"].ToString();
+            txt_CompanyGSTno.ReadOnly = true;
+            txt_CompanyStateCode.Text = Dtt.Rows[0]["StateCode"].ToString();
+            txt_CompanyStateCode.ReadOnly = true;
+        }
+
+
+        SqlDataAdapter Sda = new SqlDataAdapter("SELECT * FROM tblCustomerContactPerson WHERE CustName='" + txtCompName.Text + "'", con);
+        DataTable Sdt = new DataTable();
+        Sda.Fill(Sdt);
+        Grd_MAIL.DataSource = Sdt;
+        Grd_MAIL.DataBind();
+    }
+
+    protected void ShowDtlDtls(string ID)
+    {
+        ////Automatic description bind in job number from quaation details table
+        DataTable dt3 = new DataTable();
+        SqlDataAdapter sad3 = new SqlDataAdapter("select * from [CustomerPO_Dtls_Both] where PurchaseId='" + ID + "'", con);
+        sad3.Fill(dt3);
+        int count = 1;
+        foreach (DataRow row in dt3.Rows)
+        {
+            SqlDataAdapter Da = new SqlDataAdapter("SELECT CreatedOn FROM CustomerPO_Hdr_Both WHERE id ='" + row["PurchaseId"] + "'", con);
+            DataTable Dt = new DataTable();
+            Da.Fill(Dt);
+            if (Dt.Rows.Count > 0)
+            {
+                DateTime createdOn = Convert.ToDateTime(Dt.Rows[0]["CreatedOn"]);
+
+                if (!dt3.Columns.Contains("CreatedOn"))
+                {
+                    dt3.Columns.Add("CreatedOn", typeof(DateTime));
+                }
+
+                row["CreatedOn"] = createdOn;
+
+                if (row["JobDaysCount"] == DBNull.Value || Convert.ToInt32(row["JobDaysCount"]) == 0)
+                {
+                    DateTime createdOnDateOnly = createdOn.Date;
+                    int jobDaysCount = (DateTime.Now.Date - createdOnDateOnly).Days;
+                    row["JobDaysCount"] = jobDaysCount;
+                }
+            }
+        }
+        if (dt3.Rows.Count > 0)
+        {
+            ViewState["RowNo"] = 0;
+            Dt_Itemsdetails.Columns.AddRange(new DataColumn[13] { new DataColumn("Id"),new DataColumn("JobNo"), new DataColumn("MateName"),
+                    new DataColumn("Description"),  new DataColumn("PrintDescription"), new DataColumn("Hsn_Sac"),
+                    new DataColumn("Rate"),  new DataColumn("Unit"),
+                    new DataColumn("Quantity"),  new DataColumn("TaxPercenteage"),
+                    new DataColumn("DiscountPercentage"), new DataColumn("Total"),new DataColumn("JobDaysCount")
+                  });
+
+            ViewState["Customerdetails"] = Dt_Itemsdetails;
+            for (int i = 0; i < dt3.Rows.Count; i++)
+            {
+                int jobDaysCount = 0;
+
+                // Check if JobDaysCount is available in the current row
+                if (dt3.Rows[i]["JobDaysCount"] != DBNull.Value)
+                {
+                    jobDaysCount = Convert.ToInt32(dt3.Rows[i]["JobDaysCount"]);
+                }
+
+                Dt_Itemsdetails.Rows.Add(count, dt3.Rows[i]["JobNo"].ToString(), dt3.Rows[i]["MateName"].ToString(), dt3.Rows[i]["Description"].ToString(), dt3.Rows[i]["PrintDescription"].ToString(), dt3.Rows[i]["Hsn_Sac"].ToString(), dt3.Rows[i]["Rate"].ToString(), dt3.Rows[i]["Unit"].ToString(), dt3.Rows[i]["Quantity"].ToString(), dt3.Rows[i]["TaxPercenteage"].ToString(), dt3.Rows[i]["DiscountPercentage"].ToString(), dt3.Rows[i]["Total"].ToString(), jobDaysCount);
+                count = count + 1;
+            }
+            if (Dt_Itemsdetails.Rows.Count > 0)
+            {
+               grd_getDTLS.Columns[0].Visible = true;
+            }
+            grd_getDTLS.DataSource = Dt_Itemsdetails;
+            grd_getDTLS.DataBind();
+            grd_getDTLS.EmptyDataText = "Not Records Found";
+        }
+    }
+    protected void chkSelect_CheckedChanged(object sender, EventArgs e)
+    {
+        CheckBox chk = (CheckBox)sender;
+        GridViewRow row = (GridViewRow)chk.NamingContainer;
+
+
+        string jobNo = ((Label)row.FindControl("txt_Jobno_grdd")).Text;
+        decimal totalAmount = Convert.ToDecimal(((Label)row.FindControl("lbl_total_amount_GET")).Text);
+
+        if (!chk.Checked)
+        {
+
+            HandleJobNoUncheck(jobNo, totalAmount);
+        }
+        else
+        {
+
+            HandleJobNoCheck(jobNo, totalAmount);
+        }
+    }
+
+    private void HandleJobNoUncheck(string jobNo, decimal amount)
+    {
+
+        UpdateGrandTotal(amount, isAdding: false);
+
+    }
+
+    private void HandleJobNoCheck(string jobNo, decimal amount)
+    {
+
+        UpdateGrandTotal(amount, isAdding: true);
+
+    }
+
+    private void UpdateGrandTotal(decimal amount, bool isAdding)
+    {
+
+        decimal SubTotal = Convert.ToDecimal(txt_subtotal.Text);
+
+        decimal GrandTotal = Convert.ToDecimal(txt_grand_total.Text);
+
+        if (isAdding)
+        {
+            Total = SubTotal + amount;
+        }
+        else
+        {
+            Total = SubTotal - amount;
+        }
+
+        txt_subtotal.Text = Total.ToString("##.00");
+
+        decimal GSTamt = (Total * 9 / 100);
+        decimal IGSTamt = (Total * 18 / 100);
+
+        if (txt_CompanyStateCode.Text == "27 MAHARASHTRA")
+        {
+            txt_sgst_amt.Text = GSTamt.ToString();
+            txt_cgst_amt.Text = GSTamt.ToString();
+            txt_igst_amt.Text = "0";
+        }
+        else
+        {
+            txt_sgst_amt.Text = "0";
+            txt_cgst_amt.Text = "0";
+            txt_igst_amt.Text = IGSTamt.ToString();
+        }
+
+        decimal grd_total = Total + Convert.ToDecimal(txt_sgst_amt.Text) + Convert.ToDecimal(txt_cgst_amt.Text) + Convert.ToDecimal(txt_igst_amt.Text);
+        txt_grand_total.Text = grd_total.ToString("##.00");
+
+        lbl_Amount_In_Word.Text = ConvertToWords(grd_total.ToString());
+    }
+
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   /*
+
+    Name:       3024 night
+    Author:     Jan T. Sott (http://github.com/idleberg)
+
+    CodeMirror template by Jan T. Sott (https://github.com/idleberg/base16-codemirror)
+    Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16)
+
+*/
+
+.cm-s-3024-night.CodeMirror { background: #090300; color: #d6d5d4; }
+.cm-s-3024-night div.CodeMirror-selected { background: #3a3432; }
+.cm-s-3024-night .CodeMirror-line::selection, .cm-s-3024-night .CodeMirror-line > span::selection, .cm-s-3024-night .CodeMirror-line > span > span::selection { background: rgba(58, 52, 50, .99); }
+.cm-s-3024-night .CodeMirror-line::-moz-selection, .cm-s-3024-night .CodeMirror-line > span::-moz-selection, .cm-s-3024-night .CodeMirror-line > span > span::-moz-selection { background: rgba(58, 52, 50, .99); }
+.cm-s-3024-night .CodeMirror-gutters { background: #090300; border-right: 0px; }
+.cm-s-3024-night .CodeMirror-guttermarker { color: #db2d20; }
+.cm-s-3024-night .CodeMirror-guttermarker-subtle { color: #5c5855; }
+.cm-s-3024-night .CodeMirror-linenumber { color: #5c5855; }
+
+.cm-s-3024-night .CodeMirror-cursor { border-left: 1px solid #807d7c; }
+
+.cm-s-3024-night span.cm-comment { color: #cdab53; }
+.cm-s-3024-night span.cm-atom { color: #a16a94; }
+.cm-s-3024-night span.cm-number { color: #a16a94; }
+
+.cm-s-3024-night span.cm-property, .cm-s-3024-night span.cm-attribute { color: #01a252; }
+.cm-s-3024-night span.cm-keyword { color: #db2d20; }
+.cm-s-3024-night span.cm-string { color: #fded02; }
+
+.cm-s-3024-night span.cm-variable { color: #01a252; }
+.cm-s-3024-night span.cm-variable-2 { color: #01a0e4; }
+.cm-s-3024-night span.cm-def { color: #e8bbd0; }
+.cm-s-3024-night span.cm-bracket { color: #d6d5d4; }
+.cm-s-3024-night span.cm-tag { color: #db2d20; }
+.cm-s-3024-night span.cm-link { color: #a16a94; }
+.cm-s-3024-night span.cm-error { background: #db2d20; color: #807d7c; }
+
+.cm-s-3024-night .CodeMirror-activeline-background { background: #2F2F2F; }
+.cm-s-3024-night .CodeMirror-matchingbracket { text-decoration: underline; color: white !important; }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .cm-s-abcdef.CodeMirror { background: #0f0f0f; color: #defdef; }
+.cm-s-abcdef div.CodeMirror-selected { background: #515151; }
+.cm-s-abcdef .CodeMirror-line::selection, .cm-s-abcdef .CodeMirror-line > span::selection, .cm-s-abcdef .CodeMirror-line > span > span::selection { background: rgba(56, 56, 56, 0.99); }
+.cm-s-abcdef .CodeMirror-line::-moz-selection, .cm-s-abcdef .CodeMirror-line > span::-moz-selection, .cm-s-abcdef .CodeMirror-line > span > span::-moz-selection { background: rgba(56, 56, 56, 0.99); }
+.cm-s-abcdef .CodeMirror-gutters { background: #555; border-right: 2px solid #314151; }
+.cm-s-abcdef .CodeMirror-guttermarker { color: #222; }
+.cm-s-abcdef .CodeMirror-guttermarker-subtle { color: azure; }
+.cm-s-abcdef .CodeMirror-linenumber { color: #FFFFFF; }
+.cm-s-abcdef .CodeMirror-cursor { border-left: 1px solid #00FF00; }
+
+.cm-s-abcdef span.cm-keyword { color: darkgoldenrod; font-weight: bold; }
+.cm-s-abcdef span.cm-atom { color: #77F; }
+.cm-s-abcdef span.cm-number { color: violet; }
+.cm-s-abcdef span.cm-def { color: #fffabc; }
+.cm-s-abcdef span.cm-variable { color: #abcdef; }
+.cm-s-abcdef span.cm-variable-2 { color: #cacbcc; }
+.cm-s-abcdef span.cm-variable-3, .cm-s-abcdef span.cm-type { color: #def; }
+.cm-s-abcdef span.cm-property { color: #fedcba; }
+.cm-s-abcdef span.cm-operator { color: #ff0; }
+.cm-s-abcdef span.cm-comment { color: #7a7b7c; font-style: italic;}
+.cm-s-abcdef span.cm-string { color: #2b4; }
+.cm-s-abcdef span.cm-meta { color: #C9F; }
+.cm-s-abcdef span.cm-qualifier { color: #FFF700; }
+.cm-s-abcdef span.cm-builtin { color: #30aabc; }
+.cm-s-abcdef span.cm-bracket { color: #8a8a8a; }
+.cm-s-abcdef span.cm-tag { color: #FFDD44; }
+.cm-s-abcdef span.cm-attribute { color: #DDFF00; }
+.cm-s-abcdef span.cm-error { color: #FF0000; }
+.cm-s-abcdef span.cm-header { color: aquamarine; font-weight: bold; }
+.cm-s-abcdef span.cm-link { color: blueviolet; }
+
+.cm-s-abcdef .CodeMirror-activeline-background { background: #314151; }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               [ZoneTransfer]
+ZoneId=3
+ReferrerUrl=https://themewagon.com/
+HostUrl=https://objects.githubusercontent.com/github-production-release-asset-2e65be/363614075/94fece80-ab5c-11eb-996f-892bf208f043?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=releaseassetproduction%2F20241114%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241114T102939Z&X-Amz-Expires=300&X-Amz-Signature=2fffa0a4d4d10c9805375239f890e0cb90a51481ac52ff0b1ee64792a296dbf2&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3DAdminLTE-3.1.0.zip&response-content-type=application%2Foctet-stream
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    /* ambiance theme for codemirror */
+
+/* Color scheme */
+
+.cm-s-ambiance .cm-header { color: blue; }
+.cm-s-ambiance .cm-quote { color: #24C2C7; }
+
+.cm-s-ambiance .cm-keyword { color: #cda869; }
+.cm-s-ambiance .cm-atom { color: #CF7EA9; }
+.cm-s-ambiance .cm-number { color: #78CF8A; }
+.cm-s-ambiance .cm-def { color: #aac6e3; }
+.cm-s-ambiance .cm-variable { color: #ffb795; }
+.cm-s-ambiance .cm-variable-2 { color: #eed1b3; }
+.cm-s-ambiance .cm-variable-3, .cm-s-ambiance .cm-type { color: #faded3; }
+.cm-s-ambiance .cm-property { color: #eed1b3; }
+.cm-s-ambiance .cm-operator { color: #fa8d6a; }
+.cm-s-ambiance .cm-comment { color: #555; font-style:italic; }
+.cm-s-ambiance .cm-string { color: #8f9d6a; }
+.cm-s-ambiance .cm-string-2 { color: #9d937c; }
+.cm-s-ambiance .cm-meta { color: #D2A8A1; }
+.cm-s-ambiance .cm-qualifier { color: yellow; }
+.cm-s-ambiance .cm-builtin { color: #9999cc; }
+.cm-s-ambiance .cm-bracket { color: #24C2C7; }
+.cm-s-ambiance .cm-tag { color: #fee4ff; }
+.cm-s-ambiance .cm-attribute { color: #9B859D; }
+.cm-s-ambiance .cm-hr { color: pink; }
+.cm-s-ambiance .cm-link { color: #F4C20B; }
+.cm-s-ambiance .cm-special { color: #FF9D00; }
+.cm-s-ambiance .cm-error { color: #AF2018; }
+
+.cm-s-ambiance .CodeMirror-matchingbracket { color: #0f0; }
+.cm-s-ambiance .CodeMirror-nonmatchingbracket { color: #f22; }
+
+.cm-s-ambiance div.CodeMirror-selected { background: rgba(255, 255, 255, 0.15); }
+.cm-s-ambiance.CodeMirror-focused div.CodeMirror-selected { background: rgba(255, 255, 255, 0.10); }
+.cm-s-ambiance .CodeMirror-line::selection, .cm-s-ambiance .CodeMirror-line > span::selection, .cm-s-ambiance .CodeMirror-line > span > span::selection { background: rgba(255, 255, 255, 0.10); }
+.cm-s-ambiance .CodeMirror-line::-moz-selection, .cm-s-ambiance .CodeMirror-line > span::-moz-selection, .cm-s-ambiance .CodeMirror-line > span > span::-moz-selection { background: rgba(255, 255, 255, 0.10); }
+
+/* Editor styling */
+
+.cm-s-ambiance.CodeMirror {
+  line-height: 1.40em;
+  color: #E6E1DC;
+  background-color: #202020;
+  -webkit-box-shadow: inset 0 0 10px black;
+  -moz-box-shadow: inset 0 0 10px black;
+  box-shadow: inset 0 0 10px black;
+}
+
+.cm-s-ambiance .CodeMirror-gutters {
+  background: #3D3D3D;
+  border-right: 1px solid #4D4D4D;
+  box-shadow: 0 10px 20px black;
+}
+
+.cm-s-ambiance .CodeMirror-linenumber {
+  text-shadow: 0px 1px 1px #4d4d4d;
+  color: #111;
+  padding: 0 5px;
+}
+
+.cm-s-ambiance .CodeMirror-guttermarker { color: #aaa; }
+.cm-s-ambiance .CodeMirror-guttermarker-subtle { color: #111; }
+
+.cm-s-ambiance .CodeMirror-cursor { border-left: 1px solid #7991E8; }
+
+.cm-s-ambiance .CodeMirror-activeline-background {
+  background: none repeat scroll 0% 0% rgba(255, 255, 255, 0.031);
+}
+
+.cm-s-ambiance.CodeMirror,
+.cm-s-ambiance .CodeMirror-gutters {
+  background-image: url("data:image/png;base64,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");
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   /* Based on https://github.com/dempfi/ayu */
+
+.cm-s-ayu-dark.CodeMirror { background: #0a0e14; color: #b3b1ad; }
+.cm-s-ayu-dark div.CodeMirror-selected { background: #273747; }
+.cm-s-ayu-dark .CodeMirror-line::selection, .cm-s-ayu-dark .CodeMirror-line > span::selection, .cm-s-ayu-dark .CodeMirror-line > span > span::selection { background: rgba(39, 55, 71, 99); }
+.cm-s-ayu-dark .CodeMirror-line::-moz-selection, .cm-s-ayu-dark .CodeMirror-line > span::-moz-selection, .cm-s-ayu-dark .CodeMirror-line > span > span::-moz-selection { background: rgba(39, 55, 71, 99); }
+.cm-s-ayu-dark .CodeMirror-gutters { background: #0a0e14; border-right: 0px; }
+.cm-s-ayu-dark .CodeMirror-guttermarker { color: white; }
+.cm-s-ayu-dark .CodeMirror-guttermarker-subtle { color: #3d424d; }
+.cm-s-ayu-dark .CodeMirror-linenumber { color: #3d424d; }
+.cm-s-ayu-dark .CodeMirror-cursor { border-left: 1px solid #e6b450; }
+
+.cm-s-ayu-dark span.cm-comment { color: #626a73; }
+.cm-s-ayu-dark span.cm-atom { color: #ae81ff; }
+.cm-s-ayu-dark span.cm-number { color: #e6b450; }
+
+.cm-s-ayu-dark span.cm-comment.cm-attribute { color: #ffb454; }
+.cm-s-ayu-dark span.cm-comment.cm-def { color: rgba(57, 186, 230, 80); }
+.cm-s-ayu-dark span.cm-comment.cm-tag { color: #39bae6; }
+.cm-s-ayu-dark span.cm-comment.cm-type { color: #5998a6; }
+
+.cm-s-ayu-dark span.cm-property, .cm-s-ayu-dark span.cm-attribute { color: #ffb454; }  
+.cm-s-ayu-dark span.cm-keyword { color: #ff8f40; } 
+.cm-s-ayu-dark span.cm-builtin { color: #e6b450; }
+.cm-s-ayu-dark span.cm-string { color: #c2d94c; }
+
+.cm-s-ayu-dark span.cm-variable { color: #b3b1ad; }
+.cm-s-ayu-dark span.cm-variable-2 { color: #f07178; }
+.cm-s-ayu-dark span.cm-variable-3 { color: #39bae6; }
+.cm-s-ayu-dark span.cm-type { color: #ff8f40; }
+.cm-s-ayu-dark span.cm-def { color: #ffee99; }
+.cm-s-ayu-dark span.cm-bracket { color: #f8f8f2; }
+.cm-s-ayu-dark span.cm-tag { color: rgba(57, 186, 230, 80); }
+.cm-s-ayu-dark span.cm-header { color: #c2d94c; }
+.cm-s-ayu-dark span.cm-link { color: #39bae6; }
+.cm-s-ayu-dark span.cm-error { color: #ff3333; } 
+
+.cm-s-ayu-dark .CodeMirror-activeline-background { background: #01060e; }
+.cm-s-ayu-dark .CodeMirror-matchingbracket {
+  text-decoration: underline;
+  color: white !important;
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         INDX( 	 £õÏ
+           (      è       s    l Û  Û        ]ž    p Z     \ž    ¼J?ã¾<Û Ý8‚„×šÒ$€6ÛÉr?ã¾<Û       Ã               3 0 2 4 - d a y . c s s       `ž    p ^     \ž    tý?ã¾<Û Ý8‚„×‚ÝÒ$€6Ûx@ã¾<Û                      3 0 2 4 - n i g h t . c s s   cž    h V     \ž    ›}@ã¾<Û Ý8‚„×{Ó$€6Û›}@ã¾<Û       ±              
+ a b c d e f . c s s   dž    x h     \ž    ÞÚ@ã¾<Û Ý8‚„×j+Ó$€6ÛÔAã¾<Ûh       g                a m b i a n c e - m o b i l e . c s  iž    p Z     \ž    ™´Aã¾<Û Ý8‚„×K Ó$€6ÛÏAã¾<Û p      }g               a m b i a n c e . c s s       nž    p Z     \ž    %JBã¾<Û Ý8‚„×>ÇÓ$€6ÛjfBã¾<Û       Ç               a y u - d a r k . c s s       ož    p ^     \ž    äÉBã¾<Û Ý8‚„×+Ô$€6Û)Cã¾<Û       9	               a y u - m i r a g e . c s s   rž    p `     \ž    ~„Cã¾<Û Ý8‚„×"<Ô$€6ÛË¨Cã¾<Û       @               b a s e 1 6 - d a r k . c s s sž    x b     \ž    Dã¾<Û Ý8‚„×cÔ$€6Û-Dã¾<Û      L               b a s e 1 6 - l i g h t . c s s       vž    h V     \ž    ‚Dã¾<Û Ý8‚„×±Ô$€6Ûò§Dã¾<Û       …              
+ b e s p i n . c s s   •ž    p ^     \ž    ºEã¾<Û Ý8‚„×ù×Ô$€6Û·-Eã¾<Û       ‹               b l a c k b o a r d . c s s   Ÿ    h V     \ž    a®Eã¾<Û Ý8‚„×êþÔ$€6ÛÃEã¾<Û       ¾              
+ c o b a l t . c s s   Ÿ    p ^     \ž    ©5Fã¾<Û Ý8‚„×ØLÕ$€6ÛWFã¾<Û                      c o l o r f o r t h . c s s   Ÿ    h X     \ž    Ü±Fã¾<Û Ý8‚„×ÌsÕ$€6ÛçÍFã¾<Û       ~
+               d a r c u l a . c s s  Ÿ    h X     \ž    ×7Gã¾<Û Ý8‚„×½ÁÕ$€6Û°UGã¾<Û       ú               d r a c u l a . c s s "Ÿ    x b     \ž    `ÈGã¾<Û Ý8‚„×¨èÕ$€6Û€êGã¾<Û       6
+               d u o t o n e - d a r k . c s s       #Ÿ    x d     \ž    `5Hã¾<Û Ý8‚„×œÖ$€6Û]Hã¾<Û       Ÿ
+               d u o t o n e - l i g h t . c s s                   \ž    'ÒHã¾<Û Ý8‚„×‹]Ö$€6Û)ùHã¾<Û       £               e c  i p s e . c s s :Ÿ    h X     \ž    OkIã¾<Û Ý8‚„×ˆ„Ö$€6Ûw†Iã¾<Û                      e l e g a n t . c s s ;Ÿ    p `     \ž    ÝÚIã¾<Û Ý8‚„×t«Ö$€6ÛªJã¾<Û       î               e r l a n g - d a r k . c s s >Ÿ    x b     \ž    ªJã¾<Û Ý8‚„×lÒÖ$€6ÛªJã¾<Û       È               g r u v b o x - d a r k . c s s       AŸ    p \     \ž    ªJã¾<Û Ý8‚„×_ùÖ$€6ÛªJã¾<Û       ½               h o p s c o t c h . c s s     DŸ    p Z     \ž    ªJã¾<Û Ý8‚„×U ×$€6 ªJã¾<Û       Ó	               i c e c o d e r . c s s       GŸ    h R     \ž    ªJã¾<Û Ý8‚„×HG×$€6ÛªJã¾<Û       ˆ               i d e a . c s s       JŸ    h X     \ž    žLã¾<Û Ý8‚„×4•×$€6Û)ÅLã¾<Û       ¢               i s o t o p e . c s s MŸ    p `     \ž    ™9Mã¾<Û Ý8‚„×+¼×$€6Û]Mã¾<Û       M
+               l e s s e r - d a r k . c s s PŸ    p \     \ž    ¾ËMã¾<Û Ý8‚„×
+Ø$€6Û
+ëMã¾<Û       —               l i q u i b y t e . c s s     SŸ    h X    \ž    b-Nã¾<Û Ý8‚„×1Ø$€6Û¤bNã¾<Û       z               l u c a r i o . c s s VŸ    x h     \ž    ðÂNã¾<Û Ý8‚„× XØ$€6ÛðéNã¾<Û       /
+               m a t e r i a l - d a r k e r . c s s XŸ    x f     \ž    í9Oã¾<Û Ý8‚„×ï¥Ø$€6Ûí9Oã¾<Û       
+               m a t e r i a l - o c e a n . c s s   ZŸ    € n     \ž    í9Oã¾<Û Ý8‚„×æÌØ$€6Ûí9Oã¾<Û       ¤
+               m a t e r i a l - p a l e n i g h t . c s s   \Ÿ    p Z     \ž    í9Oã¾<Û Ý8‚„×ÔóØ$€6Ûí9Oã¾<        2	               m a t e r i a l . c s s       gŸ    ` P     \ž    í9Oã¾<Û Ý8‚„×ÁAÙ$€6Ûí9Oã¾<Û       @               m b o . c s s hŸ    p Z     \ž    úºQã¾<Û Ý8‚„×§Ù$€6ÛúºQã¾<Û        L               m d n - l i k e . c s s       lŸ    p Z     \ž    9Rã¾<Û Ý8‚„×¡¶Ù$€6Ûû_Rã¾<Û       @               m i d n i g h t . c s s       |Ÿ    h X     \ž    qÉRã¾<Û Ý8‚„×–ÝÙ$€6ÛqÉRã¾<Û       ƒ               m o n o k a i . c s s                              /* Based on https://github.com/dempfi/ayu */
+
+.cm-s-ayu-mirage.CodeMirror { background: #1f2430; color: #cbccc6; }
+.cm-s-ayu-mirage div.CodeMirror-selected { background: #34455a; }
+.cm-s-ayu-mirage .CodeMirror-line::selection, .cm-s-ayu-mirage .CodeMirror-line > span::selection, .cm-s-ayu-mirage .CodeMirror-line > span > span::selection { background: #34455a; }
+.cm-s-ayu-mirage .CodeMirror-line::-moz-selection, .cm-s-ayu-mirage .CodeMirror-line > span::-moz-selection, .cm-s-ayu-mirage .CodeMirror-line > span > span::-moz-selection { background: rgba(25, 30, 42, 99); }
+.cm-s-ayu-mirage .CodeMirror-gutters { background: #1f2430; border-right: 0px; }
+.cm-s-ayu-mirage .CodeMirror-guttermarker { color: white; }
+.cm-s-ayu-mirage .CodeMirror-guttermarker-subtle { color:  rgba(112, 122, 140, 66); }
+.cm-s-ayu-mirage .CodeMirror-linenumber { color: rgba(61, 66, 77, 99); }
+.cm-s-ayu-mirage .CodeMirror-cursor { border-left: 1px solid #ffcc66; }
+
+.cm-s-ayu-mirage span.cm-comment { color: #5c6773; font-style:italic; }
+.cm-s-ayu-mirage span.cm-atom { color: #ae81ff; }
+.cm-s-ayu-mirage span.cm-number { color: #ffcc66; }
+
+.cm-s-ayu-mirage span.cm-comment.cm-attribute { color: #ffd580; }
+.cm-s-ayu-mirage span.cm-comment.cm-def { color: #d4bfff; }
+.cm-s-ayu-mirage span.cm-comment.cm-tag { color: #5ccfe6; }
+.cm-s-ayu-mirage span.cm-comment.cm-type { color: #5998a6; }
+
+.cm-s-ayu-mirage span.cm-property { color: #f29e74; }
+.cm-s-ayu-mirage span.cm-attribute { color: #ffd580; }  
+.cm-s-ayu-mirage span.cm-keyword { color: #ffa759; } 
+.cm-s-ayu-mirage span.cm-builtin { color: #ffcc66; }
+.cm-s-ayu-mirage span.cm-string { color: #bae67e; }
+
+.cm-s-ayu-mirage span.cm-variable { color: #cbccc6; }
+.cm-s-ayu-mirage span.cm-variable-2 { color: #f28779; }
+.cm-s-ayu-mirage span.cm-variable-3 { color: #5ccfe6; }
+.cm-s-ayu-mirage span.cm-type { color: #ffa759; }
+.cm-s-ayu-mirage span.cm-def { color: #ffd580; }
+.cm-s-ayu-mirage span.cm-bracket { color: rgba(92, 207, 230, 80); }
+.cm-s-ayu-mirage span.cm-tag { color: #5ccfe6; }
+.cm-s-ayu-mirage span.cm-header { color: #bae67e; }
+.cm-s-ayu-mirage span.cm-link { color: #5ccfe6; }
+.cm-s-ayu-mirage span.cm-error { color: #ff3333; } 
+
+.cm-s-ayu-mirage .CodeMirror-activeline-background { background: #191e2a; }
+.cm-s-ayu-mirage .CodeMirror-matchingbracket {
+  text-decoration: underline;
+  color: white !important;
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       /*
+
+    Name:       Base16 Default Dark
+    Author:     Chris Kempson (http://chriskempson.com)
+
+    CodeMirror template by Jan T. Sott (https://github.com/idleberg/base16-codemirror)
+    Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16)
+
+*/
+
+.cm-s-base16-dark.CodeMirror { background: #151515; color: #e0e0e0; }
+.cm-s-base16-dark div.CodeMirror-selected { background: #303030; }
+.cm-s-base16-dark .CodeMirror-line::selection, .cm-s-base16-dark .CodeMirror-line > span::selection, .cm-s-base16-dark .CodeMirror-line > span > span::selection { background: rgba(48, 48, 48, .99); }
+.cm-s-base16-dark .CodeMirror-line::-moz-selection, .cm-s-base16-dark .CodeMirror-line > span::-moz-selection, .cm-s-base16-dark .CodeMirror-line > span > span::-moz-selection { background: rgba(48, 48, 48, .99); }
+.cm-s-base16-dark .CodeMirror-gutters { background: #151515; border-right: 0px; }
+.cm-s-base16-dark .CodeMirror-guttermarker { color: #ac4142; }
+.cm-s-base16-dark .CodeMirror-guttermarker-subtle { color: #505050; }
+.cm-s-base16-dark .CodeMirror-linenumber { color: #505050; }
+.cm-s-base16-dark .CodeMirror-cursor { border-left: 1px solid #b0b0b0; }
+
+.cm-s-base16-dark span.cm-comment { color: #8f5536; }
+.cm-s-base16-dark span.cm-atom { color: #aa759f; }
+.cm-s-base16-dark span.cm-number { color: #aa759f; }
+
+.cm-s-base16-dark span.cm-property, .cm-s-base16-dark span.cm-attribute { color: #90a959; }
+.cm-s-base16-dark span.cm-keyword { color: #ac4142; }
+.cm-s-base16-dark span.cm-string { color: #f4bf75; }
+
+.cm-s-base16-dark span.cm-variable { color: #90a959; }
+.cm-s-base16-dark span.cm-variable-2 { color: #6a9fb5; }
+.cm-s-base16-dark span.cm-def { color: #d28445; }
+.cm-s-base16-dark span.cm-bracket { color: #e0e0e0; }
+.cm-s-base16-dark span.cm-tag { color: #ac4142; }
+.cm-s-base16-dark span.cm-link { color: #aa759f; }
+.cm-s-base16-dark span.cm-error { background: #ac4142; color: #b0b0b0; }
+
+.cm-s-base16-dark .CodeMirror-activeline-background { background: #202020; }
+.cm-s-base16-dark .CodeMirror-matchingbracket { text-decoration: underline; color: white !important; }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                /*
+
+    Name:       Base16 Default Light
+    Author:     Chris Kempson (http://chriskempson.com)
+
+    CodeMirror template by Jan T. Sott (https://github.com/idleberg/base16-codemirror)
+    Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16)
+
+*/
+
+.cm-s-base16-light.CodeMirror { background: #f5f5f5; color: #202020; }
+.cm-s-base16-light div.CodeMirror-selected { background: #e0e0e0; }
+.cm-s-base16-light .CodeMirror-line::selection, .cm-s-base16-light .CodeMirror-line > span::selection, .cm-s-base16-light .CodeMirror-line > span > span::selection { 

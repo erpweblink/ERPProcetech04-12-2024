@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/OARptPDF.aspx" hash="fffffffffd45b345" filehash="2cbd388917090bbf" flags="110000" assembly="App_Web_vtmro1ph" type="ASP.admin_oarptpdf_aspx">
+    <filedeps>
+        <filedep name="/Admin/OARptPDF.aspx" />
+        <filedep name="/Admin/OARptPDF.aspx.cs" />
+    </filedeps>
+</preserve>

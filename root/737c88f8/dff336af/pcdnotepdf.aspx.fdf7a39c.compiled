@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/PCDNotePDF.aspx" hash="fffffffffd45b345" filehash="41c155b8ee2e2fab" flags="110000" assembly="App_Web_z0kr4hqd" type="ASP.admin_pcdnotepdf_aspx">
+    <filedeps>
+        <filedep name="/Admin/PCDNotePDF.aspx" />
+        <filedep name="/Admin/PCDNotePDF.aspx.cs" />
+    </filedeps>
+</preserve>

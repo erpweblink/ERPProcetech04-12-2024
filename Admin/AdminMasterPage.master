@@ -1,0 +1,764 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="AdminMasterPage.master.cs" Inherits="Admin_AdminMasterPage" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>ERP Procetech Automation Pvt Ltd</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content="#" />
+    <meta name="keywords" content="Admin" />
+    <meta name="author" content="#" />
+
+    <%--<link rel="icon" href="../files/assets/images/favicon.ico" type="image/x-icon" />--%>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet" />
+    <link href="../files/bower_components/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../files/assets/icon/feather/css/feather.css" rel="stylesheet" />
+    <link href="../files/assets/css/style.css" rel="stylesheet" />
+    <link href="../files/assets/css/jquery.mCustomScrollbar.css" rel="stylesheet" />
+    <style type="text/css">
+        .table-bordered th {
+            background-color: #404e67;
+            text-align: center;
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 0.5;
+        }
+
+        .table-bordered tr {
+            line-height: 0.5;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f6f7fb;
+        }
+
+        .table-bordered tr:hover {
+            background-color: #aeced8 !important;
+            /*color: white !important;*/
+        }
+
+        .card .card-header {
+            background-color: transparent;
+            border-bottom: none;
+            padding: 9px 20px 2px 20px !important;
+        }
+
+        .linkbtn {
+            font-weight: 700;
+            color: #527ecc;
+        }
+
+        .card-block {
+            padding: 7px;
+        }
+
+        @media only screen and (max-width: 992px) {
+            /*for Toggle button*/
+            .feather {
+                float: left;
+            }
+        }
+        /*.protected {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }*/
+        .card .card-header h5 {
+            color: #fff !important;
+            font-size: 16px !important;
+            font-weight: 700 !important;
+            padding-bottom: 5px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.10.1/dist/sweetalert2.all.min.js"></script>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@10.10.1/dist/sweetalert2.min.css' />
+
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+
+        <!-- Pre-loader start -->
+        <%-- <div class="theme-loader">
+                <div class="ball-scale">
+                    <div class='contain'>
+                        <div class="ring">
+                            <div class="frame"></div>
+                        </div>
+                        <div class="ring">
+                            <div class="frame"></div>
+                        </div>
+                        <div class="ring">
+                            <div class="frame"></div>
+                        </div>
+                        <div class="ring">
+                            <div class="frame"></div>
+                        </div>
+                        <div class="ring">
+                            <div class="frame"></div>
+                        </div>
+                        <div class="ring">
+                            <div class="frame"></div>
+                        </div>
+                        <div class="ring">
+                            <div class="frame"></div>
+                        </div>
+                        <div class="ring">
+                            <div class="frame"></div>
+                        </div>
+                        <div class="ring">
+                            <div class="frame"></div>
+                        </div>
+                        <div class="ring">
+                            <div class="frame"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>--%>
+        <!-- Pre-loader end -->
+        <div id="pcoded" class="pcoded">
+            <div class="pcoded-overlay-box"></div>
+            <div class="pcoded-container navbar-wrapper">
+
+                <nav class="navbar header-navbar pcoded-header">
+                    <div class="navbar-wrapper">
+
+                        <div class="navbar-logo">
+                            <a class="mobile-menu" id="mobile-collapse" href="#!">
+                                <i class="feather icon-menu"></i>
+                            </a>
+                            <a href="#">
+                                <%--<img src="../img/ProcetechLogoclr.jpg" width="60%" />--%>
+                                <img src="../img/ProcetechLogoclr1.png" width="80%" />
+                                <%--<img class="img-fluid" src="../img/logoWeb.png" width="70%" />--%>
+                                <%--<div class="pcoded-navigatio-lavel">ERP Procetech</div>--%>
+                            </a>
+                            <a class="mobile-options">
+                                <i class="feather icon-more-horizontal"></i>
+                            </a>
+                        </div>
+
+                        <div class="navbar-container container-fluid">
+                            <ul class="nav-left">
+                                <%-- <li class="header-search">
+                                    <div class="main-search morphsearch-search">
+                                        <div class="input-group">
+                                            <span class="input-group-addon search-close"><i class="feather icon-x"></i></span>
+                                            <input type="text" class="form-control">
+                                            <span class="input-group-addon search-btn"><i class="feather icon-search"></i></span>
+                                        </div>
+                                    </div>
+                                </li>--%>
+                                <li>
+                                    <a href="#" onclick="javascript:toggleFullScreen()">
+                                        <i class="feather icon-maximize full-screen"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul class="nav-right">
+
+                                <li class="user-profile header-notification">
+                                    <div class="dropdown-primary dropdown">
+                                        <div class="dropdown-toggle" data-toggle="dropdown">
+                                            <img src="../img/user_icon.png" class="img-radius" alt="User-Profile-Image" />
+                                            <asp:Label ID="lblusername" runat="server" Text=""></asp:Label>
+                                            <i class="feather icon-chevron-down"></i>
+                                        </div>
+                                        <ul class="show-notification profile-notification dropdown-menu" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
+
+                                            <li>
+                                                <a href="#">
+                                                    <i class="feather icon-user"></i>Profile
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                <a href="../Login.aspx">
+                                                    <i class="feather icon-log-out"></i>Logout
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Menu -->
+                <div class="pcoded-main-container">
+                    <div class="pcoded-wrapper">
+                        <nav class="pcoded-navbar">
+                            <div class="pcoded-inner-navbar main-menu">
+                                <!--    1 Menu    -->
+                                <div class="pcoded-navigatio-lavel">ERP Procetech</div>
+                                <ul class="pcoded-item pcoded-left-item">
+
+                                    <li class="">
+                                        <a href="AdminDashboard.aspx">
+                                            <span class="pcoded-micon"><i class="feather icon-home"></i></span>
+                                            <span class="pcoded-mtext">Dashboard</span>
+                                        </a>
+                                    </li>
+
+                                    <%--<li class="pcoded-hasmenu active1">
+                                        <a href="javascript:void(0)">
+                                            <span class="pcoded-micon"><i class="feather icon-aperture rotate-refresh"></i></span>
+                                            <span class="pcoded-mtext">Team</span>
+                                        </a>
+                                        <ul class="pcoded-submenu">
+                                             <li class="active1">
+                                                <a href="#">
+                                                    <span class="pcoded-mtext">Sales</span>
+                                                </a>
+                                            </li>
+
+                                            <li class="active1">
+                                                <a href="#">
+                                                    <span class="pcoded-mtext">BDE</span>
+                                                </a>
+                                            </li>
+
+                                            <li class="active1">
+                                                <a href="#">
+                                                    <span class="pcoded-mtext">Designer</span>
+                                                </a>
+                                            </li>
+
+
+                                            <li class="">
+                                                <a href="#">
+                                                    <span class="pcoded-mtext">Developer</span>
+                                                </a>
+                                            </li>
+
+                                           
+                                        </ul>
+                                    </li>--%>
+                                </ul>
+
+                                <%--<div class="pcoded-navigatio-lavel">UI Element</div>--%>
+                                <ul class="pcoded-item pcoded-left-item">
+                                    <li class="pcoded-hasmenu active1">
+                                        <a id="Mastersid" runat="server" href="javascript:void(0)">
+                                            <span class="pcoded-micon"><i class="feather icon-plus"></i></span>
+                                            <span class="pcoded-mtext">Masters </span>
+                                        </a>
+                                        <ul class="pcoded-submenu">
+                                            <li id="Roleid" runat="server" class="">
+                                                <a href="RoleMaster.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-file"></i></span>
+                                                    <span class="pcoded-mtext">Role Master</span>
+                                                </a>
+                                            </li>
+
+                                            <li id="UserListid" runat="server" class="">
+                                                <a href="Addusers.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-file"></i></span>
+                                                    <span class="pcoded-mtext">User Master</span>
+                                                </a>
+                                            </li>
+
+                                            <li id="CompanyListid" runat="server" class="">
+                                                <a href="AllCompanyList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Customer Master</span>
+                                                </a>
+                                            </li>
+
+                                            <li id="SupplierListid" runat="server" class="">
+                                                <a href="SupplierList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Supplier Master</span>
+                                                </a>
+                                            </li>
+
+                                            <li id="ItemListid" runat="server" class="">
+                                                <a href="ItemList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Item Master</span>
+                                                </a>
+                                            </li>
+
+                                            <li id="CategoryListid" runat="server" class="">
+                                                <a href="CategoryList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Category Master</span>
+                                                </a>
+                                            </li>
+
+                                            <li id="SubCategoryListid" runat="server" class="">
+                                                <a href="SubCategoryList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Sub Category Master</span>
+                                                </a>
+                                            </li>
+
+                                            <li id="UnitListid" runat="server" class="">
+                                                <a href="UnitList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Unit Master</span>
+                                                </a>
+                                            </li>
+                                            <li id="PTermsListid" runat="server" class="">
+                                                <a href="PaymentTermsList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Payment Terms Master</span>
+                                                </a>
+                                            </li>
+
+                                            <li id="TaxMasteraspxid" runat="server" class="">
+                                                <a href="TaxMasterLis.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Tax Master</span>
+                                                </a>
+                                            </li>
+
+                                            <li id="Termsandmasterlistid" runat="server" class="">
+                                                <a href="Termsandmasterlist.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Terms  & Master</span>
+                                                </a>
+                                            </li>
+
+                                        </ul>
+                                    </li>
+
+                                    <%-- <li class="">
+                                        <a href="AddCompany.aspx">
+                                            <span class="pcoded-micon"><i class="feather icon-book"></i></span>
+                                            <span class="pcoded-mtext">Add Company</span>
+                                        </a>
+                                    </li>
+
+                                    <li class="">
+                                        <a href="AllCompanyList.aspx">
+                                            <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                            <span class="pcoded-mtext">Company List</span>
+                                        </a>
+                                    </li>--%>
+
+                                    <li id="Marketingid" runat="server" class="pcoded-hasmenu active1">
+                                        <a href="javascript:void(0)">
+                                            <span class="pcoded-micon"><i class="feather icon-plus"></i></span>
+                                            <span class="pcoded-mtext">Marketing </span>
+                                        </a>
+                                        <ul class="pcoded-submenu">
+                                            <li id="Addenquiryid" runat="server" class="">
+                                                <a href="EnquiryList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-file"></i></span>
+                                                    <span class="pcoded-mtext">Add Enquiry</span>
+                                                </a>
+                                            </li>
+
+                                            <%-- <li class="">
+                                                <a href="EnquiryList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Enquiry List </span>
+                                                </a>
+                                            </li>--%>
+
+                                            <li id="Quotationid" runat="server" class="">
+                                                <a href="QuotationList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Quotation List </span>
+                                                </a>
+                                            </li>
+
+                                            <li id="OAid" runat="server" class="">
+                                                <a href="OrderAcceptanceList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">OA List</span>
+                                                </a>
+                                            </li>
+                                            <%--      <li id="DeliveryChallanid"  runat="server" class="">
+                                                <a href="DeliveryChallanList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Delivery Challan</span>
+                                                </a>
+                                            </li>--%>
+                                            <li id="ProformaInvoiceid" runat="server" class="">
+                                                <a href="ProformaInvoiceList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Proforma Invoice</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <li id="Purchaseid" class="pcoded-hasmenu active1" runat="server">
+                                        <a href="javascript:void(0)">
+                                            <span class="pcoded-micon"><i class="feather icon-plus"></i></span>
+                                            <span class="pcoded-mtext">Purchase</span>
+                                        </a>
+                                        <ul class="pcoded-submenu">
+
+                                            <li class="" runat="server" id="PurchaseOrderid">
+                                                <a href="PurchaseOrderList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Purchase Order</span>
+                                                </a>
+                                            </li>
+
+                                            <li class="" runat="server" id="PurchaseBillid">
+                                                <a href="PurchaseBillList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Purchase Bill</span>
+                                                </a>
+                                            </li>
+                                            <li visible="false" class="" runat="server" id="PaymentModuleid">
+                                                <a href="PaymentModule.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Payment Module</span>
+                                                </a>
+                                            </li>
+                                            <li visible="false" class="" runat="server" id="PaymentModuleListid">
+                                                <a href="PaymentModuleList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Payment Module List</span>
+                                                </a>
+                                            </li>
+                                            <li visible="false" class="" runat="server" id="PaymentRequestListid">
+                                                <a href="PaymentRequestList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Payment Request List</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <li class="pcoded-hasmenu active1" runat="server">
+                                        <a id="Accountid" runat="server" href="javascript:void(0)">
+                                            <span class="pcoded-micon"><i class="feather icon-plus"></i></span>
+                                            <span class="pcoded-mtext">Account</span>
+                                        </a>
+                                        <ul class="pcoded-submenu">
+                                            <li class="" runat="server" id="TaxInvoiceid">
+                                                <a href="TaxInvoiceList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-file"></i></span>
+                                                    <span class="pcoded-mtext">Tax Invoice</span>
+                                                </a>
+                                            </li>
+
+                                            <li class="" runat="server" id="ReceiptVoucherid">
+                                                <a href="ReceiptList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Receipt Voucher</span>
+                                                </a>
+                                            </li>
+
+                                            <li class="" runat="server" id="PaymentVoucherid">
+                                                <a href="PaymentList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Payment Vaucher</span>
+                                                </a>
+                                            </li>
+
+                                            <li class="" runat="server" id="CreditDebitNoteid">
+                                                <a href="CreditDebitNoteList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Credit/Debit Note Purchase</span>
+                                                </a>
+                                            </li>
+
+                                            <li class="" runat="server" id="Li1">
+                                                <a href="CreditDebitNoteSaleList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Credit/Debit Note Sale</span>
+                                                </a>
+                                            </li>
+
+                                            <%-- <li class="" runat="server" id="liAccountBill">
+                                                <a href="../Account/CreditDebitNoteList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Credit/Debit Note</span>
+                                                </a>
+                                            </li>--%>
+                                        </ul>
+                                    </li>
+
+                                    <%-- <li class="">
+                                        <a href="Addusers.aspx">
+                                            <span class="pcoded-micon"><i class="feather icon-users"></i></span>
+                                            <span class="pcoded-mtext">Add Users</span>
+                                        </a>
+                                    </li>--%>
+
+
+                                    <li class="pcoded-hasmenu active1">
+                                        <a id="Productionid" runat="server" href="javascript:void(0)">
+                                            <span class="pcoded-micon"><i class="feather icon-layers"></i></span>
+                                            <span class="pcoded-mtext">Production <span class="badge badge-danger">New</span></span>
+                                        </a>
+                                        <ul class="pcoded-submenu">
+                                            <li class="" runat="server" id="Drawingid">
+                                                <a href="Drawing.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-file"></i></span>
+                                                    <span class="pcoded-mtext">Drawing Creation</span>
+                                                </a>
+                                            </li>
+
+                                            <li class="" runat="server" id="LaserProgrammingid">
+                                                <a href="LaserProgramming.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">TPP Programming</span>
+                                                </a>
+                                            </li>
+
+                                            <li class="" runat="server" id="LaserCuttingid">
+                                                <a href="LaserCutting.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">TPP Cutting</span>
+                                                </a>
+                                            </li>
+
+                                            <li class="" runat="server" id="CNCBendingid">
+                                                <a href="CNCBending.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">CNC Bending</span>
+                                                </a>
+                                            </li>
+
+                                            <li class="" runat="server" id="Weldingid">
+                                                <a href="Welding.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Welding</span>
+                                                </a>
+                                            </li>
+
+                                            <li class="" runat="server" id="PowderCoatingid">
+                                                <a href="PowderCoating.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Powder Coating</span>
+                                                </a>
+                                            </li>
+
+                                            <%-- <li class="pcoded-hasmenu" runat="server" id="Assemblyid">
+                                                <a href="javascript:void(0)">
+                                                    <span class="pcoded-micon"><i class="feather icon-plus"></i></span>
+                                                    <span class="pcoded-mtext">Assembly</span>
+                                                </a>
+                                            </li>--%>
+
+                                            <li class="" runat="server" id="FinalAssemblyid">
+                                                <a href="FinalAssembly.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-file"></i></span>
+                                                    <span class="pcoded-mtext">Final Assembly</span>
+                                                </a>
+                                            </li>
+                                            <li class="" runat="server" id="s">
+                                                <a href="QualityAssurance.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Quality Assurance</span>
+                                                </a>
+                                            </li>
+                                            <li class="" runat="server" id="Stockid">
+                                                <a href="Stock.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Finish Goods Inventory</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+
+                                    <li class="pcoded-hasmenu active1" runat="server" visible="false">
+                                        <a id="Reportid" runat="server" href="javascript:void(0)">
+                                            <span class="pcoded-micon"><i class="feather icon-layers"></i></span>
+                                            <span class="pcoded-mtext">Reports</span>
+                                        </a>
+                                        <ul class="pcoded-submenu">
+                                            <li class="" runat="server" id="PartyLedgerReportid">
+                                                <a href="PartyLedgerReport.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Party Ledger Report</span>
+                                                </a>
+                                            </li>
+                                            <li class="" runat="server" id="AccountReportid">
+                                                <a href="RegisterReport.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Sale Register Report</span>
+                                                </a>
+                                            </li>
+
+                                            <li class="" runat="server" id="PDCRptid">
+                                                <a href="PDC_Report.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">PDC Report</span>
+                                                </a>
+                                            </li>
+
+
+                                            <li class="" runat="server" id="OutstandingReportid">
+                                                <a href="OutstandingReport.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Sale Outstanding Report</span>
+                                                </a>
+                                            </li>
+                                            <li class="" runat="server" id="OutstandingReportPurchaseid">
+                                                <a href="OutstandingReportPurchase.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Purchase Outstanding Report</span>
+                                                </a>
+                                            </li>
+                                            <li class="" runat="server" id="PurchaseReportid">
+                                                <a href="PurchaseReport.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Purchase Report</span>
+                                                </a>
+                                            </li>
+                                            <li class="" runat="server" id="CustomerReportid">
+                                                <a href="DepartmentWiseReport.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Customer Wise</span>
+                                                </a>
+                                            </li>
+                                            <li class="" runat="server" id="CommercialReportid">
+                                                <a href="CommercialReport.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Commercial Report</span>
+                                                </a>
+                                            </li>
+                                            <li class="" runat="server" id="DailyDepartmentReportid">
+                                                <a href="DepartmentWiseRpt.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Daily Department Wise</span>
+                                                </a>
+                                            </li>
+                                            <%-- <li class="" runat="server" id="CompletedOAReportid">
+                                                <a href="CompletedOADepartmentWiseRpt.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Completed OA Department</span>
+                                                </a>
+                                            </li>--%>
+                                            <li class="" runat="server" id="TestCertificateReportid">
+                                                <a href="TestCertificateList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Test Certificate Report</span>
+                                                </a>
+                                            </li>
+
+                                            <li class="" runat="server" id="Li3">
+                                                <a href="ProductionPendingReports.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-list"></i></span>
+                                                    <span class="pcoded-mtext">Production Pending Report</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="" id="ManuallyOACreation" runat="server">
+                                        <a href="ManualOrderAcceptance.aspx" class="">
+                                            <span class="pcoded-micon"><i class="feather icon-plus"></i></span>
+                                            <span class="pcoded-mtext">Manually OA Creation</span>
+                                        </a>
+                                    </li>
+                                    <li class="" id="AuditLog" runat="server">
+                                        <a href="AuditLogDashboard.aspx" class="">
+                                            <span class="pcoded-micon"><i class="feather icon-plus"></i></span>
+                                            <span class="pcoded-mtext">AuditLog Dashboard</span>
+                                        </a>
+                                    </li>
+                                    <li class="" id="UserAuthorization" runat="server">
+                                        <a href="UserAuthorization.aspx" class="">
+                                            <span class="pcoded-micon"><i class="feather icon-plus"></i></span>
+                                            <span class="pcoded-mtext">User Authorization</span>
+                                        </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="../Login.aspx" class="">
+                                            <span class="pcoded-micon"><i class="feather icon-power"></i></span>
+                                            <span class="pcoded-mtext">LOGOUT</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nav>
+                        <div class="pcoded-content">
+                            <div class="pcoded-inner-content">
+                                <%--<div class="protected">--%>
+                                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                                </asp:ContentPlaceHolder>
+                                <%-- </div>--%>
+                                <%-- <div id="styleSelector">
+                                </div>--%>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </form>
+    <script data-cfasync="false" src="..\..\..\cdn-cgi\scripts\5c5dd728\cloudflare-static\email-decode.min.js"></script>
+    <script src="../files/bower_components/jquery/js/jquery.min.js"></script>
+    <script src="../files/bower_components/jquery-ui/js/jquery-ui.min.js"></script>
+    <script src="../files/bower_components/popper.js/js/popper.min.js"></script>
+    <script src="../files/bower_components/bootstrap/js/bootstrap.min.js"></script>
+    <!-- jquery slimscroll js -->
+    <script src="../files/bower_components/jquery-slimscroll/js/jquery.slimscroll.js"></script>
+    <!-- modernizr js -->
+    <script src="../files/bower_components/modernizr/js/modernizr.js"></script>
+    <!-- Chart js -->
+    <script src="../files/bower_components/chart.js/js/Chart.js"></script>
+    <!-- amchart js -->
+
+    <script src="../files/assets/pages/widget/amchart/amcharts.js"></script>
+    <script src="../files/assets/pages/widget/amchart/serial.js"></script>
+    <script src="../files/assets/pages/widget/amchart/light.js"></script>
+    <script src="../files/assets/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="../files/assets/js/SmoothScroll.js"></script>
+    <script src="../files/assets/js/pcoded.min.js"></script>
+    <!-- custom js -->
+
+    <script src="../files/assets/js/vartical-layout.min.js"></script>
+    <script src="../files/assets/pages/dashboard/custom-dashboard.js"></script>
+    <script src="../files/assets/js/script.min.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-23581568-13');
+    </script>
+
+
+
+
+    <%-- For Disabling Right click  --%>
+    <%--<script type="text/javascript">
+        var message = "Function Disabled!";
+        function clickIE4() {
+            if (event.button == 2) {
+                alert(message);
+                return false;
+            }
+        }
+        function clickNS4(e) {
+            if (document.layers || document.getElementById && !document.all) {
+                if (e.which == 2 || e.which == 3) {
+                    alert(message);
+                    return false;
+                }
+            }
+        }
+        if (document.layers) {
+            document.captureEvents(Event.MOUSEDOWN);
+            document.onmousedown = clickNS4;
+        }
+        else if (document.all && !document.getElementById) {
+            document.onmousedown = clickIE4;
+        }
+        document.oncontextmenu = new Function("return false")
+    </script>--%>
+</body>
+</html>

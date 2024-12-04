@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/UnitMaster.aspx" hash="fffffffffd45b345" filehash="a4a9218c733f1d76" flags="110000" assembly="App_Web_fd3c0y0p" type="ASP.admin_unitmaster_aspx">
+    <filedeps>
+        <filedep name="/Admin/AdminMasterPage.master" />
+        <filedep name="/Admin/AdminMasterPage.master.cs" />
+        <filedep name="/Admin/UnitMaster.aspx" />
+        <filedep name="/Admin/UnitMaster.aspx.cs" />
+    </filedeps>
+</preserve>

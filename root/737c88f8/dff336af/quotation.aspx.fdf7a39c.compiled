@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="3" virtualPath="/Admin/Quotation.aspx" hash="fffffffffd45b345" filehash="46d42ba9b70ee924" flags="110000" assembly="App_Web_04u0qavm" type="ASP.admin_quotation_aspx">
+    <filedeps>
+        <filedep name="/Admin/AdminMasterPage.master" />
+        <filedep name="/Admin/AdminMasterPage.master.cs" />
+        <filedep name="/Admin/Quotation.aspx" />
+        <filedep name="/Admin/Quotation.aspx.cs" />
+    </filedeps>
+</preserve>

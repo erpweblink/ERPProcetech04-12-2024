@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DataSet" targetNamespace="http://tempuri.org/DataSet.xsd" xmlns:mstns="http://tempuri.org/DataSet.xsd" xmlns="http://tempuri.org/DataSet.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="PartyLedgerDataSet">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="BillingCustomer1" type="xs:string" minOccurs="0" />
+              <xs:element name="ShippingAddress1" type="xs:string" minOccurs="0" />
+              <xs:element name="Type" type="xs:string" minOccurs="0" />
+              <xs:element name="DocNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Particulars" type="xs:string" minOccurs="0" />
+              <xs:element name="chekNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Credit" type="xs:string" minOccurs="0" />
+              <xs:element name="Debit" type="xs:string" minOccurs="0" />
+              <xs:element name="CDate" type="xs:string" minOccurs="0" />
+              <xs:element name="Balance" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="DataTable2">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="BillingCustomer" type="xs:string" minOccurs="0" />
+              <xs:element name="ShippingAddress" type="xs:string" minOccurs="0" />
+              <xs:element name="TotalDebit" type="xs:string" minOccurs="0" />
+              <xs:element name="ClosingBalance" type="xs:string" minOccurs="0" />
+              <xs:element name="TotalReceivable" type="xs:string" minOccurs="0" />
+              <xs:element name="TotalCredit" type="xs:string" minOccurs="0" />
+              <xs:element name="Totalbalance" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="DataTable1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Jo" type="xs:string" minOccurs="0" />
+              <xs:element name="CustomerName" type="xs:string" minOccurs="0" />
+              <xs:element name="PoNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Project" type="xs:string" minOccurs="0" />
+              <xs:element name="ITEM" type="xs:string" minOccurs="0" />
+              <xs:element name="Qty" type="xs:string" minOccurs="0" />
+              <xs:element name="DrgNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Date" type="xs:string" minOccurs="0" />
+              <xs:element name="AssemblyName" type="xs:string" minOccurs="0" />
+              <xs:element name="Specification" type="xs:string" minOccurs="0" />
+              <xs:element name="Observation" type="xs:string" minOccurs="0" />
+              <xs:element name="Result" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="DataTable3">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="AssemblyName" type="xs:string" minOccurs="0" />
+              <xs:element name="Specification" type="xs:string" minOccurs="0" />
+              <xs:element name="Observation" type="xs:string" minOccurs="0" />
+              <xs:element name="Result" type="xs:string" minOccurs="0" />
+              <xs:element name="Type" type="xs:string" minOccurs="0" />
+              <xs:element name="Test" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

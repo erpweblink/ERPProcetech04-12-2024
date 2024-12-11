@@ -62,7 +62,8 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
         {
             string query = string.Empty;
 
-            query = @"SELECT [LaserProgId],[OANumber],[SubOA],[CustomerName],[Size],[TotalQty],[InwardDtTime],[InwardQty],[OutwardDtTime],[OutwardQty],
+            // JobNo column added by Nikhil 10-12-2024
+            query = @"SELECT [JobNO],[LaserProgId],[OANumber],[SubOA],[CustomerName],[Size],[TotalQty],[InwardDtTime],[InwardQty],[OutwardDtTime],[OutwardQty],
                 [DeliveryDate],[IsApprove],[IsPending],[IsCancel],[CreatedBy],[CreatedDate],A.[UpdatedBy],[UpdatedDate] 
                 ,C.CustomerCode FROM [dbo].[tblLaserPrograming] AS A                
 			   LEFT JOIN Company AS C ON C.cname=A.customername
@@ -104,29 +105,31 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
         {
             DataTable dt = new DataTable();
             bool flag = false;
-            dt.Columns.AddRange(new DataColumn[11]
+            dt.Columns.AddRange(new DataColumn[12] // Original size 11
             { new DataColumn("OAnumber"),
             new DataColumn("SubOA"),
                 new DataColumn("customername"),
                 new DataColumn("size"),
                 new DataColumn("totalinward"),
                 new DataColumn("inwarddatetime"),
-                new DataColumn("inwardqty"),
+                new DataColumn("inwardqty"),               
                 new DataColumn("outwarddatetime"),
                 new DataColumn("outwardqty"),
                 new DataColumn("deliverydate"),
+                new DataColumn("JobNo"),
                 new DataColumn("Isapprove") });
 
-            tempdt.Columns.AddRange(new DataColumn[9] { new DataColumn("OAnumber"),
+            tempdt.Columns.AddRange(new DataColumn[12] { new DataColumn("OAnumber"),
                                 new DataColumn("SubOA"),
                                 new DataColumn("customername"),
                                 new DataColumn("size"),
                                 new DataColumn("totalinward"),
                                 new DataColumn("inwarddatetime"),
                                 new DataColumn("inwardqty"),
-                                //new DataColumn("outwarddatetime"),
-                                //new DataColumn("outwardqty"),
+                                new DataColumn("outwarddatetime"),
+                                new DataColumn("outwardqty"),
                                 new DataColumn("deliverydate"),
+                                new DataColumn("JobNo"),
                                 new DataColumn("Isapprove") });
             foreach (GridViewRow row in dgvLaserprogram.Rows)
             {
@@ -171,7 +174,13 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
                             TextBox Sizetb = (TextBox)row.Cells[1].FindControl("lblSize");
                             string Size = Sizetb.Text;
 
-                            dt.Rows.Add(OANumber, SubOA, CustName, Size, TotalQty, InwardDtTime, InwardQty, OutwardDtTime, OutwardQty, DeliveryDt);
+                            // Added by Nikhil 10-12-2024
+                            string JobNo = (row.Cells[1].FindControl("JobNo") as Label).Text;
+
+                            dt.Rows.Add(OANumber, SubOA, CustName, Size, TotalQty, InwardDtTime, InwardQty, OutwardDtTime, OutwardQty, DeliveryDt,JobNo);
+
+                           
+                            
                         }
                     }
                 }
@@ -310,7 +319,7 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
                     {
 
                     }
-                   ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Successfully- Approved and send to TPP Cutting Department...!');window.location.href='LaserProgramming.aspx';", true);                   
+                    ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Successfully- Approved and send to TPP Cutting Department...!');window.location.href='LaserProgramming.aspx';", true);
                     //Response.Redirect("LaserProgramming.aspx");
                 }
             }
@@ -662,7 +671,9 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
         {
             DataTable dt = new DataTable();
             bool flag = false;
-            dt.Columns.AddRange(new DataColumn[11]
+
+            // Changed Added JobNo By Nikhil 10-12-2024
+            dt.Columns.AddRange(new DataColumn[12] // Originally 11
             { new DataColumn("OAnumber"),
             new DataColumn("SubOA"),
                 new DataColumn("customername"),
@@ -673,18 +684,23 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
                 new DataColumn("outwarddatetime"),
                 new DataColumn("outwardqty"),
                 new DataColumn("deliverydate"),
+                 new DataColumn("JobNo"),
                 new DataColumn("Isapprove") });
 
-            tempdt.Columns.AddRange(new DataColumn[9] { new DataColumn("OAnumber"),
+            tempdt.Columns.AddRange(new DataColumn[12] { new DataColumn("OAnumber"),
                                 new DataColumn("SubOA"),
                                 new DataColumn("customername"),
                                 new DataColumn("size"),
                                 new DataColumn("totalinward"),
                                 new DataColumn("inwarddatetime"),
                                 new DataColumn("inwardqty"),
-                                //new DataColumn("outwarddatetime"),
-                                //new DataColumn("outwardqty"),
+
+                                // UnCommented two fields to set the row properly by Nikhil 
+                                new DataColumn("outwarddatetime"),
+                                new DataColumn("outwardqty"),
+
                                 new DataColumn("deliverydate"),
+                                 new DataColumn("JobNo"),
                                 new DataColumn("Isapprove") });
             foreach (GridViewRow row in dgvLaserprogram.Rows)
             {
@@ -729,7 +745,12 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
                             TextBox Sizetb = (TextBox)row.Cells[1].FindControl("lblSize");
                             string Size = Sizetb.Text;
 
-                            dt.Rows.Add(OANumber, SubOA, CustName, Size, TotalQty, InwardDtTime, InwardQty, OutwardDtTime, OutwardQty, DeliveryDt);
+                            //dt.Rows.Add(OANumber, SubOA, CustName, Size, TotalQty, InwardDtTime, InwardQty, OutwardDtTime, OutwardQty, DeliveryDt);
+
+                            // Added by Nikhil 10-12-2024
+                            string JobNo = (row.Cells[1].FindControl("lblJobNo") as Label).Text;
+
+                            dt.Rows.Add(OANumber, SubOA, CustName, Size, TotalQty, InwardDtTime, InwardQty, OutwardDtTime, OutwardQty, DeliveryDt, JobNo);
                         }
                     }
                 }
@@ -789,11 +810,16 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
                                 row["customername"].ToString(),
                                 row["size"].ToString(),
                                 row["totalinward"].ToString(),
+                                //Below Two fileds added by Nikhil  and JobNo as well 
+                                 DateTime.Now,
+                                row["InwardQty"].ToString(),
+
                                 DateTime.Now,
                                 row["outwardqty"].ToString(),
                                 //DateTime.Now,                      // no need to insert (Wrong Input)
                                 //row["outwardqty"].ToString(),      // no need to insert (Wrong Input)
                                 row["deliverydate"].ToString(),
+                                row["JobNo"].ToString(),
                                  true);
 
                             using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(con))
@@ -810,6 +836,7 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
                                 //sqlBulkCopy.ColumnMappings.Add("outwarddatetime", "OutwardDtTime");
                                 //sqlBulkCopy.ColumnMappings.Add("outwardqty", "OutwardQty");
                                 sqlBulkCopy.ColumnMappings.Add("deliverydate", "DeliveryDate");
+                                sqlBulkCopy.ColumnMappings.Add("JobNo", "JobNo");
                                 sqlBulkCopy.ColumnMappings.Add("Isapprove", "IsApprove");
                                 sqlBulkCopy.WriteToServer(tempdt);
 
@@ -868,7 +895,7 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
                     {
 
                     }
-                    
+
 
                     ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Successfully- Approved and send to Laser Cutting Department...!');window.location.href='LaserProgramming.aspx';", true);
                     //Response.Redirect("LaserProgramming.aspx");

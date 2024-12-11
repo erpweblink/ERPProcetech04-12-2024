@@ -76,8 +76,8 @@ public partial class Admin_Drawing : System.Web.UI.Page
             //query = @"SELECT *,[pono],A.[id] as mainID,[OANumber],[Size],[TotalQty],[InwardDtTime],[InwardQty],[deliverydatereqbycust],[customername],SubOA
 
             //New Line added by Nikhil
-            query = @"SELECT *,[pono],A.[id] as mainID,[OANumber],[Size],[TotalQty],[InwardDtTime],[InwardQty],[OutwardDtTime],[customername],SubOA
-              ,C.CustomerCode FROM [DB_ProcetechTesting].[DB_ProcetechERP].[vwDrawerCreation] AS A 
+            query = @"SELECT * ,[pono],A.[id] as mainID,[OANumber],[Size],[TotalQty],[InwardDtTime],[InwardQty],[OutwardDtTime],[customername],SubOA
+              ,C.CustomerCode FROM [DB_ProcetechERP].[vwDrawerCreation] AS A 
 			   LEFT JOIN Company AS C ON C.cname=A.customername where IsComplete is null order by deliverydatereqbycust asc";
 
             SqlDataAdapter ad = new SqlDataAdapter(query, con);
@@ -85,8 +85,6 @@ public partial class Admin_Drawing : System.Web.UI.Page
             ad.Fill(dt);
             if (dt.Rows.Count > 0)
             {
-                string OutwardDate = dt.Rows[0]["OutwardDtTime"].ToString();
-
                 dgvDrawing.DataSource = dt;
                 dgvDrawing.DataBind();
                 ScriptManager.RegisterStartupScript(Page, this.GetType(), "Key", "<script>MakeStaticHeader('" + dgvDrawing.ClientID + "', 900, 1020 , 40 ,true); </script>", false);
@@ -114,19 +112,33 @@ public partial class Admin_Drawing : System.Web.UI.Page
         {
 
             DataTable dt = new DataTable();
-            dt.Columns.AddRange(new DataColumn[12] { new DataColumn("OAnumber"), new DataColumn("SubOA"), new DataColumn("customername"), new DataColumn("size"), new DataColumn("totalinward"), new DataColumn("inwarddatetime"), new DataColumn("inwardqty"), new DataColumn("outwarddatetime"), new DataColumn("outwardqty"), new DataColumn("deliverydate"), new DataColumn("remark"), new DataColumn("Isapprove") });
+            //// previously size was 12 amd 9  by Nikhil 
+            //dt.Columns.AddRange(new DataColumn[13] { new DataColumn("OAnumber"), new DataColumn("SubOA"), new DataColumn("customername"),
+            //    new DataColumn("size"), new DataColumn("totalinward"), new DataColumn("inwarddatetime"), new DataColumn("inwardqty"),
+            //    new DataColumn("outwarddatetime"), new DataColumn("outwardqty"), new DataColumn("deliverydate"), new DataColumn("remark"), 
+            //    new DataColumn("JobNo"), new DataColumn("Isapprove")});
 
-            tempdt.Columns.AddRange(new DataColumn[9] { new DataColumn("OAnumber"),
+            // New Code added by Nikhil 09-12-2024
+             dt.Columns.AddRange(new DataColumn[12] { new DataColumn("OAnumber"), new DataColumn("SubOA"), new DataColumn("customername"),
+                new DataColumn("size"), new DataColumn("totalinward"), new DataColumn("inwarddatetime"), new DataColumn("inwardqty"),
+               new DataColumn("outwarddatetime"), new DataColumn("outwardqty"),new DataColumn("deliverydate"), 
+                new DataColumn("JobNo"), new DataColumn("Isapprove")});
+
+            tempdt.Columns.AddRange(new DataColumn[12] { new DataColumn("OAnumber"),
                                 new DataColumn("SubOA"),
                                 new DataColumn("customername"),
                                 new DataColumn("size"),
                                 new DataColumn("totalinward"),
                                 new DataColumn("inwarddatetime"),
                                 new DataColumn("inwardqty"),
-                                //new DataColumn("outwarddatetime"),
-                                //new DataColumn("outwardqty"),
+                                new DataColumn("outwarddatetime"),
+                                new DataColumn("outwardqty"),
                                 new DataColumn("deliverydate"),
+                                 // New Field by Nikhil  Added 09-12-2024
+                                new DataColumn("JobNo"),
                                 new DataColumn("Isapprove")
+                               
+                                
             });
             foreach (GridViewRow row in dgvDrawing.Rows)
             {
@@ -157,6 +169,11 @@ public partial class Admin_Drawing : System.Web.UI.Page
                             //string OutwardDtTime = (row.Cells[1].FindControl("lblOutwardDtTime") as Label).Text;
                             TextBox tbOutwardDt = (TextBox)row.Cells[1].FindControl("txtOutwardDtTimel");
                             //DateTime OutwardDtT = DateTime.Parse(tbOutwardDt.Text);
+
+                            // New Field Added by Nikhil  09-12-2024
+                            string JobNo  = (row.Cells[1].FindControl("lblJobNo") as Label).Text;
+                            
+                           
                            
                             string OutwardDtTime = DateTime.Now.ToString("dd-MM-yyyy hh:mm tt");
                             //string OutwardDtTime = tbOutwardDt.Text + " " + time;
@@ -174,8 +191,11 @@ public partial class Admin_Drawing : System.Web.UI.Page
                             string Remark = Remarktb.Text;
 
 
-                            //string Size = strsi.Replace("<br><br><br>", " ");
-                            dt.Rows.Add(OANumber, SubOA, CustName, Size, TotalQty, InwardDtTime, InwardQty, OutwardDtTime, OutwardQty, DeliveryDt, Remark, true);
+                            //string Size = strsi.Replace("<br><br><br>", " ");   Old Code 
+                           // dt.Rows.Add(OANumber, SubOA, CustName, Size, TotalQty, InwardDtTime, InwardQty, OutwardDtTime, OutwardQty, DeliveryDt,JobNo, Remark, true);
+                            
+                            // New Code added by Nikhil 09-12-2024
+                            dt.Rows.Add(OANumber, SubOA, CustName, Size, TotalQty, InwardDtTime, InwardQty, OutwardDtTime, OutwardQty, DeliveryDt,JobNo, true);
                         }
                     }
                 }
@@ -229,10 +249,15 @@ public partial class Admin_Drawing : System.Web.UI.Page
                                 row["totalinward"].ToString(),
                                 DateTime.Now,
                                 row["outwardqty"].ToString(),
-                                //DateTime.Now,                           // no need to insert (Wrong Input)
-                                //row["outwardqty"].ToString(),           // no need to insert (Wrong Input)
+                               // DateTime.Now,                           // no need to insert (Wrong Input)
+                                row["outwardqty"].ToString(),           // no need to insert (Wrong Input)
                                 row["deliverydate"].ToString(),
+                                // New Line Addedby Nikhil  09-12-2024
+                                row["JobNo"].ToString(),
+
                                 true);
+
+                            string JobNo = row["JobNo"].ToString();
 
                             using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(con))
                             {
@@ -248,6 +273,10 @@ public partial class Admin_Drawing : System.Web.UI.Page
                                 //sqlBulkCopy.ColumnMappings.Add("outwarddatetime", "OutwardDtTime");
                                 //sqlBulkCopy.ColumnMappings.Add("outwardqty", "OutwardQty");
                                 sqlBulkCopy.ColumnMappings.Add("deliverydate", "DeliveryDate");
+
+                                // New Line Added by Nikhil  09-12-2024
+                                sqlBulkCopy.ColumnMappings.Add("JobNo", "JobNo");
+                                
                                 sqlBulkCopy.ColumnMappings.Add("Isapprove", "IsApprove");
                                 sqlBulkCopy.WriteToServer(tempdt);
 
@@ -266,6 +295,7 @@ public partial class Admin_Drawing : System.Web.UI.Page
                         else
                         {
                             int totOutwardqnt = Convert.ToInt32(InwardQty) + Convert.ToInt32(row["outwardqty"].ToString());
+                            //SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + totOutwardqnt.ToString() + "',[IsComplete]=NULL,[InwardDtTime]='" + row["outwarddatetime"].ToString() + "' WHERE SubOA='" + row["SubOA"].ToString() + "'", con);
                             SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + totOutwardqnt.ToString() + "',[IsComplete]=NULL,[InwardDtTime]='" + row["outwarddatetime"].ToString() + "' WHERE SubOA='" + row["SubOA"].ToString() + "'", con);
                             cmdupdate.ExecuteNonQuery();
                         }

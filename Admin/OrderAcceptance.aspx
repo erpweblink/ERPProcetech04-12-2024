@@ -491,7 +491,7 @@
                                                     </div>
                                                     <div class="col-md-2 spancls">PO Date : </div>
                                                     <div class="col-md-4">
-                                                        <asp:TextBox ID="txtpodate" Width="100%" CssClass="myDate" runat="server" ReadOnly="true"></asp:TextBox>
+                                                        <asp:TextBox ID="txtpodate" Width="100%"  runat="server" ReadOnly="true"></asp:TextBox>
                                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" Display="Dynamic" ErrorMessage="Please Enter PO Date"
                                                             ControlToValidate="txtpodate" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                                         <asp:CalendarExtender ID="CalendarExtender2" TargetControlID="txtpodate" Format="dd-MM-yyyy" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>

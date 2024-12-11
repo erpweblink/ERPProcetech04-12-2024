@@ -144,6 +144,24 @@
             background-color: #A1DCF2;
         }
     </style>
+
+    <%-- New SweetAlert Script by nikhil  --%>
+    <script>
+        function HideLabel(msg) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: msg,
+                timer: 3000,
+                showCancelButton: false,
+                showConfirmButton: false
+            }).then(function () {
+                //window.location.href = "../Admin/TaxInvoiceList.aspx";
+            })
+        };
+    </script>
+    <%-- ENd  --%>
+
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript">
         function pageLoad() {
@@ -358,8 +376,7 @@
                         <div class="container-fluid">
                             <div class="card">
                                 <div class="card-header bg-primary text-uppercase text-white">
-                                    <h5> 
-Finish Goods Inventory </h5>
+                                    <h5>Finish Goods Inventory </h5>
                                     <asp:HiddenField runat="server" ID="hdnInwardQty" />
                                     <asp:HiddenField runat="server" ID="hdnSubOANo" />
                                 </div>
@@ -380,7 +397,7 @@ Finish Goods Inventory </h5>
                                         <asp:LinkButton ID="btnexcel" runat="server" CssClass="btn btn-small   btn-success " OnClick="btnexcel_Click" OnClientClick="aspnetForm.target ='_blank';"><i class="fa fa-download" aria-hidden="true"></i>&nbsp;Export Excel</asp:LinkButton>
                                     </div>
 
-                                    <div class="page-header-breadcrumb" runat="Server" visible="false" >
+                                    <div class="page-header-breadcrumb" runat="Server" visible="false">
                                         <div style="float: right; margin: 3px; margin-bottom: 5px;">
                                             <span id="btnstockoldlist" runat="server"><a href="Stock_OldDB.aspx" style="font-size: 16px; border: 1px dashed gray; padding: 4px;">&nbsp;STOCK OLD DATA</a>&nbsp;&nbsp;
                                             </span>

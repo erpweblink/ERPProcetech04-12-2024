@@ -38,47 +38,47 @@ public partial class Admin_OrderAcceptanceList : System.Web.UI.Page
 
     private void FillOAgrid()
     {
-
+        // Add one more field in vw for JobNo by Nikhil 06-12-2024
         string query = "";
         if (!string.IsNullOrEmpty(txtCustomerName.Text))
         {
-            adp = new SqlDataAdapter(@"SELECT  A.[id],[quotationid],[oano],[quotationno],[constructiontype],[partyname],[description],
+            adp = new SqlDataAdapter(@"SELECT  A.[id], A.[JobNo], [quotationid],[oano],[quotationno],[constructiontype],[partyname],[description],
                              A.[status],convert(varchar(20),[createddate],105) as createddate,A.status,emailstatus,deliverydatereqbycust 
 						,C.CustomerCode	 FROM [DB_ProcetechERP].[vw_OAList] AS A LEFT JOIN Company AS C ON A.partyname=C.cname where A.IsDispatch is null and A.partyname like '" + txtCustomerName.Text.Trim() + "%' order by A.id desc", con);
         }
         if (ddlDispatchList.SelectedItem.Text == "Pending")
         {
-            adp = new SqlDataAdapter(@"SELECT  A.[id],[quotationid],[oano],[quotationno],[constructiontype],[partyname],[description],
+            adp = new SqlDataAdapter(@"SELECT  A.[id], A.[JobNo],[quotationid],[oano],[quotationno],[constructiontype],[partyname],[description],
                              A.[status],convert(varchar(20),[createddate],105) as createddate,A.status,emailstatus,deliverydatereqbycust 
 						,C.CustomerCode	 FROM [DB_ProcetechERP].[vw_OAList] AS A LEFT JOIN Company AS C ON A.partyname=C.cname where A.IsDispatch is null order by A.id desc", con);
         }
         if (ddlDispatchList.SelectedItem.Text == "Dispatch")
         {
-            adp = new SqlDataAdapter(@"SELECT  A.[id],[quotationid],[oano],[quotationno],[constructiontype],[partyname],[description],
+            adp = new SqlDataAdapter(@"SELECT  A.[id], A.[JobNo],[quotationid],[oano],[quotationno],[constructiontype],[partyname],[description],
                              A.[status],convert(varchar(20),[createddate],105) as createddate,A.status,emailstatus,deliverydatereqbycust 
 						,C.CustomerCode	 FROM [DB_ProcetechERP].[vw_OAList] AS A LEFT JOIN Company AS C ON A.partyname=C.cname where A.IsDispatch='1' order by A.id desc", con);
         }
         if (ddlDispatchList.SelectedItem.Text == "--All--")
         {
-            adp = new SqlDataAdapter(@"SELECT  A.[id],[quotationid],[oano],[quotationno],[constructiontype],[partyname],[description],
+            adp = new SqlDataAdapter(@"SELECT  A.[id], A.[JobNo],[quotationid],[oano],[quotationno],[constructiontype],[partyname],[description],
                              A.[status],convert(varchar(20),[createddate],105) as createddate,A.status,emailstatus,deliverydatereqbycust 
 						,C.CustomerCode	 FROM [DB_ProcetechERP].[vw_OAList] AS A LEFT JOIN Company AS C ON A.partyname=C.cname order by A.id desc", con);
         }
         if (ddlDispatchList.SelectedItem.Text == "Dispatch" && !string.IsNullOrEmpty(txtCustomerName.Text))
         {
-            adp = new SqlDataAdapter(@"SELECT  A.[id],[quotationid],[oano],[quotationno],[constructiontype],[partyname],[description],
+            adp = new SqlDataAdapter(@"SELECT  A.[id], A.[JobNo],[quotationid],[oano],[quotationno],[constructiontype],[partyname],[description],
                              A.[status],convert(varchar(20),[createddate],105) as createddate,A.status,emailstatus,deliverydatereqbycust 
 						,C.CustomerCode	 FROM [DB_ProcetechERP].[vw_OAList] AS A LEFT JOIN Company AS C ON A.partyname=C.cname where A.IsDispatch='1' and A.partyname like '" + txtCustomerName.Text.Trim() + "%' order by A.id desc", con);
         }
         if (ddlDispatchList.SelectedItem.Text == "Pending" && !string.IsNullOrEmpty(txtCustomerName.Text))
         {
-            adp = new SqlDataAdapter(@"SELECT  A.[id],[quotationid],[oano],[quotationno],[constructiontype],[partyname],[description],
+            adp = new SqlDataAdapter(@"SELECT  A.[id], A.[JobNo],[quotationid],[oano],[quotationno],[constructiontype],[partyname],[description],
                              A.[status],convert(varchar(20),[createddate],105) as createddate,A.status,emailstatus,deliverydatereqbycust 
 						,C.CustomerCode	 FROM [DB_ProcetechERP].[vw_OAList] AS A LEFT JOIN Company AS C ON A.partyname=C.cname where A.IsDispatch is null and A.partyname like '" + txtCustomerName.Text.Trim() + "%' order by A.id desc", con);
         }
         if (ddlDispatchList.SelectedItem.Text == "--All--" && !string.IsNullOrEmpty(txtCustomerName.Text))
         {
-            adp = new SqlDataAdapter(@"SELECT  A.[id],[quotationid],[oano],[quotationno],[constructiontype],[partyname],[description],
+            adp = new SqlDataAdapter(@"SELECT  A.[id], A.[JobNo],[quotationid],[oano],[quotationno],[constructiontype],[partyname],[description],
                              A.[status],convert(varchar(20),[createddate],105) as createddate,A.status,emailstatus,deliverydatereqbycust 
 						,C.CustomerCode	 FROM [DB_ProcetechERP].[vw_OAList] AS A LEFT JOIN Company AS C ON A.partyname=C.cname where A.partyname like '" + txtCustomerName.Text.Trim() + "%' order by A.id desc", con);
 
@@ -248,7 +248,8 @@ public partial class Admin_OrderAcceptanceList : System.Web.UI.Page
       A.[mobile3],A.[mobile4],A.[mobile5],A.[billingaddress],A.[shippingaddress],format(A.[regdate],'dd-MMM-yyyy hh:mm tt') as [regdate],
 A.[sessionname],A.[gstno],B.name,B.email as Empemail,A.[desig1],A.[desig2],A.[desig3],A.[desig4],A.[desig5], A.CustomerCode FROM [Company]
 A join employees B on A.sessionname=B.name
-LEFT JOIN vw_OAList AS CD ON CD.partyname=A.cname where CD.Id='" + id + "' ";
+LEFT JOIN [DB_ProcetechERP].[vw_OAList] AS CD ON CD.partyname=A.cname where CD.Id='" + id + "' ";
+//LEFT JOIN vw_OAList AS CD ON CD.partyname=A.cname where CD.Id='" + id + "' ";
         SqlDataAdapter ad = new SqlDataAdapter(query1, con);
         DataTable dt = new DataTable();
         ad.Fill(dt);

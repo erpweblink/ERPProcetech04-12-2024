@@ -147,17 +147,18 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 
 
-    <%-- New Temp Script by nikhil  --%>
+    <%-- New SweetAlert Script by nikhil  --%>
       <script>
-          function HideLabel(msg) {
+          function HideLabel(msg, icon) {
               Swal.fire({
-                  icon: 'warning',
+                  icon: icon,
+                  title: "Oops...",
                   text: msg,
                   timer: 3000,
                   showCancelButton: false,
                   showConfirmButton: false
-              }).then(function () {
-                  //window.location.href = "../Admin/TaxInvoiceList.aspx";
+              }).then(function () {           
+                      //window.location.href = "../Admin/LaserProgramming.aspx";                      
               })
           };
       </script>

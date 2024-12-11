@@ -21,6 +21,7 @@ using iTextSharp.text.html.simpleparser;
 using System.Net;
 using iTextSharp.tool.xml;
 using System.Threading;
+using System.Activities.Expressions;
 
 public partial class Admin_ManualOrderAcceptance : System.Web.UI.Page
 {
@@ -233,12 +234,13 @@ public partial class Admin_ManualOrderAcceptance : System.Web.UI.Page
         {
             if (Request.QueryString["cmded"] != null)
             {
-                SqlCommand scmd = new SqlCommand("select id from OrderAccept where OAno='" + OAid + "'", con);
+                SqlCommand scmd = new SqlCommand("select id from [DB_ProcetechTesting].[dbo].[OrderAccept] where OAno='" + OAid + "'", con);
                 con.Open();
                 id = Convert.ToInt32(scmd.ExecuteScalar());
                 ViewState["OAID"] = id;
                 con.Close();
             }
+            // New Column Added in below code JobNo and table schema given 
             SqlDataAdapter adpfill = new SqlDataAdapter(@"SELECT [id],[ccode],[quotationid],[OAno],convert(varchar(20),[currentdate],105) as currentdate,[customername],[address],
        [quotationno],convert(varchar(20),[quotationdate],105) as quotationdate,[pono],convert(varchar(20),[podate],105) as podate
       ,[contactpersonpurchase],[contpersonpurcontact],[contactpersontechnical],[contpersontechcontact],replace(description,'<br>',CHAR(13) + CHAR(10)) as description
@@ -249,16 +251,23 @@ public partial class Admin_ManualOrderAcceptance : System.Web.UI.Page
       ,[instructionchk1],[instructionchk2],[instructionchk3],[instructionchk4],[instructionchk5],[instructionchk6],[instructionchk7],[instructionchk8],
        [specialinstruction1],[specialinstruction2],[specialinstruction3],[specialinstruction4],[specialinstruction5],[specialinstruction6]
       ,[specialinstruction7],[specialinstruction8],[sendtoemail1],[sendtoemail2],[sendtoemail3],[sendtoemail4]
-      ,[sendtoemail5],[custemail],[status],[emailstatus],[TaxType] FROM [OrderAccept] where OAno='" + OAid + "'", con);
+      ,[sendtoemail5],[custemail],[status],[emailstatus],[TaxType],[JobNo] FROM [DB_ProcetechTesting].[dbo].[OrderAccept] where OAno='" + OAid + "'", con);
 
             DataTable dtfill = new DataTable();
             adpfill.Fill(dtfill);
 
             if (dtfill.Rows.Count > 0)
             {
+
+                // New Field Add by Nikhil to get JobNo  06-12-2024
+                txtJobNo.Text = dtfill.Rows[0]["JobNo"].ToString();
+                txtJobNo.ReadOnly = true;
+                
                 HFQuotationid.Value = dtfill.Rows[0]["quotationid"].ToString();
                 txtOAno.Text = dtfill.Rows[0]["OAno"].ToString();
+                txtOAno.ReadOnly = true;
                 txttodaysdate.Text = dtfill.Rows[0]["currentdate"].ToString();
+                txttodaysdate.ReadOnly = true;
                 txtcustomername.Text = dtfill.Rows[0]["customername"].ToString();
 
                 divGstaddres.Visible = false;
@@ -418,7 +427,8 @@ public partial class Admin_ManualOrderAcceptance : System.Web.UI.Page
     protected void GetOADetails(string OANo)
     {
 
-        SqlDataAdapter ad = new SqlDataAdapter("SELECT * FROM OrderAcceptDtls where OAno='" + OANo + "'", con);
+        //SqlDataAdapter ad = new SqlDataAdapter("SELECT * FROM OrderAcceptDtls where OAno='" + OANo + "'", con);
+        SqlDataAdapter ad = new SqlDataAdapter("SELECT * FROM [DB_ProcetechTesting].[DB_ProcetechERP].[OrderAcceptDtls] where OAno='" + OANo + "'", con);
         DataTable dt = new DataTable();
         ad.Fill(dt);
         if (dt.Rows.Count > 0)
@@ -438,7 +448,8 @@ public partial class Admin_ManualOrderAcceptance : System.Web.UI.Page
         try
         {
             string query1 = string.Empty;
-            query1 = "SELECT TOP 1 [DocID],[OAid],[File1],[File2],[File3],[File4],[File5],[CeatedDate],[CreatedBy] FROM tblOAFiledata where OAid='" + id + "' ";
+            //query1 = "SELECT TOP 1 [DocID],[OAid],[File1],[File2],[File3],[File4],[File5],[CeatedDate],[CreatedBy] FROM tblOAFiledata where OAid='" + id + "' ";
+            query1 = "SELECT TOP 1 [DocID],[OAid],[File1],[File2],[File3],[File4],[File5],[CeatedDate],[CreatedBy] FROM [DB_ProcetechTesting].[DB_ProcetechERP].[tblOAFiledata] where OAid='" + id + "' ";
             SqlDataAdapter ad = new SqlDataAdapter(query1, con);
             DataTable dt = new DataTable();
             ad.Fill(dt);
@@ -517,15 +528,31 @@ public partial class Admin_ManualOrderAcceptance : System.Web.UI.Page
     protected void GenerateCode()
     {
        
-        SqlDataAdapter ad = new SqlDataAdapter("SELECT max([id]) as maxid FROM [OrderAccept]", con);
+        SqlDataAdapter ad = new SqlDataAdapter("SELECT max([id]) as maxid, max(JobNo) as JobNo FROM [OrderAccept]", con);
+        //qlDataAdapter ad = new SqlDataAdapter("SELECT max([id]) as maxid, max(JobNo) as JobNo FROM [DB_ProcetechTesting].[dbo].[OrderAccept]", con);
         DataTable dt = new DataTable();
         ad.Fill(dt);
 
         int MxID = 0;
         if (dt.Rows.Count > 0)
         {
+            if (dt.Rows[0]["JobNo"].ToString() == "")
+            {
+                SqlCommand scmds = new SqlCommand("SELECT dbo.GenerateAndIncrementCodeForJOBNO() ", con);
+                con.Open();
+                string jobNo = Convert.ToString(scmds.ExecuteScalar());
+                txtJobNo.Text = jobNo;
+            }
+            else
+            {
+                SqlCommand scmds = new SqlCommand("SELECT dbo.GenerateAndIncrementCodeForJOBNO() ", con);
+                con.Open();
+                string jobNo = Convert.ToString(scmds.ExecuteScalar());
+                txtJobNo.Text = jobNo;
+            }            
             int maxid = dt.Rows[0]["maxid"].ToString() == "" ? MxID + 1 : Convert.ToInt32(dt.Rows[0]["maxid"].ToString()) + 1;
             txtOAno.Text = "OA24250000" + maxid.ToString();
+
         }
         else
         {
@@ -536,7 +563,7 @@ public partial class Admin_ManualOrderAcceptance : System.Web.UI.Page
     protected string GeneratesubOACode()
     {
         string subOA = "";
-        SqlDataAdapter ad = new SqlDataAdapter("SELECT max([id]) as maxid FROM [OrderAcceptDtls]", con);
+        SqlDataAdapter ad = new SqlDataAdapter("SELECT max([id]) as maxid FROM [DB_ProcetechTesting].[DB_ProcetechERP].[OrderAcceptDtls]", con);
         DataTable dt = new DataTable();
         ad.Fill(dt);
 
@@ -699,11 +726,14 @@ public partial class Admin_ManualOrderAcceptance : System.Web.UI.Page
         }
         if (flg == true)
         {
-            SqlCommand cmd = new SqlCommand("SP_OrderAccept", con);
+            SqlCommand cmd = new SqlCommand("[SP_OrderAccept]", con);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@ccode", ccode);
             cmd.Parameters.AddWithValue("@customername", txtcustomername.Text);
 
+            // New Parameter added by Nikhil To add job No and in SP as well  06-12-2024
+            cmd.Parameters.AddWithValue("@JobNo", txtJobNo.Text);
+            
             cmd.Parameters.AddWithValue("@address", txtaddress.Text);
             //if (Request.QueryString["cmded"] != null)
             //{
@@ -951,7 +981,7 @@ public partial class Admin_ManualOrderAcceptance : System.Web.UI.Page
                     string SGST = g1.Cells[9].Text;
                     string IGST = g1.Cells[10].Text;
                     string TotalAmount = g1.Cells[11].Text;
-                    string query = "INSERT INTO OrderAcceptDtls ([OAno],[Description],[HSN],[Qty],[UOM],[Price],[Discount],[TotalAmount],[CGST],[SGST],[IGST],[SubOANumber])" +
+                    string query = "INSERT INTO [DB_ProcetechTesting].[DB_ProcetechERP].[OrderAcceptDtls] ([OAno],[Description],[HSN],[Qty],[UOM],[Price],[Discount],[TotalAmount],[CGST],[SGST],[IGST],[SubOANumber])" +
                         "VALUES('" + txtOAno.Text + "','" + Description + "','" + HSN + "', '" + Qty + "','" + UOM + "','" + Price + "','" + Discount + "'," +
                         "'" + TotalAmount + "','" + CGST + "','" + SGST + "','" + IGST + "','" + SubOA + "')";
                     cmdPrDtl.CommandText = query;
@@ -984,7 +1014,7 @@ public partial class Admin_ManualOrderAcceptance : System.Web.UI.Page
 
             if (Request.QueryString["cmded"] != null)
             {
-                SqlCommand cmddata = new SqlCommand("SP_UpdateOAFileData", con);
+                SqlCommand cmddata = new SqlCommand("[DB_ProcetechERP].[SP_UpdateOAFileData]", con);
                 cmddata.CommandType = CommandType.StoredProcedure;
                 cmddata.Parameters.AddWithValue("@OAid", ViewState["OAID"].ToString());
                 if (FileUpload1.HasFile)
@@ -1088,7 +1118,7 @@ public partial class Admin_ManualOrderAcceptance : System.Web.UI.Page
             }
             else
             {
-                SqlCommand cmddata = new SqlCommand("SP_OAFileData", con);
+                SqlCommand cmddata = new SqlCommand("[DB_ProcetechERP].[SP_OAFileData]", con);
                 cmddata.CommandType = CommandType.StoredProcedure;
                 cmddata.Parameters.AddWithValue("@OAid", MaxID);
                 if (FileUpload1.HasFile)
@@ -2013,7 +2043,7 @@ public partial class Admin_ManualOrderAcceptance : System.Web.UI.Page
             {
                 connection.Open();
 
-                using (SqlCommand cmd = new SqlCommand("[SP_TaxMaster]", connection))
+                using (SqlCommand cmd = new SqlCommand("[DB_ProcetechERP].[SP_TaxMaster]", connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add(new SqlParameter("@Action", "GetTaxType"));
@@ -2052,7 +2082,8 @@ public partial class Admin_ManualOrderAcceptance : System.Web.UI.Page
             {
                 connection.Open();
 
-                using (SqlCommand cmd = new SqlCommand("[SP_TaxMaster]", connection))
+                //using (SqlCommand cmd = new SqlCommand("[SP_TaxMaster]", connection))
+                using (SqlCommand cmd = new SqlCommand("[DB_ProcetechERP].[SP_TaxMaster]", connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add(new SqlParameter("@Action", "GetGst"));

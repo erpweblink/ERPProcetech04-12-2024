@@ -420,578 +420,603 @@
                                                 <div class="col-md-12">
                                                     <br />
                                                     <div class="row">
-                                                        <div class="col-md-2 spancls">OA No<i class="reqcls">*&nbsp;</i> : </div>
-                                                        <div class="col-md-4">
+                                                        <%--<div class="col-md-2 spancls">OA No<i class="reqcls">*&nbsp;</i> : </div>--%>
+                                                        <%--<div class="col-md-4">--%>
+                                                        <div class="spancls" style="margin-left: 15px;">OA No<i class="reqcls">*&nbsp;</i> : </div>
+                                                        <div class="col-md-3">
                                                             <asp:TextBox ID="txtOAno" Width="100%" runat="server" ReadOnly="true"></asp:TextBox>
                                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" Display="Dynamic" ErrorMessage="Please Enter Company Name"
                                                                 ControlToValidate="txtOAno" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                                             <p>(May change at run time)</p>
                                                         </div>
-                                                        <div class="col-md-2 spancls">Date<i class="reqcls">*&nbsp;</i> : </div>
-                                                        <div class="col-md-4">
+
+                                                        <%-- New Field by Nikhil  --%>
+                                                        <%--<div class="col-md-1 spancls">Job No<i class="reqcls">*&nbsp;</i> : </div>--%>
+                                                        <div class="spancls" style="margin-left: 21px;">Job No<i class="reqcls">*&nbsp;</i> : </div>
+                                                        <div class="col-md-3">
+                                                            <asp:TextBox ID="txtJobNo" Width="100%" runat="server" ReadOnly="true"></asp:TextBox>
+                                                        </div>
+                                                        <%-- End--%>
+
+                                                        <%--<div class="col-md-2 spancls">Date<i class="reqcls">*&nbsp;</i> : </div>
+                                                        <div class="col-md-4">--%>
+                                                        <div class="col-md-1 spancls">Date<i class="reqcls">*&nbsp;</i> : </div>
+                                                        <div class="col-md-3">
                                                             <asp:TextBox ID="txttodaysdate" Width="100%" runat="server" ReadOnly="true"></asp:TextBox>
 
                                                         </div>
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls">Customer Name<i class="reqcls">*&nbsp;</i> : </div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtcustomername" Width="100%" runat="server" AutoPostBack="true"></asp:TextBox>
+                                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" Display="Dynamic" ErrorMessage="Please Enter Customer Name"
+                                                            ControlToValidate="txtcustomername" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                                        <asp:Label ID="lblmsg" runat="server" Text="" ForeColor="Red" Visible="false"></asp:Label>
                                                     </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls">Customer Name<i class="reqcls">*&nbsp;</i> : </div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtcustomername" Width="100%" runat="server" AutoPostBack="true"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" Display="Dynamic" ErrorMessage="Please Enter Customer Name"
-                                                                ControlToValidate="txtcustomername" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
-                                                            <asp:Label ID="lblmsg" runat="server" Text="" ForeColor="Red" Visible="false"></asp:Label>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">Address <i class="reqcls">*&nbsp;</i> : </div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtaddress" Width="100%" runat="server" TextMode="MultiLine"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" Display="Dynamic" ErrorMessage="Please Enter Address"
-                                                                ControlToValidate="txtaddress" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
-                                                        </div>
+                                                    <div class="col-md-2 spancls">Address <i class="reqcls">*&nbsp;</i> : </div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtaddress" Width="100%" runat="server" TextMode="MultiLine"></asp:TextBox>
+                                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" Display="Dynamic" ErrorMessage="Please Enter Address"
+                                                            ControlToValidate="txtaddress" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                                    </div>
+                                                </div>
+
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls">Refer Quotation <i class="reqcls">*&nbsp;</i> : </div>
+                                                    <div class="col-md-4">
+                                                        <asp:DropDownList ID="ddlQuotationNo" Width="100%" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlQuotationNo_SelectedIndexChanged"></asp:DropDownList>
+                                                        <%--<asp:DropDownList ID="txtquotationno" Width="100%" runat="server"></asp:DropDownList>--%>
+                                                        <%-- <asp:TextBox ID="txtquotationno" Width="100%" runat="server" ReadOnly="true"></asp:TextBox>--%>
                                                     </div>
 
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls">Refer Quotation <i class="reqcls">*&nbsp;</i> : </div>
-                                                        <div class="col-md-4">
-                                                            <asp:DropDownList ID="ddlQuotationNo" Width="100%" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlQuotationNo_SelectedIndexChanged"></asp:DropDownList>
-                                                            <%--<asp:DropDownList ID="txtquotationno" Width="100%" runat="server"></asp:DropDownList>--%>
-                                                           <%-- <asp:TextBox ID="txtquotationno" Width="100%" runat="server" ReadOnly="true"></asp:TextBox>--%>
-                                                        </div>
-
-                                                        <div class="col-md-2 spancls">Quotation Date <i class="reqcls">*&nbsp;</i> : </div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtquotationdate" Width="100%" CssClass="myDate" runat="server" ReadOnly="true"></asp:TextBox>
-                                                            <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="Dynamic" ErrorMessage="Please Enter Date"
+                                                    <div class="col-md-2 spancls">Quotation Date <i class="reqcls">*&nbsp;</i> : </div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtquotationdate" Width="100%" CssClass="myDate" runat="server" ReadOnly="true"></asp:TextBox>
+                                                        <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="Dynamic" ErrorMessage="Please Enter Date"
                                                         ControlToValidate="txtquotationdate" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>--%>
-                                                            <%--<asp:CalendarExtender ID="CalendarExtender1" TargetControlID="txtquotationdate" Format="dd-MM-yyyy" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>--%>
-                                                        </div>
+                                                        <%--<asp:CalendarExtender ID="CalendarExtender1" TargetControlID="txtquotationdate" Format="dd-MM-yyyy" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>--%>
                                                     </div>
+                                                </div>
 
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls">PO No <i class="reqcls">*&nbsp;</i> : </div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtpono" Width="100%" runat="server"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator8" runat="server" Display="Dynamic" ErrorMessage="Please Enter PO No"
-                                                                ControlToValidate="txtpono" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">PO Date : </div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtpodate" Width="100%" CssClass="myDate" runat="server" ReadOnly="true"></asp:TextBox>
-															  <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" Display="Dynamic" ErrorMessage="Please Enter PO Date"
-                                                                ControlToValidate="txtpodate" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
-                                                            <asp:CalendarExtender ID="CalendarExtender2" TargetControlID="txtpodate" Format="dd-MM-yyyy" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>
-                                                        </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls">PO No <i class="reqcls">*&nbsp;</i> : </div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtpono" Width="100%" runat="server"></asp:TextBox>
+                                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator8" runat="server" Display="Dynamic" ErrorMessage="Please Enter PO No"
+                                                            ControlToValidate="txtpono" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                                     </div>
-                                                    <br />
+                                                    <div class="col-md-2 spancls">PO Date : </div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtpodate" Width="100%" CssClass="myDate" runat="server" ReadOnly="true"></asp:TextBox>
+                                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" Display="Dynamic" ErrorMessage="Please Enter PO Date"
+                                                            ControlToValidate="txtpodate" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                                        <asp:CalendarExtender ID="CalendarExtender2" TargetControlID="txtpodate" Format="dd-MM-yyyy" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>
+                                                    </div>
+                                                </div>
+                                                <br />
 
-                                                    <div class="row" runat="server">
-                                                        <div class="col-md-2 spancls">Contact Person (Purchase) <i class="reqcls">*&nbsp;</i> : </div>
-                                                        <div class="col-md-4">
-                                                            <asp:DropDownList ID="ddlcontactperson" Width="100%" runat="server"></asp:DropDownList>
-                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator11" ControlToValidate="ddlcontactperson" InitialValue="Select" runat="server" ErrorMessage="Plaese select contact person" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">Contact No : </div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtpurchasecontactno" Width="100%" runat="server"></asp:TextBox>
-                                                        </div>
+                                                <div class="row" runat="server">
+                                                    <div class="col-md-2 spancls">Contact Person (Purchase) <i class="reqcls">*&nbsp;</i> : </div>
+                                                    <div class="col-md-4">
+                                                        <asp:DropDownList ID="ddlcontactperson" Width="100%" runat="server"></asp:DropDownList>
+                                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator11" ControlToValidate="ddlcontactperson" InitialValue="Select" runat="server" ErrorMessage="Plaese select contact person" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                                     </div>
-                                                    <br />
-                                                    <div class="row" runat="server">
-                                                        <div class="col-md-2 spancls">Contact Person (Technical) : </div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtcontactpersontechnical" Width="100%" runat="server"></asp:TextBox>
-                                                            <asp:CalendarExtender ID="CalendarExtender3" TargetControlID="txtpodate" Format="dd-MM-yyyy" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">Contact No : </div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txttechnicalcontactno" Width="100%" runat="server"></asp:TextBox>
-                                                        </div>
+                                                    <div class="col-md-2 spancls">Contact No : </div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtpurchasecontactno" Width="100%" runat="server"></asp:TextBox>
                                                     </div>
+                                                </div>
+                                                <br />
+                                                <div class="row" runat="server">
+                                                    <div class="col-md-2 spancls">Contact Person (Technical) : </div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtcontactpersontechnical" Width="100%" runat="server"></asp:TextBox>
+                                                        <asp:CalendarExtender ID="CalendarExtender3" TargetControlID="txtpodate" Format="dd-MM-yyyy" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>
+                                                    </div>
+                                                    <div class="col-md-2 spancls">Contact No : </div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txttechnicalcontactno" Width="100%" runat="server"></asp:TextBox>
+                                                    </div>
+                                                </div>
 
-                                                        <div class="row" runat="server">
-                                                        <div class="col-md-2 spancls">Taxation <i class="reqcls">*&nbsp;</i> : </div>
-                                                        <div class="col-md-4">
-                                                             <asp:DropDownList CssClass="form-control" ID="ddltaxation" runat="server" AutoPostBack="true"  OnTextChanged="ddltaxation_TextChanged" ></asp:DropDownList>
-                                                       <%--     <asp:DropDownList ID="ddltaxation" runat="server" Width="100%">
+                                                <div class="row" runat="server">
+                                                    <div class="col-md-2 spancls">Taxation <i class="reqcls">*&nbsp;</i> : </div>
+                                                    <div class="col-md-4">
+                                                        <asp:DropDownList CssClass="form-control" ID="ddltaxation" runat="server" AutoPostBack="true" OnTextChanged="ddltaxation_TextChanged"></asp:DropDownList>
+                                                        <%--     <asp:DropDownList ID="ddltaxation" runat="server" Width="100%">
                                                                 <asp:ListItem Value="0">Select</asp:ListItem>
                                                                 <asp:ListItem Value="inmah">ONLY MAHARASHTRA (9% SGST + CGST)</asp:ListItem>
                                                                 <asp:ListItem Value="outmah">OUT OF MAHARASHTRA (18% IGST)</asp:ListItem>
                                                                 <asp:ListItem Value="outind">OUT OF INDIA (NO GST)</asp:ListItem>
                                                             </asp:DropDownList>--%>
-                                                        </div>
                                                     </div>
+                                                </div>
 
-                                                    <br />
-                                                    <div class="card-header bg-primary text-uppercase text-white">
-                                                        <h5>Products</h5>
-                                                    </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="table-responsive">
-                                                                <asp:GridView ID="dgvOrderAcceptDtl" runat="server" CssClass="table" HeaderStyle-BackColor="#009999" AutoGenerateColumns="false"
-                                                                    EmptyDataText="No records has been added." OnRowDataBound="dgvOrderAcceptDtl_RowDataBound">
-                                                                    <Columns>
-                                                                        <%-- <asp:BoundField DataField="id" HeaderText="SN" ItemStyle-Width="120" ItemStyle-Height="30" ItemStyle-HorizontalAlign="Center" />--%>
-                                                                        <asp:TemplateField HeaderText="Select" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
-                                                                            <ItemTemplate>
-                                                                                <asp:CheckBox ID="chkSelect" AutoPostBack="true" OnCheckedChanged="chkSelect_CheckedChanged" runat="server" />
-                                                                                <asp:Label ID="lblSelect" runat="server" Text='<%# Eval("IsSelect") %>' Visible="false"></asp:Label>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="Sr.No" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
-                                                                            <ItemTemplate>
-                                                                                <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
-                                                                                <asp:Label ID="lblID" runat="server" Text='<%# Eval("id") %>' Visible="false"></asp:Label>
-                                                                                <asp:Label ID="lblSuboa" runat="server" Visible="false"></asp:Label>
-                                                                                <asp:Label ID="lblqoutationId" runat="server" Visible="false"></asp:Label>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="Description" ItemStyle-Width="20">
-                                                                            <ItemTemplate>
-                                                                                <%--  <asp:Label ID="txtdescription" ReadOnly="true" runat="server" Text='<%# Between(Eval("description").ToString(),"2. ","3. ") %>'></asp:Label>--%>
-                                                                                 <%--  <asp:TextBox ID="txtdescription" runat="server" Width="350"  Text='<%# Between(Eval("description").ToString(),"2. ","3. ").Replace("<br>","") %>'></asp:TextBox>--%>
-																				 <asp:TextBox TextMode="MultiLine" Rows="10" ID="txtdescription" runat="server" Width="350"  Text='<%# Eval("description").ToString().Replace("<br>","\n") %>'></asp:TextBox>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="HSN Code" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
-                                                                            <ItemTemplate>
-                                                                                <asp:Label ID="lblhsncode" ReadOnly="true" runat="server" Text='<%# Eval("hsncode") %>'></asp:Label>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <%--  <asp:BoundField DataField="hsncode" HeaderText="HSN" Visible="false" ItemStyle-Width="120" ItemStyle-HorizontalAlign="Center" />--%>
-                                                                        <asp:TemplateField HeaderText="Qty" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
-                                                                            <ItemTemplate>
-                                                                                <asp:TextBox runat="server" Width="50" ID="txtQty" Text='<%# Eval("qty") %>' Enabled="false" AutoPostBack="true" OnTextChanged="txtQty_TextChanged"></asp:TextBox>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
+                                                <br />
+                                                <div class="card-header bg-primary text-uppercase text-white">
+                                                    <h5>Products</h5>
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive">
+                                                            <asp:GridView ID="dgvOrderAcceptDtl" runat="server" CssClass="table" HeaderStyle-BackColor="#009999" AutoGenerateColumns="false"
+                                                                EmptyDataText="No records has been added." OnRowDataBound="dgvOrderAcceptDtl_RowDataBound">
+                                                                <Columns>
+                                                                    <%-- <asp:BoundField DataField="id" HeaderText="SN" ItemStyle-Width="120" ItemStyle-Height="30" ItemStyle-HorizontalAlign="Center" />--%>
+                                                                    <asp:TemplateField HeaderText="Select" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:CheckBox ID="chkSelect" AutoPostBack="true" OnCheckedChanged="chkSelect_CheckedChanged" runat="server" />
+                                                                            <asp:Label ID="lblSelect" runat="server" Text='<%# Eval("IsSelect") %>' Visible="false"></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Sr.No" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
+                                                                            <asp:Label ID="lblID" runat="server" Text='<%# Eval("id") %>' Visible="false"></asp:Label>
+                                                                            <asp:Label ID="lblSuboa" runat="server" Visible="false"></asp:Label>
+                                                                            <asp:Label ID="lblqoutationId" runat="server" Visible="false"></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Description" ItemStyle-Width="20">
+                                                                        <ItemTemplate>
+                                                                            <%--  <asp:Label ID="txtdescription" ReadOnly="true" runat="server" Text='<%# Between(Eval("description").ToString(),"2. ","3. ") %>'></asp:Label>--%>
+                                                                            <%--  <asp:TextBox ID="txtdescription" runat="server" Width="350"  Text='<%# Between(Eval("description").ToString(),"2. ","3. ").Replace("<br>","") %>'></asp:TextBox>--%>
+                                                                            <asp:TextBox TextMode="MultiLine" Rows="10" ID="txtdescription" runat="server" Width="350" Text='<%# Eval("description").ToString().Replace("<br>","\n") %>'></asp:TextBox>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="HSN Code" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="lblhsncode" ReadOnly="true" runat="server" Text='<%# Eval("hsncode") %>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <%--  <asp:BoundField DataField="hsncode" HeaderText="HSN" Visible="false" ItemStyle-Width="120" ItemStyle-HorizontalAlign="Center" />--%>
+                                                                    <asp:TemplateField HeaderText="Qty" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:TextBox runat="server" Width="50" ID="txtQty" Text='<%# Eval("qty") %>' Enabled="false" AutoPostBack="true" OnTextChanged="txtQty_TextChanged"></asp:TextBox>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
 
-                                                                            <asp:TemplateField HeaderText="UOM" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
-                                                                            <ItemTemplate>
-                                                                                <asp:TextBox runat="server" Width="50" ID="txtunit" Text='<%# Eval("UOM") %>' Enabled="false" AutoPostBack="true"></asp:TextBox>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="UOM" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:TextBox runat="server" Width="50" ID="txtunit" Text='<%# Eval("UOM") %>' Enabled="false" AutoPostBack="true"></asp:TextBox>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
 
 
-                                                                        <asp:TemplateField HeaderText="Price" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
-                                                                            <ItemTemplate>
-                                                                                <asp:TextBox runat="server" Width="50" ID="txtprice" AutoPostBack="true" OnTextChanged="txtprice_TextChanged" ReadOnly="false" Text='<%# Eval("rate") %>'></asp:TextBox>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="CGST(%)" ItemStyle-Width="10" ItemStyle-HorizontalAlign="Center">
-                                                                            <ItemTemplate>
-                                                                                <asp:TextBox runat="server" Width="30" ID="txtCGST" ReadOnly="true" Text='<%# Eval("CGST") %>' Enabled="false"></asp:TextBox>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="SGST(%)" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
-                                                                            <ItemTemplate>
-                                                                                <asp:TextBox runat="server" Width="30" ID="txtSGST" ReadOnly="true" Text='<%# Eval("SGST") %>' Enabled="false"></asp:TextBox>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="IGST(%)" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
-                                                                            <ItemTemplate>
-                                                                                <asp:TextBox runat="server" Width="30" ID="txtIGST" ReadOnly="true" Text='<%# Eval("IGST") %>' Enabled="false"></asp:TextBox>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="Discount" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
-                                                                            <ItemTemplate>
-                                                                                <asp:TextBox runat="server" Width="50" ID="txtdiscount" OnTextChanged="txtdiscount_TextChanged" AutoPostBack="true" Enabled="true" Text='<%# Eval("discount") %>'></asp:TextBox>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="Amount" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
-                                                                            <ItemTemplate>
-                                                                                <asp:TextBox runat="server" Width="100" ID="txtamount" ReadOnly="true" Text='<%# Eval("amount") %>'></asp:TextBox>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField Visible="false">
-                                                                            <ItemTemplate>
-                                                                                <asp:LinkButton ID="LinkButton1" CssClass="btn btn-warning btn-sm" runat="server" CommandName="RowDelete" CommandArgument='<%# Eval("id") %>'>Remove</asp:LinkButton>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                    </Columns>
-                                                                </asp:GridView>
-                                                            </div>
-                                                            <div class="table-responsive" style="display: none;">
-                                                                <table class="table" border="1" style="width: 100%; border: 1px solid #0c7d38;">
-                                                                    <tr style="background-color: #7ad2d4; color: #000; font-weight: 600; text-align: center;">
-                                                                        <td>SN</td>
-                                                                        <td>Description</td>
-                                                                        <td>Qty</td>
-                                                                        <td>Drg.Ref.</td>
-                                                                        <td>Price</td>
-                                                                        <td>Total Amount</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>
-                                                                            <center><asp:TextBox ID="txtsr1" CssClass="srtxt" runat="server" Text="1"></asp:TextBox></center>
-                                                                        </td>
-                                                                        <td>
-                                                                            <center><asp:TextBox ID="txtdescription" CssClass="Hsntxt" TextMode="MultiLine" runat="server"></asp:TextBox></center>
-                                                                        </td>
-                                                                        <td>
-                                                                            <center><asp:TextBox ID="txtQty" onkeyup="sum()" onfocus="select()" CssClass="Qtytxt" runat="server"></asp:TextBox></center>
-                                                                        </td>
-                                                                        <td>
-                                                                            <center><asp:TextBox ID="txtdrgref" onkeyup="sum()" onfocus="select()" CssClass="Ratetxt" runat="server"></asp:TextBox></center>
-                                                                        </td>
-                                                                        <td>
-                                                                            <center><asp:TextBox ID="txtprice" CssClass="Ratetxt" onkeyup="sum()" onfocus="select()" runat="server"></asp:TextBox>
-                                                                        </td>
-                                                                        <td>
-                                                                            <center><asp:TextBox ID="txtTotalamt" CssClass="Ratetxt" readonly="True" runat="server"></asp:TextBox>
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </div>
+                                                                    <asp:TemplateField HeaderText="Price" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:TextBox runat="server" Width="50" ID="txtprice" AutoPostBack="true" OnTextChanged="txtprice_TextChanged" ReadOnly="false" Text='<%# Eval("rate") %>'></asp:TextBox>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="CGST(%)" ItemStyle-Width="10" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:TextBox runat="server" Width="30" ID="txtCGST" ReadOnly="true" Text='<%# Eval("CGST") %>' Enabled="false"></asp:TextBox>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="SGST(%)" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:TextBox runat="server" Width="30" ID="txtSGST" ReadOnly="true" Text='<%# Eval("SGST") %>' Enabled="false"></asp:TextBox>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="IGST(%)" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:TextBox runat="server" Width="30" ID="txtIGST" ReadOnly="true" Text='<%# Eval("IGST") %>' Enabled="false"></asp:TextBox>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Discount" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:TextBox runat="server" Width="50" ID="txtdiscount" OnTextChanged="txtdiscount_TextChanged" AutoPostBack="true" Enabled="true" Text='<%# Eval("discount") %>'></asp:TextBox>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Amount" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:TextBox runat="server" Width="100" ID="txtamount" ReadOnly="true" Text='<%# Eval("amount") %>'></asp:TextBox>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField Visible="false">
+                                                                        <ItemTemplate>
+                                                                            <asp:LinkButton ID="LinkButton1" CssClass="btn btn-warning btn-sm" runat="server" CommandName="RowDelete" CommandArgument='<%# Eval("id") %>'>Remove</asp:LinkButton>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                </Columns>
+                                                            </asp:GridView>
+                                                        </div>
+                                                        <div class="table-responsive" style="display: none;">
+                                                            <table class="table" border="1" style="width: 100%; border: 1px solid #0c7d38;">
+                                                                <tr style="background-color: #7ad2d4; color: #000; font-weight: 600; text-align: center;">
+                                                                    <td>SN</td>
+                                                                    <td>Description</td>
+                                                                    <td>Qty</td>
+                                                                    <td>Drg.Ref.</td>
+                                                                    <td>Price</td>
+                                                                    <td>Total Amount</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <center>
+                                                                            <asp:TextBox ID="txtsr1" CssClass="srtxt" runat="server" Text="1"></asp:TextBox>
+                                                                        </center>
+                                                                    </td>
+                                                                    <td>
+                                                                        <center>
+                                                                            <asp:TextBox ID="txtdescription" CssClass="Hsntxt" TextMode="MultiLine" runat="server"></asp:TextBox>
+                                                                        </center>
+                                                                    </td>
+                                                                    <td>
+                                                                        <center>
+                                                                            <asp:TextBox ID="txtQty" onkeyup="sum()" onfocus="select()" CssClass="Qtytxt" runat="server"></asp:TextBox>
+                                                                        </center>
+                                                                    </td>
+                                                                    <td>
+                                                                        <center>
+                                                                            <asp:TextBox ID="txtdrgref" onkeyup="sum()" onfocus="select()" CssClass="Ratetxt" runat="server"></asp:TextBox>
+                                                                        </center>
+                                                                    </td>
+                                                                    <td>
+                                                                        <center>
+                                                                            <asp:TextBox ID="txtprice" CssClass="Ratetxt" onkeyup="sum()" onfocus="select()" runat="server"></asp:TextBox>
+                                                                    </td>
+                                                                    <td>
+                                                                        <center>
+                                                                            <asp:TextBox ID="txtTotalamt" CssClass="Ratetxt" readonly="True" runat="server"></asp:TextBox>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
                                                         </div>
                                                     </div>
+                                                </div>
 
-                                                    <br />
+                                                <br />
 
-                                                    <div class="card-header bg-primary text-uppercase text-white">
-                                                        <h5>Special Note</h5>
+                                                <div class="card-header bg-primary text-uppercase text-white">
+                                                    <h5>Special Note</h5>
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls">Note 1<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtnote1" Width="100%" runat="server"></asp:TextBox>
                                                     </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls">Note 1<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtnote1" Width="100%" runat="server"></asp:TextBox>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">Note 2<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtnote2" Width="100%" runat="server"></asp:TextBox>
-                                                        </div>
-
+                                                    <div class="col-md-2 spancls">Note 2<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtnote2" Width="100%" runat="server"></asp:TextBox>
                                                     </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls">Note 3<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtnote3" Width="100%" runat="server"></asp:TextBox>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">Note 4<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtnote4" Width="100%" runat="server"></asp:TextBox>
-                                                        </div>
-
-                                                    </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls">Note 5<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtnote5" Width="100%" runat="server"></asp:TextBox>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">Note 6<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtnote6" Width="100%" runat="server"></asp:TextBox>
-                                                        </div>
-
-                                                    </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls">Note 7<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtnote7" Width="100%" runat="server"></asp:TextBox>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">Note 8<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtnote8" Width="100%" runat="server"></asp:TextBox>
-                                                        </div>
-                                                    </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls">Note 9<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtnote9" Width="100%" runat="server"></asp:TextBox>
-                                                        </div>
-                                                    </div>
-                                                    <br />
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls">Delivery Date Required by customer<i class="reqcls">*&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtdeliverydatebycustomer" Width="100%" CssClass="myDate" runat="server" ReadOnly="true"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="Dynamic" ErrorMessage="Please Select Order Date"
-                                                                ControlToValidate="txtdeliverydatebycustomer" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
-                                                            <%-- <asp:CalendarExtender ID="CalendarExtender4" TargetControlID="txtdeliverydatebycustomer" Format="dd-MM-yyyy" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>--%>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">Delivery Date Committed by us<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtdeliverydatebyus" Width="100%" CssClass="myDate" runat="server" ReadOnly="true"></asp:TextBox>
-                                                            <%-- <asp:CalendarExtender ID="CalendarExtender5" TargetControlID="txtdeliverydatebyus" Format="dd-MM-yyyy" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>--%>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="row" style="display: none">
-                                                        <div class="col-md-2 spancls">GST<i class="reqcls">&nbsp;</i> : </div>
-                                                        <div class="col-md-1">
-                                                            <asp:TextBox ID="txtcgstper" onkeyup="sum()" onfocus="select()" placeholder="CGST%" runat="server" Width="100%"></asp:TextBox>
-                                                        </div>
-                                                        <div class="col-md-1">
-                                                            <asp:TextBox ID="txtcgstamt" runat="server" placeholder="Amt" ReadOnly="true" Width="130%"></asp:TextBox>
-                                                        </div>
-                                                        <div class="col-md-1">
-                                                            <asp:TextBox ID="txtsgstper" onkeyup="sum()" onfocus="select()" placeholder="SGST%" runat="server" Width="100%"></asp:TextBox>
-                                                        </div>
-                                                        <div class="col-md-1">
-                                                            <asp:TextBox ID="txtsgstamt" runat="server" placeholder="Amt" ReadOnly="true" Width="130%"></asp:TextBox>
-                                                        </div>
-                                                        <div class="col-md-1">
-                                                            <asp:TextBox ID="txtigstper" onkeyup="sum()" onfocus="select()" placeholder="IGST%" runat="server" Width="100%"></asp:TextBox>
-                                                        </div>
-                                                        <div class="col-md-1">
-                                                            <asp:TextBox ID="txtigstamt" runat="server" placeholder="Amt" ReadOnly="true" Width="130%"></asp:TextBox>
-                                                        </div>
-                                                    </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls">Packing<i class="reqcls">*&nbsp;</i> :</div>
-                                                        <div class="col-md-2">
-                                                            <asp:DropDownList ID="ddlregular" runat="server" Width="100%" AutoPostBack="true" OnSelectedIndexChanged="ddlregular_SelectedIndexChanged">
-                                                                <asp:ListItem Selected="True" Text="Regular" Value="Regular"></asp:ListItem>
-                                                                <asp:ListItem Text="Wooden" Value="Wooden"></asp:ListItem>
-                                                            </asp:DropDownList>
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <asp:DropDownList ID="ddlcostincluded" runat="server" Width="100%" Visible="false" AutoPostBack="true" OnSelectedIndexChanged="ddlcostincluded_SelectedIndexChanged">
-                                                                <asp:ListItem Selected="True" Text="Cost included" Value="Cost included"></asp:ListItem>
-                                                                <asp:ListItem Text="Extra Billing" Value="Extra Billing"></asp:ListItem>
-                                                            </asp:DropDownList>
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <asp:DropDownList ID="ddlAmount" runat="server" Width="100%" Visible="false">
-                                                                <asp:ListItem Selected="True" Text="Amount" Value="Amount"></asp:ListItem>
-                                                                <asp:ListItem Text="At Actual" Value="At Actual"></asp:ListItem>
-                                                            </asp:DropDownList>
-                                                        </div>
-                                                    </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls" style="width: 100%">
-                                                            Delivery / Transportation Charges :
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtdeliverytransportaioncharge" Width="100%" runat="server"></asp:TextBox>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">Terms Of Payment :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txttermsofpayment" TextMode="MultiLine" Width="100%" runat="server"></asp:TextBox>
-                                                        </div>
-                                                    </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls" style="width: 100%">
-                                                            Billing Details :
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtbillingdetails" Width="100%" runat="server"></asp:TextBox>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">Buyer :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtbuyer" Width="100%" runat="server"></asp:TextBox>
-                                                        </div>
-                                                    </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls" style="width: 100%">
-                                                            Consignee :
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtConsignee" Width="100%" runat="server"></asp:TextBox>
-                                                        </div>
-                                                        <div class="col-md-2"></div>
-                                                        <div class="col-md-4">
-                                                        </div>
-                                                    </div>
-                                                    <br />
-                                                    <div class="card-header bg-primary text-uppercase text-white">
-                                                        <h5>Any Special instruction / Note</h5>
-                                                    </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls">Instruction 1<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:CheckBox ID="Chkinstaruction1" runat="server" />
-                                                            <asp:TextBox ID="txtinstruction1" Width="90%" runat="server"></asp:TextBox>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">Instruction 2<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:CheckBox ID="Chkinstaruction2" runat="server" />
-                                                            <asp:TextBox ID="txtinstruction2" Width="90%" runat="server"></asp:TextBox>
-                                                        </div>
-                                                    </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls">Instruction 3<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:CheckBox ID="Chkinstaruction3" runat="server" />
-                                                            <asp:TextBox ID="txtinstruction3" Width="90%" runat="server"></asp:TextBox>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">Instruction 4<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:CheckBox ID="Chkinstaruction4" runat="server" />
-                                                            <asp:TextBox ID="txtinstruction4" Width="90%" runat="server"></asp:TextBox>
-                                                        </div>
-
-                                                    </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls">Instruction 5<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:CheckBox ID="Chkinstaruction5" runat="server" />
-                                                            <asp:TextBox ID="txtinstruction5" Width="90%" runat="server"></asp:TextBox>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">Instruction 6<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:CheckBox ID="Chkinstaruction6" runat="server" />
-                                                            <asp:TextBox ID="txtinstruction6" Width="90%" runat="server"></asp:TextBox>
-                                                        </div>
-
-                                                    </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls">Instruction 7<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:CheckBox ID="Chkinstaruction7" runat="server" />
-                                                            <asp:TextBox ID="txtinstruction7" Width="90%" runat="server"></asp:TextBox>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">Instruction 8<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:CheckBox ID="Chkinstaruction8" runat="server" />
-                                                            <asp:TextBox ID="txtinstruction8" Width="90%" runat="server"></asp:TextBox>
-                                                        </div>
-                                                    </div>
-                                                    <br />
-
-                                                    <div class="card-header bg-primary text-uppercase text-white">
-                                                        <h5>Attachment</h5>
-                                                    </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls">File 1<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:FileUpload ID="FileUpload1" runat="server" />
-                                                            <strong>
-                                                                <asp:Label ID="lblfile1" runat="server" Text="" ForeColor="Red"></asp:Label></strong>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">File 2<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:FileUpload ID="FileUpload2" runat="server" />
-                                                            <strong>
-                                                                <asp:Label ID="lblfile2" runat="server" Text="" ForeColor="Red"></asp:Label></strong>
-                                                        </div>
-                                                    </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls">File 3<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:FileUpload ID="FileUpload3" runat="server" />
-                                                            <strong>
-                                                                <asp:Label ID="lblfile3" runat="server" Text="" ForeColor="Red"></asp:Label></strong>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">File 4<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:FileUpload ID="FileUpload4" runat="server" />
-                                                            <strong>
-                                                                <asp:Label ID="lblfile4" runat="server" Text="" ForeColor="Red"></asp:Label></strong>
-                                                        </div>
-                                                    </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-2 spancls">File 5<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:FileUpload ID="FileUpload5" runat="server" />
-                                                            <strong>
-                                                                <asp:Label ID="lblfile5" runat="server" Text="" ForeColor="Red"></asp:Label></strong>
-                                                        </div>
-                                                    </div>
-                                                    <br />
-
-                                                    <div class="card-header bg-primary text-uppercase text-white" runat="server" visible="false">
-                                                        <h5>Send to</h5>
-                                                    </div>
-                                                    <br />
-                                                    <div class="row" runat="server" visible="false">
-                                                        <div class="col-md-2 spancls">Email 1<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtemail1" Width="100%" runat="server"></asp:TextBox>
-                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator5" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true" Display="Dynamic" ControlToValidate="txtemail1" runat="server" ErrorMessage="Email required"></asp:RequiredFieldValidator>
-                                                            <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true" Display="Dynamic" ControlToValidate="txtemail1" ErrorMessage="Invalid Email" ValidationExpression="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"></asp:RegularExpressionValidator>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">Email 2<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtemail2" Width="100%" runat="server"></asp:TextBox>
-                                                            <asp:RegularExpressionValidator ID="RegularExpressionValidator2" runat="server" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true" Display="Dynamic" ControlToValidate="txtemail2" ErrorMessage="Invalid Email" ValidationExpression="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"></asp:RegularExpressionValidator>
-                                                        </div>
-                                                    </div>
-                                                    <br />
-                                                    <div class="row" runat="server" visible="false">
-                                                        <div class="col-md-2 spancls">Email 3<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtemail3" Width="100%" runat="server"></asp:TextBox>
-                                                            <asp:RegularExpressionValidator ID="RegularExpressionValidator3" runat="server" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true" Display="Dynamic" ControlToValidate="txtemail3" ErrorMessage="Invalid Email" ValidationExpression="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"></asp:RegularExpressionValidator>
-                                                        </div>
-                                                        <div class="col-md-2 spancls">Email 4<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtemail4" Width="100%" runat="server"></asp:TextBox>
-                                                            <asp:RegularExpressionValidator ID="RegularExpressionValidator4" runat="server" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true" Display="Dynamic" ControlToValidate="txtemail4" ErrorMessage="Invalid Email" ValidationExpression="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"></asp:RegularExpressionValidator>
-                                                        </div>
-                                                    </div>
-                                                    <br />
-                                                    <div class="row" runat="server" visible="false">
-                                                        <div class="col-md-2 spancls">Email 5<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:TextBox ID="txtemail5" Width="100%" runat="server"></asp:TextBox>
-                                                            <asp:RegularExpressionValidator ID="RegularExpressionValidator5" runat="server" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true" Display="Dynamic" ControlToValidate="txtemail5" ErrorMessage="Invalid Email" ValidationExpression="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"></asp:RegularExpressionValidator>
-                                                        </div>
-                                                        <div class="col-md-2"></div>
-                                                        <div class="col-md-4">
-                                                        </div>
-                                                    </div>
-                                                    <br />
-                                                    <div class="row" runat="server" visible="false">
-                                                        <div class="col-md-2 spancls">Send OA To Customer<i class="reqcls">&nbsp;</i> :</div>
-                                                        <div class="col-md-4">
-                                                            <asp:DropDownList ID="ddloatocustomer" runat="server" Width="100%">
-                                                                <asp:ListItem Text="Yes" Value="Yes"></asp:ListItem>
-                                                                <asp:ListItem Text="No" Value="No"></asp:ListItem>
-                                                            </asp:DropDownList>
-                                                        </div>
-                                                        <div class="col-md-2 spancls"></div>
-                                                        <div class="col-md-4">
-                                                            <%-- <asp:Label ID="lblcustemail" runat="server" Text=""></asp:Label>--%>
-                                                        </div>
-                                                    </div>
-                                                    <br />
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-3"></div>
-                                                        <div class="col-md-1">
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <center>
-                                                    <asp:Button ID="btnsubmit" runat="server" ValidationGroup="form1" CssClass="btn btn-primary" Width="100%" Text="Send/Save" OnClick="btnsubmit_Click" /></center>
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <center>
-                                                    <asp:Button ID="btnreset" runat="server" CssClass="btn btn-danger" Width="100%" Text="Reset" OnClick="btnreset_Click" /></center>
-                                                        </div>
-                                                        <div class="col-md-6"></div>
-
-                                                    </div>
-                                                    <br />
 
                                                 </div>
-                                            </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls">Note 3<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtnote3" Width="100%" runat="server"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-2 spancls">Note 4<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtnote4" Width="100%" runat="server"></asp:TextBox>
+                                                    </div>
 
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls">Note 5<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtnote5" Width="100%" runat="server"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-2 spancls">Note 6<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtnote6" Width="100%" runat="server"></asp:TextBox>
+                                                    </div>
+
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls">Note 7<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtnote7" Width="100%" runat="server"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-2 spancls">Note 8<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtnote8" Width="100%" runat="server"></asp:TextBox>
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls">Note 9<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtnote9" Width="100%" runat="server"></asp:TextBox>
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls">Delivery Date Required by customer<i class="reqcls">*&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtdeliverydatebycustomer" Width="100%" CssClass="myDate" runat="server" ReadOnly="true"></asp:TextBox>
+                                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="Dynamic" ErrorMessage="Please Select Order Date"
+                                                            ControlToValidate="txtdeliverydatebycustomer" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                                        <%-- <asp:CalendarExtender ID="CalendarExtender4" TargetControlID="txtdeliverydatebycustomer" Format="dd-MM-yyyy" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>--%>
+                                                    </div>
+                                                    <div class="col-md-2 spancls">Delivery Date Committed by us<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtdeliverydatebyus" Width="100%" CssClass="myDate" runat="server" ReadOnly="true"></asp:TextBox>
+                                                        <%-- <asp:CalendarExtender ID="CalendarExtender5" TargetControlID="txtdeliverydatebyus" Format="dd-MM-yyyy" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>--%>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row" style="display: none">
+                                                    <div class="col-md-2 spancls">GST<i class="reqcls">&nbsp;</i> : </div>
+                                                    <div class="col-md-1">
+                                                        <asp:TextBox ID="txtcgstper" onkeyup="sum()" onfocus="select()" placeholder="CGST%" runat="server" Width="100%"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <asp:TextBox ID="txtcgstamt" runat="server" placeholder="Amt" ReadOnly="true" Width="130%"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <asp:TextBox ID="txtsgstper" onkeyup="sum()" onfocus="select()" placeholder="SGST%" runat="server" Width="100%"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <asp:TextBox ID="txtsgstamt" runat="server" placeholder="Amt" ReadOnly="true" Width="130%"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <asp:TextBox ID="txtigstper" onkeyup="sum()" onfocus="select()" placeholder="IGST%" runat="server" Width="100%"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <asp:TextBox ID="txtigstamt" runat="server" placeholder="Amt" ReadOnly="true" Width="130%"></asp:TextBox>
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls">Packing<i class="reqcls">*&nbsp;</i> :</div>
+                                                    <div class="col-md-2">
+                                                        <asp:DropDownList ID="ddlregular" runat="server" Width="100%" AutoPostBack="true" OnSelectedIndexChanged="ddlregular_SelectedIndexChanged">
+                                                            <asp:ListItem Selected="True" Text="Regular" Value="Regular"></asp:ListItem>
+                                                            <asp:ListItem Text="Wooden" Value="Wooden"></asp:ListItem>
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <asp:DropDownList ID="ddlcostincluded" runat="server" Width="100%" Visible="false" AutoPostBack="true" OnSelectedIndexChanged="ddlcostincluded_SelectedIndexChanged">
+                                                            <asp:ListItem Selected="True" Text="Cost included" Value="Cost included"></asp:ListItem>
+                                                            <asp:ListItem Text="Extra Billing" Value="Extra Billing"></asp:ListItem>
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <asp:DropDownList ID="ddlAmount" runat="server" Width="100%" Visible="false">
+                                                            <asp:ListItem Selected="True" Text="Amount" Value="Amount"></asp:ListItem>
+                                                            <asp:ListItem Text="At Actual" Value="At Actual"></asp:ListItem>
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls" style="width: 100%">
+                                                        Delivery / Transportation Charges :
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtdeliverytransportaioncharge" Width="100%" runat="server"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-2 spancls">Terms Of Payment :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txttermsofpayment" TextMode="MultiLine" Width="100%" runat="server"></asp:TextBox>
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls" style="width: 100%">
+                                                        Billing Details :
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtbillingdetails" Width="100%" runat="server"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-2 spancls">Buyer :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtbuyer" Width="100%" runat="server"></asp:TextBox>
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls" style="width: 100%">
+                                                        Consignee :
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtConsignee" Width="100%" runat="server"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-2"></div>
+                                                    <div class="col-md-4">
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <div class="card-header bg-primary text-uppercase text-white">
+                                                    <h5>Any Special instruction / Note</h5>
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls">Instruction 1<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:CheckBox ID="Chkinstaruction1" runat="server" />
+                                                        <asp:TextBox ID="txtinstruction1" Width="90%" runat="server"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-2 spancls">Instruction 2<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:CheckBox ID="Chkinstaruction2" runat="server" />
+                                                        <asp:TextBox ID="txtinstruction2" Width="90%" runat="server"></asp:TextBox>
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls">Instruction 3<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:CheckBox ID="Chkinstaruction3" runat="server" />
+                                                        <asp:TextBox ID="txtinstruction3" Width="90%" runat="server"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-2 spancls">Instruction 4<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:CheckBox ID="Chkinstaruction4" runat="server" />
+                                                        <asp:TextBox ID="txtinstruction4" Width="90%" runat="server"></asp:TextBox>
+                                                    </div>
+
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls">Instruction 5<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:CheckBox ID="Chkinstaruction5" runat="server" />
+                                                        <asp:TextBox ID="txtinstruction5" Width="90%" runat="server"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-2 spancls">Instruction 6<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:CheckBox ID="Chkinstaruction6" runat="server" />
+                                                        <asp:TextBox ID="txtinstruction6" Width="90%" runat="server"></asp:TextBox>
+                                                    </div>
+
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls">Instruction 7<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:CheckBox ID="Chkinstaruction7" runat="server" />
+                                                        <asp:TextBox ID="txtinstruction7" Width="90%" runat="server"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-2 spancls">Instruction 8<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:CheckBox ID="Chkinstaruction8" runat="server" />
+                                                        <asp:TextBox ID="txtinstruction8" Width="90%" runat="server"></asp:TextBox>
+                                                    </div>
+                                                </div>
+                                                <br />
+
+                                                <div class="card-header bg-primary text-uppercase text-white">
+                                                    <h5>Attachment</h5>
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls">File 1<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:FileUpload ID="FileUpload1" runat="server" />
+                                                        <strong>
+                                                            <asp:Label ID="lblfile1" runat="server" Text="" ForeColor="Red"></asp:Label></strong>
+                                                    </div>
+                                                    <div class="col-md-2 spancls">File 2<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:FileUpload ID="FileUpload2" runat="server" />
+                                                        <strong>
+                                                            <asp:Label ID="lblfile2" runat="server" Text="" ForeColor="Red"></asp:Label></strong>
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls">File 3<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:FileUpload ID="FileUpload3" runat="server" />
+                                                        <strong>
+                                                            <asp:Label ID="lblfile3" runat="server" Text="" ForeColor="Red"></asp:Label></strong>
+                                                    </div>
+                                                    <div class="col-md-2 spancls">File 4<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:FileUpload ID="FileUpload4" runat="server" />
+                                                        <strong>
+                                                            <asp:Label ID="lblfile4" runat="server" Text="" ForeColor="Red"></asp:Label></strong>
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-2 spancls">File 5<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:FileUpload ID="FileUpload5" runat="server" />
+                                                        <strong>
+                                                            <asp:Label ID="lblfile5" runat="server" Text="" ForeColor="Red"></asp:Label></strong>
+                                                    </div>
+                                                </div>
+                                                <br />
+
+                                                <div class="card-header bg-primary text-uppercase text-white" runat="server" visible="false">
+                                                    <h5>Send to</h5>
+                                                </div>
+                                                <br />
+                                                <div class="row" runat="server" visible="false">
+                                                    <div class="col-md-2 spancls">Email 1<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtemail1" Width="100%" runat="server"></asp:TextBox>
+                                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator5" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true" Display="Dynamic" ControlToValidate="txtemail1" runat="server" ErrorMessage="Email required"></asp:RequiredFieldValidator>
+                                                        <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true" Display="Dynamic" ControlToValidate="txtemail1" ErrorMessage="Invalid Email" ValidationExpression="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"></asp:RegularExpressionValidator>
+                                                    </div>
+                                                    <div class="col-md-2 spancls">Email 2<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtemail2" Width="100%" runat="server"></asp:TextBox>
+                                                        <asp:RegularExpressionValidator ID="RegularExpressionValidator2" runat="server" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true" Display="Dynamic" ControlToValidate="txtemail2" ErrorMessage="Invalid Email" ValidationExpression="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"></asp:RegularExpressionValidator>
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <div class="row" runat="server" visible="false">
+                                                    <div class="col-md-2 spancls">Email 3<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtemail3" Width="100%" runat="server"></asp:TextBox>
+                                                        <asp:RegularExpressionValidator ID="RegularExpressionValidator3" runat="server" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true" Display="Dynamic" ControlToValidate="txtemail3" ErrorMessage="Invalid Email" ValidationExpression="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"></asp:RegularExpressionValidator>
+                                                    </div>
+                                                    <div class="col-md-2 spancls">Email 4<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtemail4" Width="100%" runat="server"></asp:TextBox>
+                                                        <asp:RegularExpressionValidator ID="RegularExpressionValidator4" runat="server" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true" Display="Dynamic" ControlToValidate="txtemail4" ErrorMessage="Invalid Email" ValidationExpression="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"></asp:RegularExpressionValidator>
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <div class="row" runat="server" visible="false">
+                                                    <div class="col-md-2 spancls">Email 5<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:TextBox ID="txtemail5" Width="100%" runat="server"></asp:TextBox>
+                                                        <asp:RegularExpressionValidator ID="RegularExpressionValidator5" runat="server" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true" Display="Dynamic" ControlToValidate="txtemail5" ErrorMessage="Invalid Email" ValidationExpression="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"></asp:RegularExpressionValidator>
+                                                    </div>
+                                                    <div class="col-md-2"></div>
+                                                    <div class="col-md-4">
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <div class="row" runat="server" visible="false">
+                                                    <div class="col-md-2 spancls">Send OA To Customer<i class="reqcls">&nbsp;</i> :</div>
+                                                    <div class="col-md-4">
+                                                        <asp:DropDownList ID="ddloatocustomer" runat="server" Width="100%">
+                                                            <asp:ListItem Text="Yes" Value="Yes"></asp:ListItem>
+                                                            <asp:ListItem Text="No" Value="No"></asp:ListItem>
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                    <div class="col-md-2 spancls"></div>
+                                                    <div class="col-md-4">
+                                                        <%-- <asp:Label ID="lblcustemail" runat="server" Text=""></asp:Label>--%>
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <br />
+                                                <div class="row">
+                                                    <div class="col-md-3"></div>
+                                                    <div class="col-md-1">
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <center>
+                                                            <asp:Button ID="btnsubmit" runat="server" ValidationGroup="form1" CssClass="btn btn-primary" Width="100%" Text="Send/Save" OnClick="btnsubmit_Click" />
+                                                        </center>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <center>
+                                                            <asp:Button ID="btnreset" runat="server" CssClass="btn btn-danger" Width="100%" Text="Reset" OnClick="btnreset_Click" />
+                                                        </center>
+                                                    </div>
+                                                    <div class="col-md-6"></div>
+
+                                                </div>
+                                                <br />
+
+                                            </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
                 </div>
             </asp:Panel>
         </ContentTemplate>

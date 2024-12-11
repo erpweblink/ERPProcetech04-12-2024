@@ -83,7 +83,8 @@ public partial class Admin_LaserCutting : System.Web.UI.Page
                 dgvLaserCutting.DataBind();
                 ScriptManager.RegisterStartupScript(Page, this.GetType(), "Key", "<script>MakeStaticHeader('" + dgvLaserCutting.ClientID + "', 900, 1020 , 40 ,true); </script>", false);
 
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Pending Record Not Found..!');", true);
+                //ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Pending Record Not Found..!');", true);
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", "HideLabel('Record Not Found..!')", true);
             }
         }
         catch (Exception ex)

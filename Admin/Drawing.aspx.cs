@@ -77,7 +77,7 @@ public partial class Admin_Drawing : System.Web.UI.Page
 
             //New Line added by Nikhil
             query = @"SELECT *,[pono],A.[id] as mainID,[OANumber],[Size],[TotalQty],[InwardDtTime],[InwardQty],[OutwardDtTime],[customername],SubOA
-              ,C.CustomerCode FROM [DB_ProcetechERP].[vwDrawerCreation] AS A 
+              ,C.CustomerCode FROM [DB_ProcetechTesting].[DB_ProcetechERP].[vwDrawerCreation] AS A 
 			   LEFT JOIN Company AS C ON C.cname=A.customername where IsComplete is null order by deliverydatereqbycust asc";
 
             SqlDataAdapter ad = new SqlDataAdapter(query, con);
@@ -85,6 +85,8 @@ public partial class Admin_Drawing : System.Web.UI.Page
             ad.Fill(dt);
             if (dt.Rows.Count > 0)
             {
+                string OutwardDate = dt.Rows[0]["OutwardDtTime"].ToString();
+
                 dgvDrawing.DataSource = dt;
                 dgvDrawing.DataBind();
                 ScriptManager.RegisterStartupScript(Page, this.GetType(), "Key", "<script>MakeStaticHeader('" + dgvDrawing.ClientID + "', 900, 1020 , 40 ,true); </script>", false);
@@ -93,7 +95,8 @@ public partial class Admin_Drawing : System.Web.UI.Page
             {
                 dgvDrawing.DataSource = null;
                 dgvDrawing.DataBind();
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Pending Record Not Found..!');", true);
+                // ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Pending Record Not Found..!');", true);
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", "HideLabel('Record Not Found..!')", true);
             }
         }
         catch (Exception ex)

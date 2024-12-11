@@ -72,6 +72,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
                     GetqutationNo();
                     GetCompanyDataByName(Decrypt(Request.QueryString["Ccode"].ToString()));
                     // FillExcelsheet();
+                    dvParticular.Visible = true;
                 }
                 else
                 {
@@ -103,7 +104,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
                 {
                     oldfile1 = ""; oldfile2 = ""; txtdate.Text = DateTime.Now.ToString("dd-MM-yyyy");
                 }
-
+            
                 Getemail();
 
                 txtCGSTamt.Attributes.Add("readonly", "readonly");
@@ -273,12 +274,12 @@ public partial class Admin_Quotation : System.Web.UI.Page
         SqlDataAdapter addefault = new SqlDataAdapter();
         if (Request.QueryString["cdd"] == null)
         {
-            addefault = new SqlDataAdapter("select id,sheetname,category,path, status from excelsheetdata where category='" + constype + "' and quotationid is null and Isactive=0", con);
+            addefault = new SqlDataAdapter("select id,sheetname,category,path, status from [DB_ProcetechTesting].[DB_ProcetechERP].[Excelsheetdata] where category='" + constype + "' and quotationid is null and Isactive=0", con);
             myconstype = constype;
         }
         else
         {
-            addefault = new SqlDataAdapter("select id,sheetname,category,path, status from excelsheetdata where category='" + myconstype + "' and Isactive=0 and quotationid=" + myquotationid, con);
+            addefault = new SqlDataAdapter("select id,sheetname,category,path, status from [DB_ProcetechTesting].[DB_ProcetechERP].[Excelsheetdata] where category='" + myconstype + "' and Isactive=0 and quotationid=" + myquotationid, con);
         }
 
         DataTable dtdefault = new DataTable();
@@ -301,7 +302,8 @@ public partial class Admin_Quotation : System.Web.UI.Page
         {
             if (dtdefault.Rows.Count == 0)
             {
-                addefault = new SqlDataAdapter("select id,sheetname,category,path, status from excelsheetdata where category='" + myconstype + "' and quotationid is null and Isactive=0", con);
+               // addefault = new SqlDataAdapter("select id,sheetname,category,path, status from excelsheetdata where category='" + myconstype + "' and quotationid is null and Isactive=0", con);
+                addefault = new SqlDataAdapter("select id,sheetname,category,path, status from [DB_ProcetechTesting].[DB_ProcetechERP].[Excelsheetdata] where category='" + myconstype + "' and quotationid is null and Isactive=0", con);
                 DataTable dtdefault2 = new DataTable();
                 addefault.Fill(dtdefault2);
 
@@ -3852,12 +3854,19 @@ public partial class Admin_Quotation : System.Web.UI.Page
                                 string UOM = lblunit.Text;
                                 string Price = lblprice.Text;
                                 string Discount = lbltxtdiscount.Text;
-                                string CGST = g1.Cells[7].Text;
-                                string SGST = g1.Cells[8].Text;
-                                string IGST = g1.Cells[9].Text;
-                                string CGSTAmt = g1.Cells[10].Text;
-                                string SGSTAmt = g1.Cells[11].Text;
-                                string IGSTamt = g1.Cells[12].Text;
+                                //string CGST = g1.Cells[7].Text; //6
+                                //string SGST = g1.Cells[8].Text;  //7
+                                //string IGST = g1.Cells[9].Text; //8
+                                //string CGSTAmt = g1.Cells[10].Text;  //9
+                                //string SGSTAmt = g1.Cells[11].Text;  //10 
+                                //string IGSTamt = g1.Cells[12].Text;  //11
+
+                                string CGST = g1.Cells[6].Text; //6
+                                string SGST = g1.Cells[7].Text;  //7
+                                string IGST = g1.Cells[8].Text; //8
+                                string CGSTAmt = g1.Cells[9].Text;  //9
+                                string SGSTAmt = g1.Cells[10].Text;  //10 
+                                string IGSTamt = g1.Cells[11].Text;  //11
                                 string TotalTax = lbltottax.Text;
                                 string TotalAmount = lbltotalamt.Text;
 
@@ -3924,12 +3933,21 @@ public partial class Admin_Quotation : System.Web.UI.Page
                                 string UOM = lblunit.Text;
                                 string Price = lblprice.Text;
                                 string Discount = lbltxtdiscount.Text;
-                                string CGST = g1.Cells[7].Text;
-                                string SGST = g1.Cells[8].Text;
-                                string IGST = g1.Cells[9].Text;
-                                string CGSTAmt = g1.Cells[10].Text;
-                                string SGSTAmt = g1.Cells[11].Text;
-                                string IGSTamt = g1.Cells[12].Text;
+                                //string CGST = g1.Cells[7].Text;
+                                //string SGST = g1.Cells[8].Text;
+                                //string IGST = g1.Cells[9].Text;
+                                //string CGSTAmt = g1.Cells[10].Text;
+                                //string SGSTAmt = g1.Cells[11].Text;
+                                //string IGSTamt = g1.Cells[12].Text;
+                                //string TotalTax = lbltottax.Text;
+                                //string TotalAmount = lbltotalamt.Text;
+
+                                string CGST = g1.Cells[6].Text; //6
+                                string SGST = g1.Cells[7].Text;  //7
+                                string IGST = g1.Cells[8].Text; //8
+                                string CGSTAmt = g1.Cells[9].Text;  //9
+                                string SGSTAmt = g1.Cells[10].Text;  //10 
+                                string IGSTamt = g1.Cells[11].Text;  //11
                                 string TotalTax = lbltottax.Text;
                                 string TotalAmount = lbltotalamt.Text;
 
@@ -4002,12 +4020,21 @@ public partial class Admin_Quotation : System.Web.UI.Page
                                 string UOM = lblunit.Text;
                                 string Price = lblprice.Text;
                                 string Discount = lbltxtdiscount.Text;
-                                string CGST = g1.Cells[7].Text;
-                                string SGST = g1.Cells[8].Text;
-                                string IGST = g1.Cells[9].Text;
-                                string CGSTAmt = g1.Cells[10].Text;
-                                string SGSTAmt = g1.Cells[11].Text;
-                                string IGSTamt = g1.Cells[12].Text;
+                                //string CGST = g1.Cells[7].Text;
+                                //string SGST = g1.Cells[8].Text;
+                                //string IGST = g1.Cells[9].Text;
+                                //string CGSTAmt = g1.Cells[10].Text;
+                                //string SGSTAmt = g1.Cells[11].Text;
+                                //string IGSTamt = g1.Cells[12].Text;
+                                //string TotalTax = lbltottax.Text;
+                                //string TotalAmount = lbltotalamt.Text;
+
+                                string CGST = g1.Cells[6].Text; //6
+                                string SGST = g1.Cells[7].Text;  //7
+                                string IGST = g1.Cells[8].Text; //8
+                                string CGSTAmt = g1.Cells[9].Text;  //9
+                                string SGSTAmt = g1.Cells[10].Text;  //10 
+                                string IGSTamt = g1.Cells[11].Text;  //11
                                 string TotalTax = lbltottax.Text;
                                 string TotalAmount = lbltotalamt.Text;
 
@@ -4077,12 +4104,21 @@ public partial class Admin_Quotation : System.Web.UI.Page
                                 string UOM = lblunit.Text;
                                 string Price = lblprice.Text;
                                 string Discount = lbltxtdiscount.Text;
-                                string CGST = g1.Cells[7].Text;
-                                string SGST = g1.Cells[8].Text;
-                                string IGST = g1.Cells[9].Text;
-                                string CGSTAmt = g1.Cells[10].Text;
-                                string SGSTAmt = g1.Cells[11].Text;
-                                string IGSTamt = g1.Cells[12].Text;
+                                //string CGST = g1.Cells[7].Text;
+                                //string SGST = g1.Cells[8].Text;
+                                //string IGST = g1.Cells[9].Text;
+                                //string CGSTAmt = g1.Cells[10].Text;
+                                //string SGSTAmt = g1.Cells[11].Text;
+                                //string IGSTamt = g1.Cells[12].Text;
+                                //string TotalTax = lbltottax.Text;
+                                //string TotalAmount = lbltotalamt.Text;
+
+                                string CGST = g1.Cells[6].Text; //6
+                                string SGST = g1.Cells[7].Text;  //7
+                                string IGST = g1.Cells[8].Text; //8
+                                string CGSTAmt = g1.Cells[9].Text;  //9
+                                string SGSTAmt = g1.Cells[10].Text;  //10 
+                                string IGSTamt = g1.Cells[11].Text;  //11
                                 string TotalTax = lbltottax.Text;
                                 string TotalAmount = lbltotalamt.Text;
 
@@ -10986,7 +11022,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
             {
                 connection.Open();
 
-                using (SqlCommand cmd = new SqlCommand("[SP_TaxMaster]", connection))
+                using (SqlCommand cmd = new SqlCommand("[DB_ProcetechERP].[SP_TaxMaster]", connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add(new SqlParameter("@Action", "GetGst"));
@@ -11030,7 +11066,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
             {
                 connection.Open();
 
-                using (SqlCommand cmd = new SqlCommand("[SP_TaxMaster]", connection))
+                using (SqlCommand cmd = new SqlCommand("[DB_ProcetechERP].[SP_TaxMaster]", connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add(new SqlParameter("@Action", "GetTaxType"));
@@ -11060,6 +11096,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
     }
     public void GetGStDEtails()
     {
+        string val = ddltaxation.SelectedItem.Text;
         try
         {
             string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
@@ -11068,7 +11105,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
             {
                 connection.Open();
 
-                using (SqlCommand cmd = new SqlCommand("[SP_TaxMaster]", connection))
+                using (SqlCommand cmd = new SqlCommand("[DB_ProcetechERP].[SP_TaxMaster]", connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add(new SqlParameter("@Action", "GetGst"));

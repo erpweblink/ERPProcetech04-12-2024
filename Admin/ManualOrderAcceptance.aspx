@@ -442,15 +442,24 @@
                                                 <div class="col-md-12">
                                                     <br />
                                                     <div class="row">
-                                                        <div class="col-md-2 spancls">OA No<i class="reqcls">*&nbsp;</i> : </div>
-                                                        <div class="col-md-4">
+                                                       <%-- <div class="col-md-1 spancls">OA No<i class="reqcls">*&nbsp;</i> : </div>--%>
+                                                        <div class="spancls" style="margin-left: 15px;">OA No<i class="reqcls">*&nbsp;</i> : </div>
+                                                        <div class="col-md-3">
                                                             <asp:TextBox ID="txtOAno" Width="100%" runat="server" ReadOnly="true"></asp:TextBox>
                                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" Display="Dynamic" ErrorMessage="Please Enter Company Name"
                                                                 ControlToValidate="txtOAno" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
-                                                            <p>(May change at run time)</p>
+                                                            <p style="font-size: 12px !important;">(May change at run time)</p>
                                                         </div>
-                                                        <div class="col-md-2 spancls">Date<i class="reqcls">*&nbsp;</i> : </div>
-                                                        <div class="col-md-4">
+                                                        <%-- New Field by Nikhil  --%>
+                                                        <%--<div class="col-md-1 spancls">Job No<i class="reqcls">*&nbsp;</i> : </div>--%>
+                                                        <div class="spancls" style="margin-left: 21px;">Job No<i class="reqcls">*&nbsp;</i> : </div>
+                                                        <div class="col-md-3">
+                                                            <asp:TextBox ID="txtJobNo" Width="100%" runat="server" ReadOnly="true"></asp:TextBox>
+                                                        </div>
+                                                        <%-- End--%>
+
+                                                        <div class="col-md-1 spancls">Date<i class="reqcls">*&nbsp;</i> : </div>
+                                                        <div class="col-md-3">
                                                             <asp:TextBox ID="txttodaysdate" Width="100%" runat="server" ReadOnly="true"></asp:TextBox>
 
                                                         </div>
@@ -694,7 +703,7 @@
                                                                     <asp:BoundField DataField="Qty" HeaderText="Qty" ItemStyle-Width="120" ItemStyle-HorizontalAlign="Center" />
                                                                     <asp:BoundField DataField="UOM" HeaderText="UOM" ItemStyle-Width="120" ItemStyle-HorizontalAlign="Center" />
                                                                     <asp:BoundField DataField="Price" HeaderText="Price" ItemStyle-Width="120" ItemStyle-HorizontalAlign="Center" />
-                                                                    <asp:BoundField DataField="Discount" HeaderText="Discount" ItemStyle-Width="120" ItemStyle-HorizontalAlign="Center"/>
+                                                                    <asp:BoundField DataField="Discount" HeaderText="Discount" ItemStyle-Width="120" ItemStyle-HorizontalAlign="Center" />
                                                                     <asp:BoundField DataField="CGST" HeaderText="CGST" ItemStyle-Width="120" ItemStyle-HorizontalAlign="Center" ReadOnly="true" />
                                                                     <asp:BoundField DataField="SGST" HeaderText="SGST" ItemStyle-Width="120" ItemStyle-HorizontalAlign="Center" ReadOnly="true" />
                                                                     <asp:BoundField DataField="IGST" HeaderText="IGST" ItemStyle-Width="120" ItemStyle-HorizontalAlign="Center" ReadOnly="true" />
@@ -1176,7 +1185,7 @@
 
     <script type="text/javascript">
         function sum() {
-            //1st Row Calculation
+        //1st Row Calculation
 
             <%--var txtqty = document.getElementById('<%=txtQty.ClientID%>').value;
             var txtprice = document.getElementById('<%=txtprice.ClientID%>').value;

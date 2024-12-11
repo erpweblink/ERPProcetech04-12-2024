@@ -84,7 +84,7 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
                 dgvLaserprogram.DataBind();
                 ScriptManager.RegisterStartupScript(Page, this.GetType(), "Key", "<script>MakeStaticHeader('" + dgvLaserprogram.ClientID + "', 900, 1020 , 40 ,true); </script>", false);
 
-                ClientScript.RegisterStartupScript(this.GetType(), "alert", "HideLabel('Pending Record Not Found..!')", true);
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", "HideLabel('Record Not Found..!', 'error')", true);
 
                 //ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Pending Record Not Found..!');", true);
             }
@@ -136,7 +136,7 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
                     int totalCount = dgvLaserprogram.Rows.Cast<GridViewRow>().Count(r => ((CheckBox)r.FindControl("chkRow")).Checked);
                     if (totalCount <= 0)
                     {
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Please Select Atleast One Row..!!');", true);
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Please Select Atleast One Row..!!');", true);                        
                         flag = true;
                     }
                     else
@@ -310,7 +310,7 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
                     {
 
                     }
-                    ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Successfully- Approved and send to TPP Cutting Department...!');window.location.href='LaserProgramming.aspx';", true);
+                   ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Successfully- Approved and send to TPP Cutting Department...!');window.location.href='LaserProgramming.aspx';", true);                   
                     //Response.Redirect("LaserProgramming.aspx");
                 }
             }
@@ -694,7 +694,7 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
                     int totalCount = dgvLaserprogram.Rows.Cast<GridViewRow>().Count(r => ((CheckBox)r.FindControl("chkRow")).Checked);
                     if (totalCount <= 0)
                     {
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Please Select Atleast One Row..!!');", true);
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Please Select Atleast One Row..!!');", true);                       
                         flag = true;
                     }
                     else
@@ -868,6 +868,8 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
                     {
 
                     }
+                    
+
                     ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Successfully- Approved and send to Laser Cutting Department...!');window.location.href='LaserProgramming.aspx';", true);
                     //Response.Redirect("LaserProgramming.aspx");
                 }

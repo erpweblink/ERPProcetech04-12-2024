@@ -153,6 +153,24 @@
             display: none;
         }
     </style>
+
+    <%-- New SweetAlert Script by nikhil  --%>
+    <script>
+        function HideLabel(msg) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: msg,
+                timer: 3000,
+                showCancelButton: false,
+                showConfirmButton: false
+            }).then(function () {
+                //window.location.href = "../Admin/TaxInvoiceList.aspx";
+            })
+        };
+    </script>
+    <%-- ENd  --%>
+
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 
     <script type="text/javascript">
@@ -391,7 +409,7 @@
                                     <asp:LinkButton ID="btnexcel" runat="server" CssClass="btn btn-small   btn-success " OnClick="btnexcel_Click" OnClientClick="aspnetForm.target ='_blank';"><i class="fa fa-download" aria-hidden="true"></i>&nbsp;Export Excel</asp:LinkButton>
                                 </div>
 
-                                <div class="page-header-breadcrumb"  runat="server" visible="False">
+                                <div class="page-header-breadcrumb" runat="server" visible="False">
                                     <div style="float: right; margin: 3px; margin-bottom: 5px;">
                                         <span id="btnlasercuttingoldlist" runat="server"><a href="LaserCutting_OldDB.aspx" style="font-size: 16px; border: 1px dashed gray; padding: 4px;">&nbsp;LASER CUTTING OLD DATA</a>&nbsp;&nbsp;
                                         </span>
@@ -506,23 +524,23 @@
                                                             <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
-                                                    
-                                                    
 
-                                                    <asp:TemplateField HeaderText="Sub OA" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center"  Visible="false">
+
+
+                                                    <asp:TemplateField HeaderText="Sub OA" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center" Visible="false">
                                                         <ItemTemplate>
                                                             <asp:TextBox runat="server" ID="txtsuboa" ReadOnly="true" TextMode="MultiLine" Visible="false" Rows="4" Width="130" CssClass="form-control" Text='<%# Eval("customername") %>'></asp:TextBox>
-                                                           
+
                                                             <%--  <asp:Label ID="lblCustCode" runat="server" Text='<%# Eval("CustomerCode").ToString().Replace(" ", "<br /><br />") %>'></asp:Label>--%>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
 
 
-                                                    <asp:TemplateField HeaderText="Customer code" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center" >
+                                                    <asp:TemplateField HeaderText="Customer code" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center">
                                                         <ItemTemplate>
                                                             <asp:TextBox runat="server" ID="lblCustName" ReadOnly="true" TextMode="MultiLine" Visible="false" Rows="4" Width="130" CssClass="form-control" Text='<%# Eval("customername") %>'></asp:TextBox>
                                                             <asp:Label ID="lblSubOANumber" CssClass="lblsuboa" runat="server" Text='<%# Eval("SubOA") %>' Visible="true"></asp:Label>
-                                                              <asp:Label ID="lblCustCode" runat="server" Text='<%# Eval("CustomerCode").ToString().Replace(" ", "<br /><br />") %>'></asp:Label>
+                                                            <asp:Label ID="lblCustCode" runat="server" Text='<%# Eval("CustomerCode").ToString().Replace(" ", "<br /><br />") %>'></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
 

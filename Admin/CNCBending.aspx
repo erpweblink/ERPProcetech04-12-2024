@@ -144,6 +144,22 @@
             background-color: #A1DCF2;
         }
     </style>
+    <%-- New SweetAlert Script by nikhil  --%>
+    <script>
+        function HideLabel(msg) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: msg,
+                timer: 3000,
+                showCancelButton: false,
+                showConfirmButton: false
+            }).then(function () {
+                //window.location.href = "../Admin/TaxInvoiceList.aspx";
+            })
+        };
+    </script>
+    <%-- ENd  --%>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript">
         function pageLoad() {

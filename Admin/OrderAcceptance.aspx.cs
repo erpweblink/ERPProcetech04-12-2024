@@ -56,7 +56,7 @@ public partial class Admin_OrderAcceptance : System.Web.UI.Page
                     HdnOAID.Value = OAid;
                     action = "insert";
 
-                    // getQutationdts();
+                    //getQutationdts();
                     Getdata();
                     LoadQuotationNo();
 
@@ -133,13 +133,28 @@ public partial class Admin_OrderAcceptance : System.Web.UI.Page
         //}
         //return OANO;
         string OANO = "";
-        SqlDataAdapter ad = new SqlDataAdapter("SELECT max([id]) as maxid FROM [OrderAccept]", con);
+        SqlDataAdapter ad = new SqlDataAdapter("SELECT max([id]) as maxid, max([JobNo]) as JobNo FROM [OrderAccept]", con);
         DataTable dt = new DataTable();
         ad.Fill(dt);
 
         int MxID = 0;
         if (dt.Rows.Count > 0)
         {
+            if (dt.Rows[0]["JobNo"].ToString() == "")
+            {
+                SqlCommand scmds = new SqlCommand("SELECT dbo.GenerateAndIncrementCodeForJOBNO() ", con);
+                con.Open();
+                string jobNo = Convert.ToString(scmds.ExecuteScalar());
+                txtJobNo.Text = jobNo;
+            }
+            else
+            {
+                SqlCommand scmds = new SqlCommand("SELECT dbo.GenerateAndIncrementCodeForJOBNO() ", con);
+                con.Open();
+                string jobNo = Convert.ToString(scmds.ExecuteScalar());
+                txtJobNo.Text = jobNo;
+            }
+
             int maxid = dt.Rows[0]["maxid"].ToString() == "" ? MxID + 1 : Convert.ToInt32(dt.Rows[0]["maxid"].ToString()) + 1;
             OANO = "OA24250000" + maxid.ToString();
             txtOAno.Text = "OA24250000" + maxid.ToString();
@@ -432,7 +447,7 @@ public partial class Admin_OrderAcceptance : System.Web.UI.Page
             scmdoa = new SqlCommand("select top 1 constructiontype from OAList where oano = @OAid", con);
             scmdoa.Parameters.AddWithValue("@OAid", OAid);
         }
-
+        con.Close();
         con.Open();
 
         object result = scmdoa.ExecuteScalar();
@@ -458,24 +473,27 @@ public partial class Admin_OrderAcceptance : System.Web.UI.Page
             SqlCommand scmd;
             if (Request.QueryString["cmd"] != null)
             {
-                scmd = new SqlCommand("select top 1 quotationid from OAList where quotationid='" + OAid + "'", con);
+                //scmd = new SqlCommand("select top 1 quotationid from OAList where quotationid='" + OAid + "'", con);
+                scmd = new SqlCommand("select quotationno from QuotationMain where id='" + OAid + "'", con);
             }
             else
             {
                 scmd = new SqlCommand("select top 1 quotationid from OAList where oano='" + OAid + "'", con);
             }
             con.Open();
-            quotid = Convert.ToInt32( OAid);
-            //quotid = Convert.ToInt32(scmd.ExecuteScalar());
+            //quotid = Convert.ToInt32( OAid);
+            quotid = Convert.ToInt32(scmd.ExecuteScalar());
             con.Close();
 
-            SqlDataAdapter adp = new SqlDataAdapter("select quotationno,ccode,partyname,kindatt,convert(varchar(20),date,105) as date,address,replace(descriptionall,'<br>',CHAR(13) + CHAR(10)) as descriptionall, Taxation from QuotationMain where id=" + OAid, con);
+            //SqlDataAdapter adp = new SqlDataAdapter("select quotationno,ccode,partyname,kindatt,convert(varchar(20),date,105) as date,address,replace(descriptionall,'<br>',CHAR(13) + CHAR(10)) as descriptionall, Taxation from QuotationMain where id=" + OAid, con);
+            SqlDataAdapter adp = new SqlDataAdapter("select quotationno,ccode,partyname,kindatt,convert(varchar(20),date,105) as date,address,replace(descriptionall,'<br>',CHAR(13) + CHAR(10)) as descriptionall, Taxation from [DB_ProcetechTesting].[dbo].[QuotationMain] where quotationno='"+ quotid + "'", con);
             DataTable dt = new DataTable();
 
             adp.Fill(dt);
 
             if (dt.Rows.Count > 0)
             {
+                string value = dt.Rows[0]["Taxation"].ToString();
                 ccode = dt.Rows[0]["ccode"].ToString();
                 //txtquotationno.Text = dt.Rows[0]["quotationno"].ToString();
                 //ddlQuotationNo.Text = dt.Rows[0]["quotationno"].ToString();
@@ -483,7 +501,7 @@ public partial class Admin_OrderAcceptance : System.Web.UI.Page
                 txtcustomername.Text = dt.Rows[0]["partyname"].ToString();
                 txtaddress.Text = dt.Rows[0]["address"].ToString();
                 txtdescription.Text = dt.Rows[0]["descriptionall"].ToString();
-                ddltaxation.SelectedItem.Text = dt.Rows[0]["Taxation"].ToString();
+                ddltaxation.SelectedValue = dt.Rows[0]["Taxation"].ToString();
                 SqlDataAdapter adp2 = new SqlDataAdapter("select top 1 oname1,oname2,oname3,oname4,oname5,email1,mobile1 from Company where ccode='" + dt.Rows[0]["ccode"].ToString() + "' and status=0 and isdeleted=0", con);
                 DataTable dt2 = new DataTable();
                 adp2.Fill(dt2);
@@ -523,7 +541,7 @@ public partial class Admin_OrderAcceptance : System.Web.UI.Page
                 }
             }
 
-            SqlDataAdapter adp1 = new SqlDataAdapter("SELECT [id],[quotationid],[quotationno],[sno],[description],[hsncode],[qty],[rate],[CGST],[SGST],[IGST],[CGSTamt],[SGSTamt],[IGSTamt],[totaltax],[discount],[amount] FROM QuotationData where quotationid=" + quotid, con);
+            SqlDataAdapter adp1 = new SqlDataAdapter("SELECT [id],[quotationid],[quotationno],[sno],[description],[hsncode],[qty],[rate],[CGST],[SGST],[IGST],[CGSTamt],[SGSTamt],[IGSTamt],[totaltax],[discount],[amount] FROM QuotationData where quotationno='"+ quotid +"'", con);
             DataTable dt1 = new DataTable();
             adp1.Fill(dt1);
             if (dt1.Rows.Count > 0)
@@ -801,10 +819,14 @@ public partial class Admin_OrderAcceptance : System.Web.UI.Page
         InsertDeatils();
         //if (!string.IsNullOrEmpty(Request.Form[txtTotalamt.UniqueID].ToString()))
         //{
-        SqlCommand cmd = new SqlCommand("SP_OrderAccept", con);
+        //SqlCommand cmd = new SqlCommand("SP_OrderAccept", con);
+        SqlCommand cmd = new SqlCommand("[dbo].[SP_OrderAccept]", con);
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@ccode", ccode);
         cmd.Parameters.AddWithValue("@customername", txtcustomername.Text);
+
+        // New Parameter added by Nikhil To add job No and in SP as well  06-12-2024
+        cmd.Parameters.AddWithValue("@JobNo", txtJobNo.Text);
 
         cmd.Parameters.AddWithValue("@address", txtaddress.Text);
         cmd.Parameters.AddWithValue("@quotationid", quotid);
@@ -993,6 +1015,7 @@ public partial class Admin_OrderAcceptance : System.Web.UI.Page
 
         cmd.Parameters.AddWithValue("@CreatedBy", Session["name"].ToString());
         cmd.Parameters.AddWithValue("@UpdatedBy", Session["name"].ToString());
+        con.Close();
         con.Open();
         cmd.ExecuteNonQuery();
         con.Close();
@@ -1067,7 +1090,8 @@ public partial class Admin_OrderAcceptance : System.Web.UI.Page
                                 SqlCommand cmdupdate = new SqlCommand("update tblQuotationData set IsSelect=1, qty='" + UpdatedQty + "',discount='" + UpdatedDiscount + "',amount='" + UpdatedAmt + "' where id='" + ID.Text + "'", con);
                                 cmdupdate.ExecuteNonQuery();
 
-                                string query = "INSERT INTO OrderAcceptDtls ([OAno],[Description],[Qty],[Price],[Discount],[TotalAmount],[CGST],[SGST],[IGST],[SubOANumber],[UOM],[QuotationID],[IsComplete],[HSN])" +
+                                //string query = "INSERT INTO OrderAcceptDtls ([OAno],[Description],[Qty],[Price],[Discount],[TotalAmount],[CGST],[SGST],[IGST],[SubOANumber],[UOM],[QuotationID],[IsComplete],[HSN])" +
+                                string query = "INSERT INTO DB_ProcetechERP.OrderAcceptDtls ([OAno],[Description],[Qty],[Price],[Discount],[TotalAmount],[CGST],[SGST],[IGST],[SubOANumber],[UOM],[QuotationID],[IsComplete],[HSN])" +
                                 "VALUES('" + txtOAno.Text + "','" + Desci.Text + "','" + Qty.Text + "','" + Price.Text + "','" + Discount.Text + "'," +
                                 "'" + TotalAmount.Text + "','" + CGST.Text + "','" + SGST.Text + "','" + IGST.Text + "','" + SubOA + "','" + txtunit.Text + "','" + ID.Text + "',NULL,'" + HSN.Text + "')";
                                 cmdPrDtl.CommandText = query;
@@ -1079,7 +1103,8 @@ public partial class Admin_OrderAcceptance : System.Web.UI.Page
                                 SqlCommand cmdupdate = new SqlCommand("update tblQuotationData set IsSelect=1, qty='" + UpdatedQty + "',discount='" + UpdatedDiscount + "',amount='" + UpdatedAmt + "' where id='" + ID.Text + "'", con);
                                 cmdupdate.ExecuteNonQuery();
 
-                                string query = "INSERT INTO OrderAcceptDtls ([OAno],[Description],[Qty],[Price],[Discount],[TotalAmount],[CGST],[SGST],[IGST],[SubOANumber], [UOM],[QuotationID],[IsComplete],[HSN])" +
+                                //string query = "INSERT INTO OrderAcceptDtls ([OAno],[Description],[Qty],[Price],[Discount],[TotalAmount],[CGST],[SGST],[IGST],[SubOANumber], [UOM],[QuotationID],[IsComplete],[HSN])" +
+                                string query = "INSERT INTO DB_ProcetechERP.OrderAcceptDtls ([OAno],[Description],[Qty],[Price],[Discount],[TotalAmount],[CGST],[SGST],[IGST],[SubOANumber], [UOM],[QuotationID],[IsComplete],[HSN])" +
                                 "VALUES('" + txtOAno.Text + "','" + Desci.Text + "','" + Qty.Text + "','" + Price.Text + "','" + Discount.Text + "'," +
                                 "'" + TotalAmount.Text + "','" + CGST.Text + "','" + SGST.Text + "','" + IGST.Text + "','"+ SubOA + "','" + txtunit.Text + "','" + ID.Text + "',NULL,'" + HSN.Text + "')";
                                 cmdPrDtl.CommandText = query;
@@ -1097,7 +1122,8 @@ public partial class Admin_OrderAcceptance : System.Web.UI.Page
                             SqlCommand cmdUpdate = new SqlCommand("update tblQuotationData set IsSelect=0 where id='" + ID.Text + "'", con);
                             cmdUpdate.ExecuteNonQuery();
 
-                            SqlCommand cmdDelete = new SqlCommand("update tblOrderAcceptDtls set IsComplete=0 where QuotationID='" + ID.Text + "'", con);
+                           // SqlCommand cmdDelete = new SqlCommand("update tblOrderAcceptDtls set IsComplete=0 where QuotationID='" + ID.Text + "'", con);
+                            SqlCommand cmdDelete = new SqlCommand("update DB_ProcetechERP.OrderAcceptDtls set IsComplete=0 where QuotationID='" + ID.Text + "'", con);
                             cmdDelete.ExecuteNonQuery();
                         }
                     }
@@ -1131,7 +1157,8 @@ public partial class Admin_OrderAcceptance : System.Web.UI.Page
                         //"VALUES('" + txtOAno.Text + "','" + Desci.Text + "','" + Qty.Text + "','" + Price.Text + "','" + Discount.Text + "'," +
                         //"'" + TotalAmount.Text + "','" + CGST.Text + "','" + SGST.Text + "','" + IGST.Text + "','" + SubOA + "','" + ID.Text + "',NULL,'" + HSN.Text + "')";
 
-                        string query = "UPDATE OrderAcceptDtls SET [OAno] = '" + txtOAno.Text + "',[Description] = '" + Desci.Text + "',[Qty] = '" + Qty.Text + "',[Price] = '" + Price.Text + "'," +
+                       // string query = "UPDATE OrderAcceptDtls SET [OAno] = '" + txtOAno.Text + "',[Description] = '" + Desci.Text + "',[Qty] = '" + Qty.Text + "',[Price] = '" + Price.Text + "'," +
+                        string query = "UPDATE DB_ProcetechERP.OrderAcceptDtls SET [OAno] = '" + txtOAno.Text + "',[Description] = '" + Desci.Text + "',[Qty] = '" + Qty.Text + "',[Price] = '" + Price.Text + "'," +
                              "[Discount] = '" + Discount.Text + "',[TotalAmount] = '" + TotalAmount.Text + "',[CGST] = '" + CGST.Text + "',[SGST] = '" + SGST.Text + "',[IGST] = '" + IGST.Text + "',[IsComplete] = NULL," +
                              "[SubOANumber] = '" + lblSuboa.Text + "',[QuotationID] = '" + lblqoutationId.Text + "',[HSN] = '" + HSN.Text + "' ,[UOM] = '" + txtunit.Text + "' WHERE id='" + ID.Text + "'";
                         cmdPrDtl.CommandText = query;
@@ -1777,7 +1804,7 @@ public partial class Admin_OrderAcceptance : System.Web.UI.Page
             {
                 connection.Open();
 
-                using (SqlCommand cmd = new SqlCommand("[SP_TaxMaster]", connection))
+                using (SqlCommand cmd = new SqlCommand("[DB_ProcetechERP].[SP_TaxMaster]", connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add(new SqlParameter("@Action", "GetTaxType"));
@@ -1816,7 +1843,7 @@ public partial class Admin_OrderAcceptance : System.Web.UI.Page
             {
                 connection.Open();
 
-                using (SqlCommand cmd = new SqlCommand("[SP_TaxMaster]", connection))
+                using (SqlCommand cmd = new SqlCommand("[DB_ProcetechERP].[SP_TaxMaster]", connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add(new SqlParameter("@Action", "GetGst"));
@@ -1847,24 +1874,33 @@ public partial class Admin_OrderAcceptance : System.Web.UI.Page
 
     public void InsertDeatils()
     {
-        string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-
-        using (SqlConnection connection = new SqlConnection(connectionString))
+        try
         {
-            connection.Open();
+            string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
 
-            using (SqlCommand cmd = new SqlCommand("[SP_SendForOA]", connection))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                cmd.CommandType = CommandType.StoredProcedure;
+                connection.Open();
 
-                cmd.Parameters.Add(new SqlParameter("@Action", "InsertOAlistData"));
-                cmd.Parameters.Add(new SqlParameter("@quotationid", HdnOAID.Value));
-                SqlParameter messageParameter = new SqlParameter("@message", string.Empty) { Direction = ParameterDirection.Output };
-                cmd.Parameters.Add(messageParameter);
-                cmd.ExecuteNonQuery();
-                string message = (string)messageParameter.Value;
+                using (SqlCommand cmd = new SqlCommand("[dbo].[SP_SendForOA]", connection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
 
+                    cmd.Parameters.Add(new SqlParameter("@Action", "InsertOAlistData"));
+                    cmd.Parameters.Add(new SqlParameter("@quotationid", HdnOAID.Value));
+                    SqlParameter messageParameter = new SqlParameter("@message", string.Empty) { Direction = ParameterDirection.Output };
+                    cmd.Parameters.Add(messageParameter);
+                    cmd.ExecuteNonQuery();
+                    string message = (string)messageParameter.Value;
+
+                }
             }
+
+        }
+        catch (Exception e)
+        {
+
+            throw;
         }
     }
 }

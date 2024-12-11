@@ -138,6 +138,24 @@
             background-color: #A1DCF2;
         }
     </style>
+
+    <%-- New SweetAlert Script by nikhil  --%>
+    <script>
+        function HideLabel(msg) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: msg,
+                timer: 3000,
+                showCancelButton: false,
+                showConfirmButton: false
+            }).then(function () {
+                //window.location.href = "../Admin/TaxInvoiceList.aspx";
+            })
+        };
+    </script>
+    <%-- ENd  --%>
+
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript">
         function pageLoad() {
@@ -397,8 +415,8 @@
                                                 <asp:ListItem Text="Laser Cutting" Value="tblLaserCutting"> TPP Cutting</asp:ListItem>
                                                 <asp:ListItem Text="CNC Bending" Value="tblCNCBending">CNC Bending</asp:ListItem>
                                                 <asp:ListItem Text="Welding" Value="tblWelding">Welding</asp:ListItem>
-                                                <asp:ListItem Text="Powder coating" Value="tblPowderCoating">Powder coating</asp:ListItem>  
-                                                 <asp:ListItem Text="Final assembly" Value="tblFinalAssembly">Final assembly</asp:ListItem>
+                                                <asp:ListItem Text="Powder coating" Value="tblPowderCoating">Powder coating</asp:ListItem>
+                                                <asp:ListItem Text="Final assembly" Value="tblFinalAssembly">Final assembly</asp:ListItem>
                                             </asp:DropDownList>
 
                                         </div>
@@ -446,7 +464,7 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderStyle-Width="20" HeaderText="Select" ItemStyle-HorizontalAlign="Center">
-                                     
+
                                                         <ItemTemplate>
                                                             <asp:CheckBox ID="chkRow" runat="server" AutoPostBack="false" onclick="CheckedCheckbox(this)" />
                                                         </ItemTemplate>
@@ -469,7 +487,7 @@
                                                             <asp:Label ID="lblCustCode" runat="server" Text='<%# Eval("CustomerCode").ToString().Replace(" ", "<br /><br />") %>'></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
-                                               
+
                                                     <asp:TemplateField HeaderText="Size" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center" Visible="true">
                                                         <ItemTemplate>
                                                             <asp:TextBox runat="server" ID="lblSize" ReadOnly="true" Width="100%" TextMode="MultiLine" Rows="5" CssClass="form-control" Text='<%# Eval("Size") %>'></asp:TextBox>

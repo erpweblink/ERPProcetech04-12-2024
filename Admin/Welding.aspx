@@ -144,6 +144,23 @@
             background-color: #A1DCF2;
         }
     </style>
+    <%-- New SweetAlert Script by nikhil  --%>
+    <script>
+        function HideLabel(msg) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: msg,
+                timer: 3000,
+                showCancelButton: false,
+                showConfirmButton: false
+            }).then(function () {
+                //window.location.href = "../Admin/TaxInvoiceList.aspx";
+            })
+        };
+    </script>
+    <%-- ENd  --%>
+
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript">
         function pageLoad() {
@@ -490,7 +507,7 @@
                                                     <asp:TemplateField HeaderText="Customer Code" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center" Visible="true">
                                                         <ItemTemplate>
                                                             <asp:TextBox runat="server" ID="lblCustName" ReadOnly="true" TextMode="MultiLine" Visible="false" Rows="4" Width="130" CssClass="form-control" Text='<%# Eval("customername") %>'></asp:TextBox>
-                                                             <asp:Label ID="lblSubOANumber" CssClass="lblsuboa" runat="server" Text='<%# Eval("SubOA") %>' Visible="true"></asp:Label>
+                                                            <asp:Label ID="lblSubOANumber" CssClass="lblsuboa" runat="server" Text='<%# Eval("SubOA") %>' Visible="true"></asp:Label>
                                                             <asp:Label ID="lblCustCode" runat="server" Text='<%# Eval("CustomerCode").ToString().Replace(" ", "<br /><br />") %>'></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>

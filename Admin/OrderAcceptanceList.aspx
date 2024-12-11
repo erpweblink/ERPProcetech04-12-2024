@@ -243,7 +243,7 @@
                             <div class="page-header-breadcrumb">
                                 <div style="float: right; margin: 3px; margin-bottom: 5px;">
                                     <%-- <span><a id="btnAddOpenOrder" runat="server" href="AddOpenOrder.aspx" style="font-size: 16px; border: 1px dashed gray; padding: 4px;">&nbsp;Add Open Order</a>&nbsp;&nbsp; --%>
-                                <a id="btnQuoList" runat="server" href="QuotationList.aspx" style="font-size: 16px; border: 1px dashed gray; padding: 4px;">&nbsp;Quotation List</a>
+                                    <a id="btnQuoList" runat="server" href="QuotationList.aspx" style="font-size: 16px; border: 1px dashed gray; padding: 4px;">&nbsp;Quotation List</a>
                                     </span>
                                 </div>
                             </div>
@@ -328,13 +328,21 @@
                                                                     </ItemTemplate>
                                                                 </asp:TemplateField>
 
+                                                                <%-- New Field added for Job No by Nikhil 06-1-2024 --%>
+                                                                <asp:TemplateField HeaderText="Job No" ItemStyle-HorizontalAlign="Center">
+                                                                    <ItemTemplate>
+                                                                        <asp:Label ID="lblJobNo" runat="server" Text='<%# Eval("JobNo") %>'></asp:Label>
+                                                                    </ItemTemplate>
+                                                                </asp:TemplateField>
+                                                                <%-- End  --%>
+
                                                                 <asp:TemplateField HeaderText="OA No" ItemStyle-HorizontalAlign="Center">
                                                                     <ItemTemplate>
                                                                         <asp:Label ID="lbloano" runat="server" Text='<%# Eval("oano") %>'></asp:Label>
                                                                     </ItemTemplate>
                                                                 </asp:TemplateField>
-																
-																                                                                <asp:TemplateField HeaderText="Quotation No" ItemStyle-HorizontalAlign="Center">
+
+                                                                <asp:TemplateField HeaderText="Quotation No" ItemStyle-HorizontalAlign="Center">
                                                                     <ItemTemplate>
                                                                         <asp:Label ID="lblquotationno" runat="server" Text='<%# Eval("quotationno") %>'></asp:Label>
                                                                     </ItemTemplate>
@@ -394,7 +402,7 @@
                                                                             <asp:Label ID="Label1" CssClass="btn btn-info" Style="padding: 5px 3px !important; margin-top: 0px; color: white;" Height="35px" runat="server" Text="Print" Font-Size="15px"><i class="fa fa-print" style="font-size:24px"></i></asp:Label></span></a>
                                                                         <asp:LinkButton ID="btnDelete" CssClass="btn btn-danger" runat="server" Text="Delete OA" ToolTip="Delete OA" CommandName="RowDeleteOA" OnClientClick="return confirm('Do you want to delete this OA ?')" CommandArgument='<%# Eval("ID") %>'><i class="fa fa-trash" aria-hidden="true"></i></asp:LinkButton>
 
-                                                                       <%--<asp:LinkButton ID="lnkmailsend" CssClass="btn btn-primary " runat="server" Text="Send Mail" ToolTip="Send Mail" CommandName="Sendamil" OnClientClick="return confirm('Do you want to Send Maill ?')" CommandArgument='<%# Eval("oano") %>'  Visible="false"><i class="fa fa-envelope" aria-hidden="true"></i></asp:LinkButton>--%>
+                                                                        <%--<asp:LinkButton ID="lnkmailsend" CssClass="btn btn-primary " runat="server" Text="Send Mail" ToolTip="Send Mail" CommandName="Sendamil" OnClientClick="return confirm('Do you want to Send Maill ?')" CommandArgument='<%# Eval("oano") %>'  Visible="false"><i class="fa fa-envelope" aria-hidden="true"></i></asp:LinkButton>--%>
 
 
                                                                         <%--<asp:LinkButton ID="btnCloseOa" CssClass="btn btn-danger" runat="server" Text="Close OA" ToolTip="Close OA" CommandName="RowCloseOA" OnClientClick="return confirm('Do you want to Close this OA ?')" CommandArgument='<%# Eval("oano") %>'><i class="fa fa-close" aria-hidden="true"></i></asp:LinkButton>--%>
@@ -617,7 +625,7 @@
         <Triggers>
             <%--            <asp:PostBackTrigger ControlID="ddlSubOaNo" />--%>
             <asp:AsyncPostBackTrigger ControlID="ddlSubOaNo" />
-              <asp:PostBackTrigger ControlID="GvOA" />
+            <asp:PostBackTrigger ControlID="GvOA" />
             <%--           <asp:AsyncPostBackTrigger ControlID="lnkmailsend" />--%>
         </Triggers>
     </asp:UpdatePanel>
@@ -638,7 +646,7 @@
                 }
             }
         }--%>
-       // window.onbeforeunload = DisableButtons;
+        // window.onbeforeunload = DisableButtons;
     </script>
 </asp:Content>
 

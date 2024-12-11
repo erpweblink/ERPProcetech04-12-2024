@@ -30,7 +30,7 @@ public partial class Admin_SalesQuotationRptPDF : System.Web.UI.Page
         try
         {
             string quotationid = Request.QueryString["ID"].ToString();
-			ViewState["QuotationNo"] = quotationid;
+            ViewState["QuotationNo"] = quotationid;
             titlename.Text = quotationid + "Sales Quatation Report";
 
             SqlCommand cmdexsit = new SqlCommand("select IsRevise from QuotationMain where quotationno='" + quotationid + "'", con);
@@ -42,7 +42,7 @@ public partial class Admin_SalesQuotationRptPDF : System.Web.UI.Page
 
             if (Isrevised == "True")
             {
-                ad = new SqlDataAdapter(@"SELECT TQ.description, TQ.hsncode, TQ.qty, TQ.rate,TQ.CGST
+                ad = new SqlDataAdapter(@"SELECT TQ.description, TQ.hsncode, TQ.qty, TQ.rate,TQ.CGST,TQ.UOM
               ,TQ.SGST,TQ.IGST,TQ.CGSTamt,TQ.SGSTamt,TQ.IGSTamt,TQ.totaltax, TQ.discount, TQ.amount,
               QuotationMain.quotationno, QuotationMain.partyname, QuotationMain.ccode,QuotationMain.kindatt, QuotationMain.address,
               QuotationMain.paymentterm1,QuotationMain.paymentterm2,QuotationMain.paymentterm3,QuotationMain.paymentterm4,QuotationMain.paymentterm5,
@@ -50,11 +50,11 @@ public partial class Admin_SalesQuotationRptPDF : System.Web.UI.Page
               Format(QuotationMain.date,'dd-MM-yyyy')as date, QuotationMain.remark, QuotationMain.width, QuotationMain.Toatlamt, QuotationMain.depth, 
               QuotationMain.height, QuotationMain.base, QuotationMain.canopy, QuotationMain.material,QuotationMain.specifymaterial, QuotationMain.Constructiontype,
               QuotationMain.descriptionall, QuotationMain.sessionname, QuotationMain.createddate, QuotationMain.Taxation,QuotationMain.Currency	
-              FROM tblQuotationData TQ INNER JOIN QuotationMain ON TQ.quotationno = QuotationMain.quotationno where QuotationMain.quotationno='" + quotationid + "'", con);
+              FROM QuotationData TQ INNER JOIN QuotationMain ON TQ.quotationno = QuotationMain.quotationno where QuotationMain.quotationno='" + quotationid + "'", con);
             }
             else
             {
-                ad = new SqlDataAdapter(@"SELECT QuotationData.description, QuotationData.hsncode, QuotationData.qty, QuotationData.rate,QuotationData.CGST
+                ad = new SqlDataAdapter(@"SELECT QuotationData.description, QuotationData.hsncode, QuotationData.qty, QuotationData.rate,QuotationData.CGST,QuotationData.UOM
               ,QuotationData.SGST,QuotationData.IGST,QuotationData.CGSTamt,QuotationData.SGSTamt,QuotationData.IGSTamt,QuotationData.totaltax, QuotationData.discount, QuotationData.amount,
               QuotationMain.quotationno, QuotationMain.partyname, QuotationMain.ccode,QuotationMain.kindatt, QuotationMain.address,
               QuotationMain.paymentterm1,QuotationMain.paymentterm2,QuotationMain.paymentterm3,QuotationMain.paymentterm4,QuotationMain.paymentterm5,
@@ -143,8 +143,20 @@ public partial class Admin_SalesQuotationRptPDF : System.Web.UI.Page
             var cgstper = dt.Rows[0]["CGST"].ToString();
             var Igstper = dt.Rows[0]["IGST"].ToString();
 
-            var cgstamt = amount * Convert.ToDecimal(cgstper) / 100;
-            var Igstamt = amount * Convert.ToDecimal(Igstper) / 100;
+            var cgstamt = 0m;
+            var Igstamt = 0m;
+
+            if (cgstper != "")
+            {
+                cgstamt = amount * Convert.ToDecimal(cgstper) / 100;
+            }
+            if (Igstper != "")
+            {
+                Igstamt = amount * Convert.ToDecimal(Igstper) / 100;
+            }
+
+
+
 
             //var cgstamt = amount * 9/ 100;
 
@@ -416,12 +428,12 @@ public partial class Admin_SalesQuotationRptPDF : System.Web.UI.Page
 
                 lblIGSTamt = "Extra as applicable (Presently '" + IGStPer + "' %)I Amount" + Dt.Rows[0]["Currency"].ToString() + " " + Igtamt.ToString("##.##") + "";
                 //var tot = Convert.ToDouble(GSTamt) + Convert.ToDouble(GSTamt) + Convert.ToDouble(amount);
-                var tot =  Convert.ToDouble(Igtamt) + Convert.ToDouble(amount);
+                var tot = Convert.ToDouble(Igtamt) + Convert.ToDouble(amount);
                 lblWithGSTAmount = tot.ToString();
             }
             if (Dt.Rows[0]["SGST"].ToString() != "0")
             {
-                lblCGSTamt = "Extra as applicable (Presently '"+ CGStPer + "' %)I Amount " + Dt.Rows[0]["Currency"].ToString() + " " + GSTamt.ToString("##.##") + "";
+                lblCGSTamt = "Extra as applicable (Presently '" + CGStPer + "' %)I Amount " + Dt.Rows[0]["Currency"].ToString() + " " + GSTamt.ToString("##.##") + "";
                 lblSGSTamt = "Extra as applicable (Presently '" + CGStPer + "' %)I Amount " + Dt.Rows[0]["Currency"].ToString() + " " + GSTamt.ToString("##.##") + "";
                 lblIGSTamt = "Not Applicable";
                 var tot = Convert.ToDouble(GSTamt) + Convert.ToDouble(GSTamt) + Convert.ToDouble(amount);

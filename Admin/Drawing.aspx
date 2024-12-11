@@ -150,6 +150,24 @@
         }
     </style>
 
+    <%-- New SweetAlert Script by nikhil  --%>
+    <script>
+        function HideLabel(msg) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: msg,
+                timer: 3000,
+                showCancelButton: false,
+                showConfirmButton: false
+            }).then(function () {
+                //window.location.href = "../Admin/TaxInvoiceList.aspx";
+            })
+        };
+    </script>
+    <%-- ENd  --%>
+
+
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript">
         function pageLoad() {
@@ -293,26 +311,26 @@
 
 
     </script>
-	<script type="text/javascript" src="https://code.jquery.com/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.8.3.min.js"></script>
     <script type="text/javascript">
-          $("[src*=plus]").live("click", function () {
-           $(this).closest("tr").after("<tr><td></td><td colspan = '999'>" + $(this).next().html() + "</td></tr>")
+        $("[src*=plus]").live("click", function () {
+            $(this).closest("tr").after("<tr><td></td><td colspan = '999'>" + $(this).next().html() + "</td></tr>")
             $(this).attr("src", "../img/minus.png");
-         });
-         $("[src*=minus]").live("click", function () {
-           $(this).attr("src", "../img/plus.png");
+        });
+        $("[src*=minus]").live("click", function () {
+            $(this).attr("src", "../img/plus.png");
             $(this).closest("tr").next().remove();
-		
-		
-});
 
-document.querySelectorAll("[src*=minus]").forEach(function(element) {
-  element.addEventListener("click", function() {
-    element.src = "../img/plus.png";
-    var tr = element.closest("tr");
-    tr.nextSibling.remove();
-  });
-		
+
+        });
+
+        document.querySelectorAll("[src*=minus]").forEach(function (element) {
+            element.addEventListener("click", function () {
+                element.src = "../img/plus.png";
+                var tr = element.closest("tr");
+                tr.nextSibling.remove();
+            });
+
         });
     </script>
 
@@ -453,16 +471,18 @@ document.querySelectorAll("[src*=minus]").forEach(function(element) {
                                                                 <div class="col-md-12">
                                                                     <asp:Label ID="Label1" runat="server" Font-Bold="true" Text="Customer Name :"></asp:Label>
                                                                     <asp:Label ID="lblcustomersname" runat="server" Text='<%# Eval("customername") %>'></asp:Label>
-                                                                  
+
                                                                 </div>
-                                                                <div><hr /></div>
+                                                                <div>
+                                                                    <hr />
+                                                                </div>
                                                                 <asp:GridView ID="gvDetails" runat="server" AutoGenerateColumns="false" CssClass="ChildGrid">
                                                                     <Columns>
                                                                         <asp:BoundField ItemStyle-Width="150px" DataField="OAno" HeaderText="OA Number" />
                                                                         <asp:BoundField ItemStyle-Width="150px" DataField="SubOANumber" HeaderText="SUB OA No" />
                                                                         <asp:BoundField ItemStyle-Width="150px" DataField="Qty" HeaderText="Total Qty" />
                                                                         <asp:BoundField ItemStyle-Width="150px" DataField="pono" HeaderText="PO No" />
-                                                                     <%-- Commented because used multitimes by Nikhil --%>
+                                                                        <%-- Commented because used multitimes by Nikhil --%>
                                                                         <%--<asp:BoundField ItemStyle-Width="150px" DataField="deliverydatereqbycust" HeaderText="Delivery Date" />--%>
                                                                         <asp:BoundField ItemStyle-Width="150px" DataField="currentdate" HeaderText="Inward DateTime" />
                                                                         <asp:BoundField ItemStyle-Width="150px" DataField="OutwardDtTime" HeaderText="OutWard DateTime" />
@@ -537,8 +557,8 @@ document.querySelectorAll("[src*=minus]").forEach(function(element) {
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="Customer Code" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center" Visible="true">
                                                         <ItemTemplate>
-                                                             <asp:TextBox runat="server" ID="lblCustName" ReadOnly="true" TextMode="MultiLine" Visible="false" Rows="4" Width="130" CssClass="form-control" Text='<%# Eval("customername") %>'></asp:TextBox>
-                                                           
+                                                            <asp:TextBox runat="server" ID="lblCustName" ReadOnly="true" TextMode="MultiLine" Visible="false" Rows="4" Width="130" CssClass="form-control" Text='<%# Eval("customername") %>'></asp:TextBox>
+
                                                             <asp:Label ID="lblCustCode" runat="server" Text='<%# Eval("CustomerCode").ToString().Replace(" ", "<br /><br />") %>'></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
@@ -575,7 +595,7 @@ document.querySelectorAll("[src*=minus]").forEach(function(element) {
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
 
-                                                     <%-- Visible removed Visible="false" by Nikhil --%>
+                                                    <%-- Visible removed Visible="false" by Nikhil --%>
                                                     <asp:TemplateField HeaderText="OutDtTime" ItemStyle-Width="100" ItemStyle-HorizontalAlign="Center" Visible="false">
                                                         <ItemTemplate>
                                                             <%-- Old Code --%>
@@ -583,10 +603,10 @@ document.querySelectorAll("[src*=minus]").forEach(function(element) {
                                                             <%--<asp:Label ID="lblOutwardDtTime" runat="server" Text='<%# Eval("currentdate") %>'></asp:Label>--%>
 
                                                             <%-- New Code  --%>
-                                                           <asp:Label ID="lblOutwardDtTime" runat="server" Text='<%# Eval("OutwardDtTime") %>'></asp:Label>
+                                                            <asp:Label ID="lblOutwardDtTime" runat="server" Text='<%# Eval("OutwardDtTime") %>'></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
-                                                     <%-- Visible removed Visible="false" by Nikhil --%>
+                                                    <%-- Visible removed Visible="false" by Nikhil --%>
 
                                                     <asp:TemplateField HeaderText="OutQty" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center">
                                                         <ItemTemplate>
@@ -669,7 +689,9 @@ document.querySelectorAll("[src*=minus]").forEach(function(element) {
                                     </Columns>
                                 </asp:GridView>
 
-                                <center><asp:Label ID="lblnodatafoundComp" runat="server" Text="" Visible="false" CssClass="lblboldred"></asp:Label></center>
+                                <center>
+                                    <asp:Label ID="lblnodatafoundComp" runat="server" Text="" Visible="false" CssClass="lblboldred"></asp:Label>
+                                </center>
 
                             </div>
                         </div>

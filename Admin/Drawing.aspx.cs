@@ -119,19 +119,19 @@ public partial class Admin_Drawing : System.Web.UI.Page
             //    new DataColumn("JobNo"), new DataColumn("Isapprove")});
 
             // New Code added by Nikhil 09-12-2024
-             dt.Columns.AddRange(new DataColumn[11] { new DataColumn("OAnumber"), new DataColumn("SubOA"), new DataColumn("customername"),
+             dt.Columns.AddRange(new DataColumn[12] { new DataColumn("OAnumber"), new DataColumn("SubOA"), new DataColumn("customername"),
                 new DataColumn("size"), new DataColumn("totalinward"), new DataColumn("inwarddatetime"), new DataColumn("inwardqty"),
-               new DataColumn("outwardqty"),new DataColumn("deliverydate"), 
+               new DataColumn("outwarddatetime"), new DataColumn("outwardqty"),new DataColumn("deliverydate"), 
                 new DataColumn("JobNo"), new DataColumn("Isapprove")});
 
-            tempdt.Columns.AddRange(new DataColumn[11] { new DataColumn("OAnumber"),
+            tempdt.Columns.AddRange(new DataColumn[12] { new DataColumn("OAnumber"),
                                 new DataColumn("SubOA"),
                                 new DataColumn("customername"),
                                 new DataColumn("size"),
                                 new DataColumn("totalinward"),
                                 new DataColumn("inwarddatetime"),
                                 new DataColumn("inwardqty"),
-                                //new DataColumn("outwarddatetime"),
+                                new DataColumn("outwarddatetime"),
                                 new DataColumn("outwardqty"),
                                 new DataColumn("deliverydate"),
                                  // New Field by Nikhil  Added 09-12-2024
@@ -195,7 +195,7 @@ public partial class Admin_Drawing : System.Web.UI.Page
                            // dt.Rows.Add(OANumber, SubOA, CustName, Size, TotalQty, InwardDtTime, InwardQty, OutwardDtTime, OutwardQty, DeliveryDt,JobNo, Remark, true);
                             
                             // New Code added by Nikhil 09-12-2024
-                            dt.Rows.Add(OANumber, SubOA, CustName, Size, TotalQty, InwardDtTime, InwardQty, OutwardQty, DeliveryDt,JobNo, true);
+                            dt.Rows.Add(OANumber, SubOA, CustName, Size, TotalQty, InwardDtTime, InwardQty, OutwardDtTime, OutwardQty, DeliveryDt,JobNo, true);
                         }
                     }
                 }
@@ -295,6 +295,7 @@ public partial class Admin_Drawing : System.Web.UI.Page
                         else
                         {
                             int totOutwardqnt = Convert.ToInt32(InwardQty) + Convert.ToInt32(row["outwardqty"].ToString());
+                            //SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + totOutwardqnt.ToString() + "',[IsComplete]=NULL,[InwardDtTime]='" + row["outwarddatetime"].ToString() + "' WHERE SubOA='" + row["SubOA"].ToString() + "'", con);
                             SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + totOutwardqnt.ToString() + "',[IsComplete]=NULL,[InwardDtTime]='" + row["outwarddatetime"].ToString() + "' WHERE SubOA='" + row["SubOA"].ToString() + "'", con);
                             cmdupdate.ExecuteNonQuery();
                         }

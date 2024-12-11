@@ -249,7 +249,7 @@ public partial class Admin_Drawing : System.Web.UI.Page
                                 row["totalinward"].ToString(),
                                 DateTime.Now,
                                 row["outwardqty"].ToString(),
-                               // DateTime.Now,                           // no need to insert (Wrong Input)
+                                DateTime.Now,                           // no need to insert (Wrong Input)
                                 row["outwardqty"].ToString(),           // no need to insert (Wrong Input)
                                 row["deliverydate"].ToString(),
                                 // New Line Addedby Nikhil  09-12-2024

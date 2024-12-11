@@ -148,20 +148,20 @@
 
 
     <%-- New SweetAlert Script by nikhil  --%>
-      <script>
-          function HideLabel(msg, icon) {
-              Swal.fire({
-                  icon: icon,
-                  title: "Oops...",
-                  text: msg,
-                  timer: 3000,
-                  showCancelButton: false,
-                  showConfirmButton: false
-              }).then(function () {           
-                      //window.location.href = "../Admin/LaserProgramming.aspx";                      
-              })
-          };
-      </script>
+    <script>
+        function HideLabel(msg, icon) {
+            Swal.fire({
+                icon: icon,
+                title: "Oops...",
+                text: msg,
+                timer: 3000,
+                showCancelButton: false,
+                showConfirmButton: false
+            }).then(function () {
+                //window.location.href = "../Admin/LaserProgramming.aspx";                      
+            })
+        };
+    </script>
     <%-- ENd  --%>
 
 
@@ -271,7 +271,8 @@
             var row = txt.parentNode.parentNode;
             var rowIndex = row.rowIndex;
             //var Userid = row.cells[3].innerHTML;
-            var suboanumber = grid.rows[rowIndex].cells[3].childNodes[1].childNodes[0].data;
+            //var suboanumber = grid.rows[rowIndex].cells[3].childNodes[1].childNodes[0].data;
+            var suboanumber = grid.rows[rowIndex].cells[4].childNodes[1].childNodes[0].data;
             var InwardQty = grid.rows[rowIndex].cells[7].childNodes[1].value;
 
             $("#<%=txtReturnInward.ClientID%>").val(InwardQty);
@@ -529,6 +530,15 @@
                                                             <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
+
+                                                    <%-- New Filed added by Nikhil 10-12-2024 --%>
+                                                    <asp:TemplateField HeaderText="Job No" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblJobNo" runat="server" Text='<%# Eval("JobNo") %>'></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <%-- End  --%>
+
                                                     <asp:TemplateField HeaderText="SubOA" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center" Visible="false">
                                                         <ItemTemplate>
 

@@ -61,7 +61,8 @@ public partial class Admin_Welding : System.Web.UI.Page
         {
             string query = string.Empty;
 
-            query = @"SELECT [WeldingId],[OANumber],[SubOA],[CustomerName],[Size],[TotalQty],[InwardDtTime],[InwardQty],[OutwardDtTime],[OutwardQty],
+            // New Filed Added JobNo  by Nikhil 10-12-2024
+            query = @"SELECT [JobNo],[WeldingId],[OANumber],[SubOA],[CustomerName],[Size],[TotalQty],[InwardDtTime],[InwardQty],[OutwardDtTime],[OutwardQty],
                 [DeliveryDate],[IsApprove],[IsPending],[IsCancel],[CreatedBy],[CreatedDate],A.[UpdatedBy],[UpdatedDate] 
                ,CustomerCode  FROM tblWelding  AS A                
 			   LEFT JOIN Company AS C ON C.cname=A.customername
@@ -105,24 +106,29 @@ public partial class Admin_Welding : System.Web.UI.Page
         {
             DataTable dt = new DataTable();
             bool flag = false;
-            dt.Columns.AddRange(new DataColumn[10] { new DataColumn("OAnumber"),
+
+            //Changes made to Add JObNo by Nikhil 10-12-2024
+            dt.Columns.AddRange(new DataColumn[11] { new DataColumn("OAnumber"),
                 new DataColumn("SubOA"), new DataColumn("customername"),
                 new DataColumn("size"), new DataColumn("totalinward"),
                 new DataColumn("inwarddatetime"), new DataColumn("inwardqty"),
                 new DataColumn("outwarddatetime"), new DataColumn("outwardqty"),
-                new DataColumn("deliverydate")
+                new DataColumn("deliverydate"),new DataColumn("JobNo")
             });
 
-            tempdt.Columns.AddRange(new DataColumn[9] { new DataColumn("OAnumber"),
+            tempdt.Columns.AddRange(new DataColumn[12] { new DataColumn("OAnumber"),
                                 new DataColumn("SubOA"),
                                 new DataColumn("customername"),
                                 new DataColumn("size"),
                                 new DataColumn("totalinward"),
                                 new DataColumn("inwarddatetime"),
                                 new DataColumn("inwardqty"),
-                                //new DataColumn("outwarddatetime"),
-                                //new DataColumn("outwardqty"),
+                                  //Uncommented two fileds to fetch exact data by Nikhil  10-12-2024
+                                new DataColumn("outwarddatetime"),
+                                new DataColumn("outwardqty"),
+
                                 new DataColumn("deliverydate"),
+                                new DataColumn("JobNo"),
                                 new DataColumn("Isapprove") });
 
             foreach (GridViewRow row in dgvWelding.Rows)
@@ -163,7 +169,12 @@ public partial class Admin_Welding : System.Web.UI.Page
 
                             TextBox Sizetb = (TextBox)row.Cells[1].FindControl("lblSize");
                             string Size = Sizetb.Text;
-                            dt.Rows.Add(OANumber, SubOA, CustName, Size, TotalQty, InwardDtTime, InwardQty, OutwardDtTime, OutwardQty, DeliveryDt);
+                            //dt.Rows.Add(OANumber, SubOA, CustName, Size, TotalQty, InwardDtTime, InwardQty, OutwardDtTime, OutwardQty, DeliveryDt);
+
+                            // Added by Nikhil 10-12-2024
+                            string JobNo = (row.Cells[1].FindControl("lblJobNo") as Label).Text;
+
+                            dt.Rows.Add(OANumber, SubOA, CustName, Size, TotalQty, InwardDtTime, InwardQty, OutwardDtTime, OutwardQty, DeliveryDt, JobNo);
                         }
                     }
                 }
@@ -222,11 +233,16 @@ public partial class Admin_Welding : System.Web.UI.Page
                                 row["customername"].ToString(),
                                 row["size"].ToString(),
                                 row["totalinward"].ToString(),
+                                 //Below Two fileds added by Nikhil  and JobNo as well 
+                                 DateTime.Now,
+                                row["InwardQty"].ToString(),
+
                                 DateTime.Now,
                                 row["outwardqty"].ToString(),
                                 //DateTime.Now,
                                 //row["outwardqty"].ToString(),
                                 row["deliverydate"].ToString(),
+                                row["JobNo"].ToString(),
                                  true);
 
                             using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(con))
@@ -243,6 +259,7 @@ public partial class Admin_Welding : System.Web.UI.Page
                                 //sqlBulkCopy.ColumnMappings.Add("outwarddatetime", "OutwardDtTime");
                                 //sqlBulkCopy.ColumnMappings.Add("outwardqty", "OutwardQty");
                                 sqlBulkCopy.ColumnMappings.Add("deliverydate", "DeliveryDate");
+                                sqlBulkCopy.ColumnMappings.Add("JobNo", "JobNo");
                                 sqlBulkCopy.ColumnMappings.Add("Isapprove", "IsApprove");
                                 sqlBulkCopy.WriteToServer(tempdt);
                                 tempdt.Clear();

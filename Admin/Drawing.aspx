@@ -549,6 +549,15 @@
                                                             <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
+
+                                                    <%-- New Filed added by Nikhil 09-12-2024 --%>
+                                                    <asp:TemplateField HeaderText="Job No" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblJobNo" runat="server" Text='<%# Eval("JobNo") %>'></asp:Label>                                         
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <%-- End  --%>
+
                                                     <asp:TemplateField HeaderText="OA Number" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center" Visible="false">
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblOANumber" runat="server" Text='<%# Eval("OANumber") %>'></asp:Label>

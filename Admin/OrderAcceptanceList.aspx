@@ -145,6 +145,18 @@
         .nowrap {
             margin-left: 31px;
         }
+
+        /*New Added css by Nikhil*/
+        .wrap-text {
+            word-wrap: break-word;
+            word-break: break-all;
+            white-space: normal;
+            overflow-wrap: break-word;
+        }
+
+        .center-align-header {
+            text-align: center;
+        }
     </style>
     <script language="javascript" type="text/javascript">
         function MakeStaticHeader(gridId, height, width, headerHeight, isFooter) {
@@ -443,19 +455,55 @@
                             <button type="button" id="Closepopdetail" class="btnclose" style="display: inline-block;" data-dismiss="modal">Close</button>
                                 </h4>
                             </div>
+                            <%--New Code Added by Nikhil 12-12-2024 --%>
+                            <div class="row" style="margin-right: 0px!important; margin-left: 10px; padding: 3px;">
+                                <div class="col-md-2"><b>Customer Code :</b></div>
+                                <div class="col-md-4 lblpopup">
+                                    <asp:Label ID="lblcusomercode" runat="server" Text=""></asp:Label>
+                                </div>
+                            </div>
 
+                            
                             <div class="row" style="background-color: rgb(238, 238, 238); margin-left: 10px; margin-right: 0px!important; padding: 3px; margin-top: 5px;">
+                                <div class="col-md-2"><b>Customer Name :</b></div>
+                                <div class="col-md-4 lblpopup">
+                                    <asp:Label ID="lblCustomerName" runat="server" Text=""></asp:Label>
+                                </div>
+
+                            </div>
+
+                            <div class="row" style="margin-right: 0px; margin-left: 10px; background-color: rgb(238, 238, 238); margin-right: 0px!important; padding: 3px;">
+                                <div class="col-md-2"><b>Reg. date :</b></div>
+                                <div class="col-md-4 lblpopup">
+                                    <asp:Label ID="lblRegdate" runat="server" Text=""></asp:Label>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-right: 0px; margin-left: 10px; background-color: rgb(249, 247, 247); margin-right: 0px!important; padding: 3px;">
+                                <div class="col-md-2"><b>GST No :</b></div>
+                                <div class="col-md-4 lblpopup">
+                                    <asp:Label ID="lblgstno" runat="server" Text=""></asp:Label>
+                                </div>
+                                <div class="col-md-2"><b>Reg. By :</b></div>
+                                <div class="col-md-4 lblpopup">
+                                    <asp:Label ID="lblregBy" runat="server" Text=""></asp:Label>
+                                </div>
+                            </div>
+
+
+                            <%-- End --%>
+                           <%-- <div class="row" style="background-color: rgb(238, 238, 238); margin-left: 10px; margin-right: 0px!important; padding: 3px; margin-top: 5px;">
                                 <div class="col-md-2"><b>Customer Name :</b></div>
                                 <div class="col-md-4 lblpopup">
                                     <asp:Label ID="lblcname" runat="server"></asp:Label>
                                 </div>
 
-                                <%--<div class="col-md-2"><b>Total Qty :</b></div>--%>
+                                <%--<div class="col-md-2"><b>Total Qty :</b></div>
                                 <div class="col-md-4 lblpopup">
-                                    <%--<asp:Label ID="lblQty" runat="server" Text=""></asp:Label>--%>
+                                   <%-- <asp:Label ID="lblQty" runat="server" Text=""></asp:Label>
                                 </div>
 
-                            </div>
+                            </div>--%>
                             <br />
                             <div class="row" style="margin-right: 0px; margin-left: 10px; background-color: rgb(249, 247, 247); margin-right: 0px!important; padding: 3px;">
                                 <div class="col-md-2"><b>OA Number :</b></div>
@@ -499,9 +547,14 @@
                                                     <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-                                            <asp:BoundField ItemStyle-Width="150px" DataField="SubOANumber" HeaderText="SubOA Number" />
-                                            <asp:BoundField ItemStyle-Width="150px" DataField="Description" HeaderText="Description" />
-                                            <asp:BoundField ItemStyle-Width="150px" DataField="Qty" HeaderText="Qty" />
+                                            <asp:BoundField ItemStyle-Width="150px" DataField="SubOANumber" HeaderText="SubOA Number" ItemStyle-HorizontalAlign="Center" HeaderStyle-CssClass="center-align-header" />
+                                            <%-- <asp:BoundField ItemStyle-Width="150px" DataField="Description" HeaderText="Description" />--%>
+                                            <asp:TemplateField ItemStyle-Width="150px" HeaderText="Description" HeaderStyle-CssClass="center-align-header">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblDescription" runat="server" Text='<%# Eval("Description") %>' CssClass="wrap-test"></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:BoundField ItemStyle-Width="150px" DataField="Qty" HeaderText="Qty" ItemStyle-HorizontalAlign="Center" HeaderStyle-CssClass="center-align-header" />
                                         </Columns>
                                     </asp:GridView>
                                 </div>
@@ -514,7 +567,8 @@
                                     </div>
                                 </div>
                                 <div class="row" style="padding: 20px; width: 100%;">
-                                    <div class="col-md-4 col-sm-4 col-xs-4">
+                                    <%-- Commented  By Nikhil 12-12-2024 --%>
+                                    <%--  <div class="col-md-4 col-sm-4 col-xs-4">
 
                                         <asp:GridView ID="dgvDeprt" runat="server" CssClass="table table-striped table-bordered nowrap"
                                             AutoGenerateColumns="false">
@@ -531,11 +585,24 @@
                                                 </asp:TemplateField>
                                             </Columns>
                                         </asp:GridView>
-                                    </div>
-                                    <div class="col-md-8 col-sm-8 col-xs-8" runat="server" visible="false" id="divdgvCustomerWise">
+                                    </div>--%>
+                                    <%--<div class="col-md-8 col-sm-8 col-xs-8" runat="server" visible="false" id="divdgvCustomerWise">--%>
+                                    <%-- End  --%>
+
+                                    <div class="col-md-12" runat="server" visible="false" id="divdgvCustomerWise">
                                         <asp:GridView ID="dgvCustomerWise" runat="server" CssClass="table table-striped table-bordered clsMargin"
                                             AutoGenerateColumns="false">
                                             <Columns>
+                                                <asp:TemplateField HeaderText="Sr.No" ItemStyle-Width="68" ItemStyle-HorizontalAlign="Center">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Department" ItemStyle-Width="130" ItemStyle-HorizontalAlign="Center">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="txtDepartment" runat="server" Text='<%# Eval("Department") %>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Inward Quantity" ItemStyle-Width="130" ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
                                                         <asp:Label ID="txtInwardQty" runat="server" Text='<%# Eval("total_InQty") %>'></asp:Label>
@@ -548,7 +615,12 @@
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Inward Datetime" ItemStyle-Width="130" ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
-                                                        <asp:Label ID="txtOutwardDt" runat="server" Text='<%# Eval("InwardDttime") %>'></asp:Label>
+                                                        <asp:Label ID="txtInwardDt" runat="server" Text='<%# Eval("InwardDttime") %>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Outward Datetime" ItemStyle-Width="130" ItemStyle-HorizontalAlign="Center">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="txtOutwardDt" runat="server" Text='<%# Eval("OutwardDtTime") %>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField ItemStyle-Width="150px" DataField="IsComplete" HeaderText="Status" Visible="false" />
@@ -564,6 +636,11 @@
                     </div>
                 </div>
             </asp:Panel>
+
+
+
+
+
 
             <%--    Company Details --%>
             <asp:Button ID="btnprof1" runat="server" Style="display: none" />
@@ -586,7 +663,7 @@
                             <div class="row" style="margin-right: 0px!important; margin-left: 10px; padding: 3px;">
                                 <div class="col-md-2"><b>Customer Code :</b></div>
                                 <div class="col-md-4 lblpopup">
-                                    <asp:Label ID="lblcusomercode" runat="server" Text=""></asp:Label>
+                                    <asp:Label ID="lblcusomercode1" runat="server" Text=""></asp:Label>
                                 </div>
                             </div>
 
@@ -601,18 +678,18 @@
                             <div class="row" style="margin-right: 0px; margin-left: 10px; background-color: rgb(238, 238, 238); margin-right: 0px!important; padding: 3px;">
                                 <div class="col-md-2"><b>Reg. date :</b></div>
                                 <div class="col-md-4 lblpopup">
-                                    <asp:Label ID="lblRegdate" runat="server" Text=""></asp:Label>
+                                    <asp:Label ID="lblRegdate1" runat="server" Text=""></asp:Label>
                                 </div>
                             </div>
 
                             <div class="row" style="margin-right: 0px; margin-left: 10px; background-color: rgb(249, 247, 247); margin-right: 0px!important; padding: 3px;">
                                 <div class="col-md-2"><b>GST No :</b></div>
                                 <div class="col-md-4 lblpopup">
-                                    <asp:Label ID="lblgstno" runat="server" Text=""></asp:Label>
+                                    <asp:Label ID="lblgstno1" runat="server" Text=""></asp:Label>
                                 </div>
                                 <div class="col-md-2"><b>Reg. By :</b></div>
                                 <div class="col-md-4 lblpopup">
-                                    <asp:Label ID="lblregBy" runat="server" Text=""></asp:Label>
+                                    <asp:Label ID="lblregBy1" runat="server" Text=""></asp:Label>
                                 </div>
                             </div>
 

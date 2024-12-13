@@ -265,7 +265,31 @@
         }
 
         function Keydown(txt) {
-            alert("Inward Quantity will change after sending quantity to Next Stage.");
+            var grid = document.getElementById("<%= dgvWelding.ClientID%>");
+
+            var row = txt.parentNode.parentNode;
+            var rowIndex = row.rowIndex;
+            var dataValue = { "RowIndex": rowIndex, "InwardQty": inwardval, "OutwardQty": txtval };
+
+            var inwardval = grid.rows[rowIndex].cells[7].childNodes[1].value;
+            var txtval = txt.value;
+
+            if (parseFloat(txtval) <= parseFloat(inwardval)) {
+
+                alert("Inward Quantity will change after sending quantity to Next Stage.");
+                var checkbox = row.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.disabled = false;
+                }
+            } else {
+
+                alert("The value should be less than or equal to the Inward Quantity.");
+                var checkbox = row.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.disabled = true;
+                }
+            }
+
         }
     </script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>

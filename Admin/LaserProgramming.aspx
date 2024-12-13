@@ -250,10 +250,10 @@
         function CheckedCheckbox(ob) {
             var checkboxval = ob.checked;
             if (checkboxval == true) {
-                $('#btnshowhide').show();
+                $('#btnshowhide').show();;
             }
             else {
-                $('#btnshowhide').hide();
+                $('#btnshowhid1').hide();;
             }
 
             var grid = document.getElementById("<%=dgvLaserprogram.ClientID%>");
@@ -284,8 +284,31 @@
         }
 
         function Keydown(txt) {
+            var grid = document.getElementById("<%= dgvLaserprogram.ClientID%>");
 
-            alert("Inward Quantity will change after sending quantity to Next Stage.");
+            var row = txt.parentNode.parentNode;
+            var rowIndex = row.rowIndex;
+            var dataValue = { "RowIndex": rowIndex, "InwardQty": inwardval, "OutwardQty": txtval };
+
+            var inwardval = grid.rows[rowIndex].cells[7].childNodes[1].value;
+            var txtval = txt.value;
+
+            if (parseFloat(txtval) <= parseFloat(inwardval)) {
+
+                alert("Inward Quantity will change after sending quantity to Next Stage.");
+                var checkbox = row.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.disabled = false;
+                }
+            } else {
+
+                alert("The value should be less than or equal to the Inward Quantity.");
+                var checkbox = row.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.disabled = true;
+                }
+            }
+
         }
 
 
@@ -602,8 +625,8 @@
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="Return Qty" ItemStyle-Width="100" ItemStyle-HorizontalAlign="Center">
                                                         <ItemTemplate>
-                                                            <asp:LinkButton ID="lnkdetail" OnClick="Linkclicked(this)"><i class="fa fa-undo" style="font-size: 25px!important" title="Return Quantity"></i></asp:LinkButton>
-                                                        </ItemTemplate>
+                                                            <asp:LinkButton ID="lnkdetail" OnClick="Linkclicked(this)"><i class="fa fa-undo" style="font-size: 25px!important" title="Return Quantity"></i></asp:LinkButton>  
+                                                        </ItemTemplate>  
                                                     </asp:TemplateField>
                                                 </Columns>
                                             </asp:GridView>

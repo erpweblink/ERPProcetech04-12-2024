@@ -175,7 +175,7 @@ public partial class Admin_Drawing : System.Web.UI.Page
                             
                            
                            
-                            string OutwardDtTime = DateTime.Now.ToString("dd-MM-yyyy hh:mm tt");
+                            string OutwardDtTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                             //string OutwardDtTime = tbOutwardDt.Text + " " + time;
                             TextBox Outwardtb = (TextBox)row.Cells[1].FindControl("txtOutwardQty");
                             string[] strarr = Outwardtb.Text.Split(',');
@@ -199,7 +199,10 @@ public partial class Admin_Drawing : System.Web.UI.Page
                         }
                     }
                 }
+
             }
+
+           
             using (con)
             {
                 using (SqlCommand cmd = con.CreateCommand())
@@ -210,7 +213,7 @@ public partial class Admin_Drawing : System.Web.UI.Page
                     string UpdatedDate = DateTime.Now.ToShortDateString(), CreatedDate = DateTime.Now.ToShortDateString();
                     bool flgInsert = false;
                     foreach (DataRow row in dt.Rows)
-                    {
+                    {                        
                         con.Open();
                         if (row["inwardqty"].ToString() == row["outwardqty"].ToString())
                         {
@@ -241,13 +244,13 @@ public partial class Admin_Drawing : System.Web.UI.Page
                             }
                         }
                         if (OanumberExsists == "")
-                        {
+                        {                           
                             tempdt.Rows.Add(row["OAnumber"].ToString(),
                                 row["SubOA"].ToString(),
                                 row["customername"].ToString(),
                                 row["size"].ToString(),
                                 row["totalinward"].ToString(),
-                                DateTime.Now,
+                                DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"),
                                 row["outwardqty"].ToString(),
                                 DateTime.Now,                           // no need to insert (Wrong Input)
                                 row["outwardqty"].ToString(),           // no need to insert (Wrong Input)
@@ -261,6 +264,7 @@ public partial class Admin_Drawing : System.Web.UI.Page
 
                             using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(con))
                             {
+                               string converteddate  = 
                                 //Set the database table name
                                 sqlBulkCopy.DestinationTableName = "dbo.tblLaserPrograming";
                                 sqlBulkCopy.ColumnMappings.Add("OAnumber", "OANumber");
@@ -295,7 +299,6 @@ public partial class Admin_Drawing : System.Web.UI.Page
                         else
                         {
                             int totOutwardqnt = Convert.ToInt32(InwardQty) + Convert.ToInt32(row["outwardqty"].ToString());
-                            //SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + totOutwardqnt.ToString() + "',[IsComplete]=NULL,[InwardDtTime]='" + row["outwarddatetime"].ToString() + "' WHERE SubOA='" + row["SubOA"].ToString() + "'", con);
                             SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + totOutwardqnt.ToString() + "',[IsComplete]=NULL,[InwardDtTime]='" + row["outwarddatetime"].ToString() + "' WHERE SubOA='" + row["SubOA"].ToString() + "'", con);
                             cmdupdate.ExecuteNonQuery();
                         }
@@ -304,7 +307,7 @@ public partial class Admin_Drawing : System.Web.UI.Page
                         {
                             string OutwardDtTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
                             SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblDrawing] SET [OutwardQty] = '" + row["totalinward"].ToString() + "',[InwardQty]='0',[IsComplete]=1,OutwardDtTime= '" + OutwardDtTime.ToString() + "',UpdatedDate='" + OutwardDtTime.ToString() + "' WHERE SubOA='" + row["SubOA"].ToString() + "'", con);
-                            cmdupdate.ExecuteNonQuery();
+                           cmdupdate.ExecuteNonQuery();
                         }
                         else
                         {
@@ -319,6 +322,9 @@ public partial class Admin_Drawing : System.Web.UI.Page
                             }
                             else
                             {
+                                //Added by Nikhil  to get new outward qty every time 13-12-2024
+                                Outward2Qty = "0";
+
                                 inwardqy = Convert.ToInt32(row["inwardqty"].ToString()) - Convert.ToInt32(row["outwardqty"].ToString());
                                 totoutward = Convert.ToInt32(Outward2Qty) + Convert.ToInt32(row["outwardqty"].ToString());
                             }

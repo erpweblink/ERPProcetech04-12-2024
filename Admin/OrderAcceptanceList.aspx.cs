@@ -213,7 +213,7 @@ public partial class Admin_OrderAcceptanceList : System.Web.UI.Page
                     if (dt.Rows.Count > 0)
                     {
                         Usermail = dt.Rows[0]["Usermail"].ToString();
-                       // Usermail = "erp@weblinkservices.net";
+                        // Usermail = "erp@weblinkservices.net";
                         string url = "DepartmentWiseOAReport.aspx?ID=" + Server.UrlEncode(ID) + "&name=" + Server.UrlEncode(customer);
 
                         SendMail(url, User, ID, Usermail);
@@ -233,9 +233,15 @@ public partial class Admin_OrderAcceptanceList : System.Web.UI.Page
         {
             if (!string.IsNullOrEmpty(e.CommandArgument.ToString()))
             {
-                GetCompanyDataPopup(e.CommandArgument.ToString());
                 //GetCompanyDataBDEPopup(e.CommandArgument.ToString());
-                this.profilemodel2.Show();
+                //old code
+                //GetCompanyDataPopup(e.CommandArgument.ToString());
+                //this.profilemodel2.Show();
+
+
+                //New Code By Nikhil 12-12-2024
+                GetOAStatusByOANumber(e.CommandArgument.ToString());
+                this.modelprofile.Show();
             }
         }
 
@@ -249,20 +255,20 @@ public partial class Admin_OrderAcceptanceList : System.Web.UI.Page
 A.[sessionname],A.[gstno],B.name,B.email as Empemail,A.[desig1],A.[desig2],A.[desig3],A.[desig4],A.[desig5], A.CustomerCode FROM [Company]
 A join employees B on A.sessionname=B.name
 LEFT JOIN [DB_ProcetechERP].[vw_OAList] AS CD ON CD.partyname=A.cname where CD.Id='" + id + "' ";
-//LEFT JOIN vw_OAList AS CD ON CD.partyname=A.cname where CD.Id='" + id + "' ";
+        //LEFT JOIN vw_OAList AS CD ON CD.partyname=A.cname where CD.Id='" + id + "' ";
         SqlDataAdapter ad = new SqlDataAdapter(query1, con);
         DataTable dt = new DataTable();
         ad.Fill(dt);
         if (dt.Rows.Count > 0)
         {
-            Label2.Text = dt.Rows[0]["cname"].ToString();     
+            Label2.Text = dt.Rows[0]["cname"].ToString();
             lblcusomercode.Text = dt.Rows[0]["CustomerCode"].ToString();
             lblRegdate.Text = dt.Rows[0]["regdate"].ToString();
             lblregBy.Text = dt.Rows[0]["name"].ToString();
             lblgstno.Text = dt.Rows[0]["gstno"].ToString();
             ViewState["CurrentSalesEmail"] = dt.Rows[0]["Empemail"].ToString();// Current Sales Email
 
-          
+
 
         }
     }
@@ -309,10 +315,10 @@ LEFT JOIN [DB_ProcetechERP].[vw_OAList] AS CD ON CD.partyname=A.cname where CD.I
             alstNames.Add("Welding");
             alstNames.Add("Powder Coating");
             alstNames.Add("Final Assembly");
-            //alstNames.Add("Final Inspection");
+            alstNames.Add("Quality Asurance");
             alstNames.Add("Stock");
-            dgvDeprt.DataSource = alstNames;
-            dgvDeprt.DataBind();
+            //dgvDeprt.DataSource = alstNames;
+            //dgvDeprt.DataBind();
         }
         catch (Exception)
         {
@@ -326,6 +332,8 @@ LEFT JOIN [DB_ProcetechERP].[vw_OAList] AS CD ON CD.partyname=A.cname where CD.I
     {
         try
         {
+
+
             SqlDataAdapter adp = new SqlDataAdapter(@"select DISTINCT(OAno) from  [vwOrderAccept] where OAno='" + OAnum + "'", con);
             DataTable dt = new DataTable();
             adp.Fill(dt);
@@ -340,7 +348,7 @@ LEFT JOIN [DB_ProcetechERP].[vw_OAList] AS CD ON CD.partyname=A.cname where CD.I
             sadorder.Fill(dtorder);
             ddlSubOaNo.DataValueField = "SubOANumber";
             ddlSubOaNo.DataTextField = "SubOANumber";
-            lblcname.Text = dtorder.Rows[0]["customername"].ToString();
+            //lblcname.Text = dtorder.Rows[0]["customername"].ToString();
             ddlSubOaNo.DataSource = dtorder;
             ddlSubOaNo.DataBind();
 
@@ -355,6 +363,7 @@ LEFT JOIN [DB_ProcetechERP].[vw_OAList] AS CD ON CD.partyname=A.cname where CD.I
             //    lblcname.Text = dt1.Rows[0]["customername"].ToString();
             //}
             SqlCommand cmdtot = new SqlCommand("select SUM(CAST(Qty as int)) as Tot from [vwOrderAccept] where OAno='" + OAnum + "'", con);
+
             con.Open();
             Object Tot = cmdtot.ExecuteScalar();
             //lblQty.Text = Tot.ToString();
@@ -493,7 +502,7 @@ LEFT JOIN [DB_ProcetechERP].[vw_OAList] AS CD ON CD.partyname=A.cname where CD.I
                 if (Dtt.Rows.Count > 0)
                 {
                     btnCreate.Visible = false;
-                  //  btnAddOpenOrder.Visible = false;
+                    //  btnAddOpenOrder.Visible = false;
                     btnQuoList.Visible = false;
                     btnEdit.Visible = false;
                     btnDelete.Visible = false;
@@ -513,7 +522,7 @@ LEFT JOIN [DB_ProcetechERP].[vw_OAList] AS CD ON CD.partyname=A.cname where CD.I
         sadorder.Fill(dtorder);
         //ddlSubOaNo.DataValueField = "SubOANumber";
         ddlSubOaNo.DataTextField = "SubOANumber";
-        lblcname.Text = dtorder.Rows[0]["customername"].ToString();
+        //lblcname.Text = dtorder.Rows[0]["customername"].ToString();
         ddlSubOaNo.DataSource = dtorder;
         ddlSubOaNo.DataBind();
         ddlSubOaNo.Items.Insert(0, new System.Web.UI.WebControls.ListItem("--Select--", "0"));
@@ -551,28 +560,37 @@ LEFT JOIN [DB_ProcetechERP].[vw_OAList] AS CD ON CD.partyname=A.cname where CD.I
             adp1.Fill(dt1);
             if (dt1.Rows.Count > 0)
             {
-                //if (ddlSubOaNo.Text != "--Select--")
-                //{
+                // Loop through each row and format the Description field
+                foreach (DataRow row in dt1.Rows)
+                {
+                    string description = row["Description"] as string;
+                    if (!string.IsNullOrEmpty(description))
+                    {
+                        int maxLineLength = 35;  
+                        List<string> lines = new List<string>();                        
+                        for (int i = 0; i < description.Length; i += maxLineLength)
+                        {
+                            lines.Add(description.Substring(i, Math.Min(maxLineLength, description.Length - i)));
+                        }                        
+                        row["Description"] = string.Join("<br/>", lines);                      
+                    }
+                }
+
                 dgvSubOADetails.DataSource = dt1;
                 dgvSubOADetails.DataBind();
-                //}
-                //else
-                //{
-                //    dgvSubOADetails.EmptyDataText = "No Records Found";
-                //    dgvSubOADetails.DataBind();
-                //}
+
             }
 
             SqlCommand cmdtot = new SqlCommand("select SUM(CAST(Qty as int)) as Tot from [DB_ProcetechERP].[vwOrderAccept] where OAno='" + Var_OaNumber + "'", con);
-            //con.Open();
             Object Tot = cmdtot.ExecuteScalar();
-            //lblQty.Text = Tot.ToString();
             con.Close();
 
             string query = string.Empty;
             SqlCommand cmd = new SqlCommand();
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandText = "[ExcelEncLive].[SP_SubOawiseDetailsNew]";
+            // cmd.CommandText = "[ExcelEncLive].[SP_SubOawiseDetailsNew]";
+            // Code by Nikhil 12-12-2024
+            cmd.CommandText = "[DB_ProcetechERP].[SP_SubOawiseDetailsNew]";
             cmd.Parameters.AddWithValue("@SubOANumber", ddlSubOaNo.SelectedItem.Text);
             cmd.Connection = con;
             con.Open();
@@ -586,7 +604,10 @@ LEFT JOIN [DB_ProcetechERP].[vw_OAList] AS CD ON CD.partyname=A.cname where CD.I
                     dgvCustomerWise.DataBind();
                     dgvCustomerWise.ShowHeader = true;
                     divdgvCustomerWise.Visible = true;
-                    BindDeprt();
+
+                    //Commented by Nikhil More 12-12-2024
+
+                    // BindDeprt();
                 }
             }
             catch (Exception ex)
@@ -600,6 +621,7 @@ LEFT JOIN [DB_ProcetechERP].[vw_OAList] AS CD ON CD.partyname=A.cname where CD.I
             throw;
         }
     }
+
 
     public void SendMail(string url, string User, string ID, string Usermail)
     {
@@ -909,5 +931,68 @@ LEFT JOIN [DB_ProcetechERP].[vw_OAList] AS CD ON CD.partyname=A.cname where CD.I
         cmd.ExecuteNonQuery();
         con.Close();
     }
+
+
+
+    // New Method added By Nikhil To get the PopUp data 12-12-2024
+    private void GetOAStatusByOANumber(string OAnumber)
+    {
+        try
+        {
+            divSubOaDetails.Visible = false;
+            divSuboaGrid.Visible = false;
+
+            string query1 = string.Empty;
+            string OAnum = string.Empty;
+            query1 = @"SELECT CD.[OAno],A.[ccode],A.[cname],A.[oname1],A.[oname2],A.[oname3],A.[oname4],A.[oname5],
+                     A.[email1],A.[mobile1],A.[mobile2], A.[mobile3],A.[mobile4],A.[mobile5],A.[billingaddress],
+                     A.[shippingaddress],format(A.[regdate],'dd-MMM-yyyy hh:mm tt') as [regdate],A.[sessionname],
+                     A.[gstno],B.name,B.email as Empemail,A.[desig1],A.[desig2],A.[desig3],A.[desig4],A.[desig5], 
+                     A.CustomerCode FROM [Company] A join employees B on A.sessionname=B.name
+                     LEFT JOIN [DB_ProcetechERP].[vw_OAList] AS CD ON CD.partyname=A.cname where CD.Id='" + OAnumber + "' ";
+            SqlDataAdapter ad = new SqlDataAdapter(query1, con);
+            DataTable dt = new DataTable();
+            ad.Fill(dt);
+            if (dt.Rows.Count > 0)
+            {
+                OAnum = dt.Rows[0]["OAno"].ToString();
+                lblCustomerName.Text = dt.Rows[0]["cname"].ToString();
+                lblcusomercode.Text = dt.Rows[0]["CustomerCode"].ToString();
+                lblRegdate.Text = dt.Rows[0]["regdate"].ToString();
+                lblregBy.Text = dt.Rows[0]["name"].ToString();
+                lblgstno.Text = dt.Rows[0]["gstno"].ToString();
+            }
+
+            SqlDataAdapter adp = new SqlDataAdapter(@"select DISTINCT(OAno) from  [DB_ProcetechERP].[vwOrderAccept] where OAno='" + OAnum + "'", con);
+            DataTable dts = new DataTable();
+            adp.Fill(dts);
+            if (dts.Rows.Count > 0)
+            {
+                dgvOANumber.DataSource = dts;
+                dgvOANumber.DataBind();
+            }
+
+            DataTable dtorder = new DataTable();
+            SqlDataAdapter sadorder = new SqlDataAdapter("select * from [DB_ProcetechERP].[vwOrderAccept] where OAno='" + OAnum + "'", con);
+            sadorder.Fill(dtorder);
+            ddlSubOaNo.Items.Clear();
+            ddlSubOaNo.DataValueField = "SubOANumber";
+            //lblcname.Text = dtorder.Rows[0]["customername"].ToString();
+            ddlSubOaNo.DataSource = dtorder;
+            ddlSubOaNo.DataBind();
+            ddlSubOaNo.Items.Insert(0, new System.Web.UI.WebControls.ListItem("--Select--", "0"));
+
+
+            SqlCommand cmdtot = new SqlCommand("select SUM(CAST(Qty as int)) as Tot from [DB_ProcetechERP].[vwOrderAccept] where OAno='" + OAnum + "'", con);
+            con.Open();
+            Object Tot = cmdtot.ExecuteScalar();
+            con.Close();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
 
 }

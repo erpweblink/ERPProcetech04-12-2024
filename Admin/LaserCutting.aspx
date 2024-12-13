@@ -203,8 +203,31 @@
         }
 
         function Keydown(txt) {
+            var grid = document.getElementById("<%= dgvLaserCutting.ClientID%>");
 
-            alert("Inward Quantity will change after sending quantity to Next Stage.");
+            var row = txt.parentNode.parentNode;
+            var rowIndex = row.rowIndex;
+            var dataValue = { "RowIndex": rowIndex, "InwardQty": inwardval, "OutwardQty": txtval };
+
+            var inwardval = grid.rows[rowIndex].cells[7].childNodes[1].value;
+            var txtval = txt.value;
+
+            if (parseFloat(txtval) <= parseFloat(inwardval)) {
+
+                alert("Inward Quantity will change after sending quantity to Next Stage.");
+                var checkbox = row.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.disabled = false;
+                }
+            } else {
+
+                alert("The value should be less than or equal to the Inward Quantity.");
+                var checkbox = row.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.disabled = true;
+                }
+            }
+
         }
 
     </script>

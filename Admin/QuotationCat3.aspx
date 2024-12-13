@@ -767,12 +767,15 @@
 
                                             <br />
                                             <div class="row">
-                                                <div class="col-md-2 spancls">Ref Document :</div>
+                                                <div class="col-md-2 spancls">Ref Document<i class="reqcls">*&nbsp;</i> :</div>
                                                 <div class="col-md-4">
                                                     <asp:FileUpload ID="FileUploadrefdoc" runat="server" />
+                                                    <br />
+                                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator17" runat="server" Display="Dynamic" ErrorMessage="Please upload documnet "
+                                                         ControlToValidate="FileUploadrefdoc" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <asp:Label ID="lblimg" Font-Bold="true" ForeColor="Green" runat="server" Text="" Visible="false"></asp:Label>
+                                                    <asp:Label ID="lblimg" Font-Bold="true" ForeColor="Green" runat="server" Text="" Visible="false"></asp:Label>                                                
                                                 </div>
 
                                             </div>
@@ -6525,7 +6528,7 @@
 
         }
 
-        //    //2nd Row Calculation 
+        //    //2nd Row Calculation
         //    var txtqty2 = document.getElementById('ContentPlaceHolder1_txtQty2').value;
         //    var txtrate2 = document.getElementById('ContentPlaceHolder1_txtRate2').value;
         //    var txtdisc2 = document.getElementById('ContentPlaceHolder1_txtdisc2').value;
@@ -6541,7 +6544,7 @@
         //    var total2 = result2 - discAmt;
         //    if (!isNaN(result2)) { document.getElementById('ContentPlaceHolder1_txtAmt2').value = total2.toFixed(2); }
 
-        //    //3 Row Calculation 
+        //    //3 Row Calculation
         //    var txtqty3 = document.getElementById('ContentPlaceHolder1_txtQty3').value;
         //    var txtrate3 = document.getElementById('ContentPlaceHolder1_txtRate3').value;
         //    var txtdisc3 = document.getElementById('ContentPlaceHolder1_txtdisc3').value;
@@ -6557,7 +6560,7 @@
         //    var total3 = result3 - discAmt;
         //    if (!isNaN(result3)) { document.getElementById('ContentPlaceHolder1_txtAmt3').value = total3.toFixed(2); }
 
-        //    //4 Row Calculation 
+        //    //4 Row Calculation
         //    var txtqty4 = document.getElementById('ContentPlaceHolder1_txtQty4').value;
         //    var txtrate4 = document.getElementById('ContentPlaceHolder1_txtRate4').value;
         //    var txtdisc4 = document.getElementById('ContentPlaceHolder1_txtdisc4').value;
@@ -6573,7 +6576,7 @@
         //    var total4 = result4 - discAmt;
         //    if (!isNaN(result4)) { document.getElementById('ContentPlaceHolder1_txtAmt4').value = total4.toFixed(2); }
 
-        //    //5 Row Calculation 
+        //    //5 Row Calculation
         //    var txtqty5 = document.getElementById('ContentPlaceHolder1_txtQty5').value;
         //    var txtrate5 = document.getElementById('ContentPlaceHolder1_txtRate5').value;
         //    var txtdisc5 = document.getElementById('ContentPlaceHolder1_txtdisc5').value;

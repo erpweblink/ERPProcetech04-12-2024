@@ -265,13 +265,34 @@
         }
 
 
-        function Keydown(txt) {
+        function Keydown(txt) {           
             var grid = document.getElementById("<%= dgvDrawing.ClientID%>");
+
             var row = txt.parentNode.parentNode;
-            var rowIndex = row.rowIndex;
-            var inwardval = grid.rows[rowIndex].cells[6].childNodes[1].value;
-            var txtval = txt.value;
+            var rowIndex = row.rowIndex;           
             var dataValue = { "RowIndex": rowIndex, "InwardQty": inwardval, "OutwardQty": txtval };
+
+            var inwardval = grid.rows[rowIndex].cells[7].childNodes[1].value;
+            var txtval = txt.value;
+
+            if (parseFloat(txtval) <= parseFloat(inwardval)) {   
+                
+                alert("Inward Quantity will change after sending quantity to Next Stage.");
+                var checkbox = row.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.disabled = false;
+                }
+            } else {
+               
+                alert("The value should be less than or equal to the Inward Quantity.");
+                var checkbox = row.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.disabled = true;
+                }
+            }
+
+
+            //alert("Inward Quantity will change after sending quantity to Next Stage.");
 
             //$.ajax({
             //    type: "POST",
@@ -283,13 +304,12 @@
             //        alert("Request: " + XMLHttpRequest.toString() + "\n\nStatus: " + textStatus + "\n\nError: " + errorThrown);
             //    },
             //    success: function (result) {
-            alert("Inward Quantity will change after sending quantity to Next Stage.");
             //    }
             //});
 
 
 
-  <%-- var grid = document.getElementById("<%= dgvDrawing.ClientID%>");
+            <%-- var grid = document.getElementById("<%= dgvDrawing.ClientID%>");
             var row = txt.parentNode.parentNode;
             var rowIndex = row.rowIndex;
 
@@ -305,9 +325,9 @@
                 //var txtbx = grid.rows[rowIndex].cells[6].childNodes[1];
                 //txtbx.val = Minusqty;
                 //alert("Inward Quantity will change after sending quantity to Next Stage.");
-            }--%>       }
+            }--%>      
 
-
+        }
 
 
     </script>
@@ -553,7 +573,7 @@
                                                     <%-- New Filed added by Nikhil 09-12-2024 --%>
                                                     <asp:TemplateField HeaderText="Job No" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center">
                                                         <ItemTemplate>
-                                                            <asp:Label ID="lblJobNo" runat="server" Text='<%# Eval("JobNo") %>'></asp:Label>                                         
+                                                            <asp:Label ID="lblJobNo" runat="server" Text='<%# Eval("JobNo") %>'></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <%-- End  --%>

@@ -162,7 +162,7 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
 
                             //DateTime OutwardDtT = DateTime.Now;//DateTime.Parse(tbOutwardDt.Text);
                             //string time = DateTime.Now.ToString();
-                            string OutwardDtTime = DateTime.Now.ToString("dd-MM-yyyy hh:mm tt");
+                            string OutwardDtTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
                             TextBox Outwardtb = (TextBox)row.Cells[1].FindControl("txtOutwardQty");
                             string[] strarr = Outwardtb.Text.Split(',');
@@ -240,7 +240,7 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
                                 row["customername"].ToString(),
                                 row["size"].ToString(),
                                 row["totalinward"].ToString(),
-                                DateTime.Now,
+                               DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                                 row["outwardqty"].ToString(),
                                 //DateTime.Now,                      // no need to insert (Wrong Input)
                                 //row["outwardqty"].ToString(),      // no need to insert (Wrong Input)
@@ -257,7 +257,7 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
                                 sqlBulkCopy.ColumnMappings.Add("size", "Size");
                                 sqlBulkCopy.ColumnMappings.Add("totalinward", "TotalQty");
                                 sqlBulkCopy.ColumnMappings.Add("inwarddatetime", "InwardDtTime");
-                                sqlBulkCopy.ColumnMappings.Add("inwardqty", "InwardQty");
+                                sqlBulkCopy.ColumnMappings.Add("outwardqty", "InwardQty");
                                 //sqlBulkCopy.ColumnMappings.Add("outwarddatetime", "OutwardDtTime");
                                 //sqlBulkCopy.ColumnMappings.Add("outwardqty", "OutwardQty");
                                 sqlBulkCopy.ColumnMappings.Add("deliverydate", "DeliveryDate");
@@ -306,6 +306,7 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
                             }
                             else
                             {
+                                Outward2Qty = "0";
                                 inwardqy = Convert.ToInt32(row["inwardqty"].ToString()) - Convert.ToInt32(row["outwardqty"].ToString());
                                 totoutward = Convert.ToInt32(Outward2Qty) + Convert.ToInt32(row["outwardqty"].ToString());
                             }
@@ -733,7 +734,7 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
 
                             //DateTime OutwardDtT = DateTime.Now;//DateTime.Parse(tbOutwardDt.Text);
                             //string time = DateTime.Now.ToString();
-                            string OutwardDtTime = DateTime.Now.ToString("dd-MM-yyyy hh:mm tt");
+                            string OutwardDtTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
                             TextBox Outwardtb = (TextBox)row.Cells[1].FindControl("txtOutwardQty");
                             string[] strarr = Outwardtb.Text.Split(',');
@@ -810,8 +811,8 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
                                 row["customername"].ToString(),
                                 row["size"].ToString(),
                                 row["totalinward"].ToString(),
-                                //Below Two fileds added by Nikhil  and JobNo as well 
-                                 DateTime.Now,
+                                 //Below Two fileds added by Nikhil  and JobNo as well 
+                                 DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                                 row["InwardQty"].ToString(),
 
                                 DateTime.Now,
@@ -832,7 +833,7 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
                                 sqlBulkCopy.ColumnMappings.Add("size", "Size");
                                 sqlBulkCopy.ColumnMappings.Add("totalinward", "TotalQty");
                                 sqlBulkCopy.ColumnMappings.Add("inwarddatetime", "InwardDtTime");
-                                sqlBulkCopy.ColumnMappings.Add("inwardqty", "InwardQty");
+                                sqlBulkCopy.ColumnMappings.Add("outwardqty", "InwardQty");
                                 //sqlBulkCopy.ColumnMappings.Add("outwarddatetime", "OutwardDtTime");
                                 //sqlBulkCopy.ColumnMappings.Add("outwardqty", "OutwardQty");
                                 sqlBulkCopy.ColumnMappings.Add("deliverydate", "DeliveryDate");
@@ -882,6 +883,9 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
                             }
                             else
                             {
+                                //Added by Nikhil  to get new outward qty every time 13-12-2024
+                                Outward2Qty = "0";
+
                                 inwardqy = Convert.ToInt32(row["inwardqty"].ToString()) - Convert.ToInt32(row["outwardqty"].ToString());
                                 totoutward = Convert.ToInt32(Outward2Qty) + Convert.ToInt32(row["outwardqty"].ToString());
                             }
@@ -1037,10 +1041,21 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
         string Table = ddlstages.SelectedValue;
         //Updated current stage
         SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + TotalReturn_Outward + "',[OutwardQty] = '" + TotalReturn_Outward + "' WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+          
+        // new Code To update the total quantity record by Nikhil 11-12-2024
+        // SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + TotalReturn_Outward + "' WHERE SubOA='" + hdnSubOANo.Value + "'", con);
         cmdupdate.ExecuteNonQuery();
+        
+        ////To ge the total qutward record from the Drwaing table 
+        //SqlCommand cmdselect = new SqlCommand("select OutwardQty from  " + Table + "  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+        //Object OutwardQty = cmdselect.ExecuteScalar();
+
+        //int UpdatedOutwardQty = Convert.ToInt32(OutwardQty) - Convert.ToInt32(txtReturnInward.Text);
+
 
         //Updated Prev stage 
-        SqlCommand cmdupdate1 = new SqlCommand("UPDATE " + Table + " SET [InwardQty] = '" + TotalReturnInward + "' ,[IsComplete] = NULL  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+       // SqlCommand cmdupdate1 = new SqlCommand("UPDATE " + Table + " SET [InwardQty] = '" + TotalReturnInward + "',[OutwardQty] = '"+ UpdatedOutwardQty + "' ,[IsComplete] = NULL  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+        SqlCommand cmdupdate1 = new SqlCommand("UPDATE " + Table + " SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
         cmdupdate1.ExecuteNonQuery();
     }
 

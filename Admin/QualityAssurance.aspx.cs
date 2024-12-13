@@ -169,7 +169,7 @@ public partial class Admin_QualityAssurance : System.Web.UI.Page
                             TextBox tbOutwardDt = (TextBox)row.Cells[1].FindControl("txtOutwardDtTime");
                             //DateTime OutwardDtT = DateTime.Parse(tbOutwardDt.Text);
                             string time = DateTime.Now.ToString("h:mm tt");
-                            string OutwardDtTime = DateTime.Now.ToString("dd-MM-yyyy hh:mm tt");
+                            string OutwardDtTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
                             TextBox Outwardtb = (TextBox)row.Cells[1].FindControl("txtOutwardQty");
                             string[] strarr = Outwardtb.Text.Split(',');
@@ -254,8 +254,8 @@ public partial class Admin_QualityAssurance : System.Web.UI.Page
                                 row["customername"].ToString(),
                                 row["size"].ToString(),
                                 row["totalinward"].ToString(),
-                                 //Below Two fileds added by Nikhil  and JobNo as well 
-                                 DateTime.Now,
+                                //Below Two fileds added by Nikhil  and JobNo as well 
+                                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                                 row["InwardQty"].ToString(),
 
                                 DateTime.Now,
@@ -276,7 +276,8 @@ public partial class Admin_QualityAssurance : System.Web.UI.Page
                                 sqlBulkCopy.ColumnMappings.Add("size", "Size");
                                 sqlBulkCopy.ColumnMappings.Add("totalinward", "TotalQty");
                                 sqlBulkCopy.ColumnMappings.Add("inwarddatetime", "InwardDtTime");
-                                sqlBulkCopy.ColumnMappings.Add("inwardqty", "InwardQty");
+                                sqlBulkCopy.ColumnMappings.Add("outwardqty", "InwardQty");
+                                //sqlBulkCopy.ColumnMappings.Add("inwardqty", "InwardQty");
                                 //sqlBulkCopy.ColumnMappings.Add("outwarddatetime", "OutwardDtTime");
                                 //sqlBulkCopy.ColumnMappings.Add("outwardqty", "OutwardQty");
                                 sqlBulkCopy.ColumnMappings.Add("deliverydate", "DeliveryDate");
@@ -315,6 +316,9 @@ public partial class Admin_QualityAssurance : System.Web.UI.Page
                             }
                             else
                             {
+                                //Added by Nikhil  to get new outward qty every time 13-12-2024
+                                Outward2Qty = "0";
+
                                 inwardqy = Convert.ToInt32(row["inwardqty"].ToString()) - Convert.ToInt32(row["outwardqty"].ToString());
                                 totoutward = Convert.ToInt32(Outward2Qty) + Convert.ToInt32(row["outwardqty"].ToString());
                             }
@@ -533,21 +537,58 @@ public partial class Admin_QualityAssurance : System.Web.UI.Page
 
                     if (Convert.ToInt32(txtReturnInward.Text) == Convert.ToInt32(hdnInwardQty.Value))
                     {
-                        // If all record return
-                        //SqlCommand cmdDelete = new SqlCommand("Delete from tblQualityAsurance WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                        //cmdDelete.ExecuteNonQuery();
+                        // OLD Code before 11-12-2024 
 
-                        int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
-                        //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblPowderCoating] SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                        //cmdupdate1.ExecuteNonQuery();
+                        //// If all record return
+                        ////SqlCommand cmdDelete = new SqlCommand("Delete from tblFinalAssembly WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                        ////cmdDelete.ExecuteNonQuery();
+
+                        //int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
+                        ////SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblPowderCoating] SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                        ////cmdupdate1.ExecuteNonQuery();
 
 
-                        if (ddlstages.SelectedValue != "0")
+                        //if (ddlstages.SelectedValue != "0")
+                        //{
+                        //    //string Table = ddlstages.SelectedValue;
+                        //    //SqlCommand cmdupdate1 = new SqlCommand("UPDATE '"+ Table +"' SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                        //    //cmdupdate1.ExecuteNonQuery();
+                        //    SetFullReturnquntity(TotalReturnInward);
+                        //}
+
+                        //End
+
+                        //////////////////*****************************************************************////////////////////
+
+                        // New Code Changed by Nikhil 11-12-2024
+                        if (Inwardqty != null)
                         {
-                            //string Table = ddlstages.SelectedValue;
-                            //SqlCommand cmdupdate1 = new SqlCommand("UPDATE '"+ Table +"' SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                            //Inwardqty = 0;
+                            // If all record return
+                            //SqlCommand cmdDelete = new SqlCommand("Delete from tblLaserCutting WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                            //cmdDelete.ExecuteNonQuery();
+
+                            int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
+                            //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
                             //cmdupdate1.ExecuteNonQuery();
+
                             SetFullReturnquntity(TotalReturnInward);
+                        }
+                        else
+                        {
+                            //Uncommented the InwardQty = 0 and changed the method name from [SetFullReturnquntity] to new one below
+                            //By Nikhil if there is No data presnet in returing table 11-12-2024
+
+                            Inwardqty = 0;
+                            // If all record return
+                            //SqlCommand cmdDelete = new SqlCommand("Delete from tblLaserCutting WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                            //cmdDelete.ExecuteNonQuery();
+
+                            int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
+                            //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                            //cmdupdate1.ExecuteNonQuery();
+
+                            InsertFullReturnQuantity(TotalReturnInward);
                         }
 
                     }
@@ -772,6 +813,57 @@ public partial class Admin_QualityAssurance : System.Web.UI.Page
         }
 
 
+    }
+
+    //Added By Nikhil if there is No data presnet in returing table 11-12-2024
+    public void InsertFullReturnQuantity(int TotalReturnInward)
+    {
+
+        string Table = ddlstages.SelectedValue;
+        SqlCommand cmdupdate1 = new SqlCommand("SELECT * FROM [tblQualityAsurance] WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+        SqlDataReader reader = cmdupdate1.ExecuteReader();
+        if (reader.HasRows)
+        {
+            reader.Read();
+            string OAnumber = reader["OAnumber"].ToString();
+            string SubOA = reader["SubOA"].ToString();
+            string customername = reader["customername"].ToString();
+            string size = reader["size"].ToString();
+            int totalinward = Convert.ToInt32(reader["TotalQty"]);
+            DateTime inwarddatetime = Convert.ToDateTime(reader["InwardDtTime"]);
+            int inwardqty = Convert.ToInt32(reader["InwardQty"]);
+            DateTime deliverydate = Convert.ToDateTime(reader["DeliveryDate"]);
+            string JobNo = reader["JobNo"].ToString();
+
+            reader.Close();
+
+            SqlCommand cmdupdate = new SqlCommand(
+                "INSERT INTO " + Table + " (OAnumber, SubOA, customername, size, TotalQty, InwardDtTime, InwardQty, DeliveryDate, JobNo, IsComplete,IsApprove) " +
+                "VALUES (@OAnumber, @SubOA, @customername, @size, @totalinward, @inwarddatetime, @inwardqty, @deliverydate, @JobNo, NULL,1)", con);
+
+
+            cmdupdate.Parameters.AddWithValue("@OAnumber", OAnumber);
+            cmdupdate.Parameters.AddWithValue("@SubOA", SubOA);
+            cmdupdate.Parameters.AddWithValue("@customername", customername);
+            cmdupdate.Parameters.AddWithValue("@size", size);
+            cmdupdate.Parameters.AddWithValue("@totalinward", totalinward);
+            cmdupdate.Parameters.AddWithValue("@inwarddatetime", inwarddatetime);
+            cmdupdate.Parameters.AddWithValue("@inwardqty", TotalReturnInward);
+            cmdupdate.Parameters.AddWithValue("@deliverydate", deliverydate);
+            cmdupdate.Parameters.AddWithValue("@JobNo", JobNo);
+
+            int Success = cmdupdate.ExecuteNonQuery();
+
+            if (Success >= 0)
+            {
+                SqlCommand cmdDelete = new SqlCommand("DELETE FROM [tblQualityAsurance] WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                cmdDelete.ExecuteNonQuery();
+            }
+        }
+        else
+        {
+            Console.WriteLine("No records found for SubOA: " + hdnSubOANo.Value);
+        }
     }
 
     public void Setreturnquantity(int TotalReturn_Outward, int TotalReturnInward)

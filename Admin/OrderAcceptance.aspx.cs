@@ -1,24 +1,18 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Globalization;
+using System.IO;
+using System.Net.Mail;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Security.Cryptography;
-using System.IO;
-using System.Text;
-using System.Collections;
-using System.Globalization;
-using System.Net.Mail;
-using iTextSharp.text.pdf;
-using System.Drawing;
-using iTextSharp.text;
-using iTextSharp.text.html.simpleparser;
-using System.Net;
-using iTextSharp.tool.xml;
 
 public partial class Admin_OrderAcceptance : System.Web.UI.Page
 {

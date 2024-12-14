@@ -463,7 +463,7 @@
                                 </div>
                             </div>
 
-                            
+
                             <div class="row" style="background-color: rgb(238, 238, 238); margin-left: 10px; margin-right: 0px!important; padding: 3px; margin-top: 5px;">
                                 <div class="col-md-2"><b>Customer Name :</b></div>
                                 <div class="col-md-4 lblpopup">
@@ -492,7 +492,7 @@
 
 
                             <%-- End --%>
-                           <%-- <div class="row" style="background-color: rgb(238, 238, 238); margin-left: 10px; margin-right: 0px!important; padding: 3px; margin-top: 5px;">
+                            <%-- <div class="row" style="background-color: rgb(238, 238, 238); margin-left: 10px; margin-right: 0px!important; padding: 3px; margin-top: 5px;">
                                 <div class="col-md-2"><b>Customer Name :</b></div>
                                 <div class="col-md-4 lblpopup">
                                     <asp:Label ID="lblcname" runat="server"></asp:Label>
@@ -621,6 +621,11 @@
                                                 <asp:TemplateField HeaderText="Outward Datetime" ItemStyle-Width="130" ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
                                                         <asp:Label ID="txtOutwardDt" runat="server" Text='<%# Eval("OutwardDtTime") %>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Day Count" ItemStyle-Width="130" ItemStyle-HorizontalAlign="Center">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="txtDayCount" runat="server" Text='<%# Eval("DaysDifference") %>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField ItemStyle-Width="150px" DataField="IsComplete" HeaderText="Status" Visible="false" />

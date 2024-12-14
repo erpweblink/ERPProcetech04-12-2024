@@ -639,7 +639,7 @@
 
                                                     <asp:TemplateField HeaderText="OutQty" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center">
                                                         <ItemTemplate>
-                                                            <asp:TextBox runat="server" ID="txtOutwardQty" Width="60" onblur="Keydown(this);" AutoPostBack="false" CssClass="form-control" Text='<%# Eval("InwardQty") %>'></asp:TextBox>
+                                                            <asp:TextBox runat="server" ID="txtOutwardQty" Width="60" AutoPostBack="false" CssClass="form-control" Text='<%# Eval("InwardQty") %>'></asp:TextBox>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
 

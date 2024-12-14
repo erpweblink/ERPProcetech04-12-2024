@@ -28,11 +28,13 @@ public partial class Admin_AdminDashboard : System.Web.UI.Page
         }
         else
         {
+      
             if (!IsPostBack)
             {
                 var Role = Session["RoleName"].ToString();
                 if (Role == "Admin")
                 {
+                    Bindchart();
                     RptSalesDetailsbind(); GvLoginLogBind();
                     lbltotalpaid = string.Empty; lbltotalunpaid = string.Empty; lbltotlaclients = string.Empty;
                     GvActiveUsersBind();
@@ -46,7 +48,7 @@ public partial class Admin_AdminDashboard : System.Web.UI.Page
                     cardCustomers.Visible = false;
                     cardQuotation.Visible = false;
                     cardOA.Visible = false;
-                    cardUsers.Visible = false;
+                    //cardUsers.Visible = false;
                     cardTodayEnquiries.Visible = false;
                     cardTodayQuotation.Visible = false;
                     carddateprocessedvaluesection.Visible = false;
@@ -293,20 +295,29 @@ public partial class Admin_AdminDashboard : System.Web.UI.Page
 
     private void Bindchart()
     {
-
-        //DateTime date = Convert.ToDateTime(txtDate.Text.Trim());
-        //string dateString = date.ToString("M/d/yyyy", CultureInfo.InvariantCulture);
-        DateTime date = DateTime.ParseExact(txtDate.Text.Trim(), "dd-MM-yyyy", CultureInfo.InvariantCulture);
-        DateTime date1 = DateTime.ParseExact(txtDate.Text.Trim(), "dd-MM-yyyy", CultureInfo.InvariantCulture);
-        string dateString = date.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
-        string dateStringDrawing = date1.ToString("MMM dd yyyy", CultureInfo.InvariantCulture);
-
+        string dateString = "";
+        string dateStringDrawing = "";
+        if (txtDate.Text != "")
+        {
+            DateTime date = DateTime.ParseExact(txtDate.Text.Trim(), "dd-MM-yyyy", CultureInfo.InvariantCulture);
+            DateTime date1 = DateTime.ParseExact(txtDate.Text.Trim(), "dd-MM-yyyy", CultureInfo.InvariantCulture);
+             dateString = date.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
+             dateStringDrawing = date1.ToString("MMM dd yyyy", CultureInfo.InvariantCulture);
+        }
         SqlCommand cmd = new SqlCommand();
         cmd.CommandType = CommandType.StoredProcedure;
         //cmd.CommandText = "SP_CommercialReport";                   
         cmd.CommandText = "[DB_ProcetechERP].[SP_DashBoardBarCount]";
-        cmd.Parameters.AddWithValue("@Date", dateString);
-        cmd.Parameters.AddWithValue("@Date1", dateStringDrawing);
+        if(txtDate.Text != "")
+        {
+            cmd.Parameters.AddWithValue("@Date", dateString);
+            cmd.Parameters.AddWithValue("@Date1", dateStringDrawing);
+        }
+        else
+        {
+            cmd.Parameters.AddWithValue("@Date", "All");
+            cmd.Parameters.AddWithValue("@Date1", "All");
+        }
         cmd.Connection = con;
         con.Open();
         DataSet ds = new DataSet();
@@ -491,11 +502,11 @@ public partial class Admin_AdminDashboard : System.Web.UI.Page
         SqlCommand cmdquotation = new SqlCommand("SELECT COUNT(DISTINCT quotationno) AS Quotation from QuotationMain", con);
         lblQuotationcount.Text = Convert.ToInt32(cmdquotation.ExecuteScalar()).ToString();
 
-        SqlCommand cmdOrderaccept = new SqlCommand("SELECT COUNT(DISTINCT OAno) AS OrderAccept from OrderAccept", con);
+        SqlCommand cmdOrderaccept = new SqlCommand("SELECT COUNT(DISTINCT OAno) AS OrderAccept from OAlist Where IsDispatch IS NULL", con);
         lblOrderAcceptancecount.Text = Convert.ToInt32(cmdOrderaccept.ExecuteScalar()).ToString();
 
-        SqlCommand cmdUser = new SqlCommand("SELECT COUNT(empcode) AS Usercount from employees", con);
-        lblUsercount.Text = Convert.ToInt32(cmdUser.ExecuteScalar()).ToString();
+        //SqlCommand cmdUser = new SqlCommand("SELECT COUNT(empcode) AS Usercount from employees where isdeleted = 0 ", con);
+        //lblUsercount.Text = Convert.ToInt32(cmdUser.ExecuteScalar()).ToString();
         con.Close();
     }
 
@@ -548,5 +559,11 @@ public partial class Admin_AdminDashboard : System.Web.UI.Page
     {
         dgvQuoation.PageIndex = e.NewPageIndex;
         TodayQuotationList();
+    }
+
+    protected void Unnamed_Click(object sender, EventArgs e)
+    {
+        txtDate.Text = "";
+        Bindchart();
     }
 }

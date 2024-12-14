@@ -463,7 +463,7 @@ public partial class Admin_Addusers : System.Web.UI.Page
         try
         {
             DataTable Dt = new DataTable();
-            SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM tbl_RoleMaster where isdeleted  is null", con);
+            SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM [DB_ProcetechTesting].[DB_ProcetechERP].[tbl_RoleMaster] where isdeleted  is null", con);
             Da.Fill(Dt);
 
             ddlRole.DataTextField = "Role";

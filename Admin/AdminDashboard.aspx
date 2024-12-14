@@ -196,7 +196,7 @@
             });
     </script>--%>
 
-   <%-- <script>
+    <%-- <script>
         $(document).ready(function () {
 
             $("#arrowclick").click(function () {
@@ -214,102 +214,111 @@
                 <div class="page-body">
                     <div class="container-fluid">
                         <div class="row">
-                            <div id="cardCustomers" runat="server" class="col-xl-3 col-md-6 mb-4">
+                            <div id="cardCustomers" runat="server" class="col-xl-4 col-md-6 mb-4">
                                 <div class="card1 border-left-info shadow h-90 py-2 card-bg1">
-                                    <div class="card-body">
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1 lblcount">
-                                                    Customers
-                                                </div>
-                                                <div class="row no-gutters align-items-center">
-                                                    <div class="col-auto">
-                                                        <div class="h4 mb-0 mr-3 font-weight-bolder text-white">
-                                                            <asp:Label ID="lblcustomercount" runat="server" Text="Label" Font-Size="Larger" Font-Bold="true"></asp:Label>
+                                    <a href="AllCompanyList.aspx" style="text-decoration: none; display: block;">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1 lblcount">
+                                                        Customers
+                                                    </div>
+                                                    <div class="row no-gutters align-items-center">
+                                                        <div class="col-auto">
+                                                            <div class="h4 mb-0 mr-3 font-weight-bolder text-white">
+                                                                <asp:Label ID="lblcustomercount" runat="server" Text="Label" Font-Size="Larger" Font-Bold="true"></asp:Label>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="fa fa-users fa-2x text-info" aria-hidden="true"></i>
+                                                <div class="col-auto">
+                                                    <i class="fa fa-users fa-2x text-info" aria-hidden="true"></i>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
+
                                 <%-- </div>--%>
                             </div>
-                            <div id="cardQuotation" runat="server" class="col-xl-3 col-md-6 mb-4">
+                            <div id="cardQuotation" runat="server" class="col-xl-4 col-md-6 mb-4">
                                 <div class="card1 border-left-warning shadow h-90 py-2 card-bg2">
-                                    <div class="card-body">
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1 lblcount">
-                                                    Quotation
+                                    <a href="QuotationList.aspx" style="text-decoration: none; display: block;">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1 lblcount">
+                                                        Quotation
                                            
-                                                </div>
-                                                <div class="row no-gutters align-items-center">
-                                                    <div class="col-auto">
-                                                        <div class="h4 mb-0 mr-3 font-weight-bolder text-white">
-                                                            <asp:Label ID="lblQuotationcount" runat="server" Text="Label" Font-Size="Larger" Font-Bold="true"></asp:Label>
+                                                    </div>
+                                                    <div class="row no-gutters align-items-center">
+                                                        <div class="col-auto">
+                                                            <div class="h4 mb-0 mr-3 font-weight-bolder text-white">
+                                                                <asp:Label ID="lblQuotationcount" runat="server" Text="Label" Font-Size="Larger" Font-Bold="true"></asp:Label>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="fa fa-file-pdf-o fa-2x text-warning" aria-hidden="true"></i>
+                                                <div class="col-auto">
+                                                    <i class="fa fa-file-pdf-o fa-2x text-warning" aria-hidden="true"></i>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                             </div>
 
-                            <div id="cardOA" runat="server" class="col-xl-3 col-md-6 mb-4">
+                            <div id="cardOA" runat="server" class="col-xl-4 col-md-6 mb-4">
                                 <div class="card1 border-left-success shadow h-90 py-2 card-bg3">
-                                    <div class="card-body">
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1 lblcount">
-                                                    Order Acceptance
+                                    <a href="OrderAcceptanceList.aspx" style="text-decoration: none; display: block;">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1 lblcount">
+                                                        Order Acceptance
                                            
-                                                </div>
-                                                <div class="row no-gutters align-items-center">
-                                                    <div class="col-auto">
-                                                        <div class="h4 mb-0 mr-3 font-weight-bolder text-white">
-                                                            <asp:Label ID="lblOrderAcceptancecount" runat="server" Text="Label" Font-Size="Larger" Font-Bold="true"></asp:Label>
+                                                    </div>
+                                                    <div class="row no-gutters align-items-center">
+                                                        <div class="col-auto">
+                                                            <div class="h4 mb-0 mr-3 font-weight-bolder text-white">
+                                                                <asp:Label ID="lblOrderAcceptancecount" runat="server" Text="Label" Font-Size="Larger" Font-Bold="true"></asp:Label>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="fa fa-check fa-2x text-success"></i>
+                                                <div class="col-auto">
+                                                    <i class="fa fa-check fa-2x text-success"></i>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                             </div>
-                            <div id="cardUsers" runat="server" class="col-xl-3 col-md-6 mb-4">
+                            <%--<div id="cardUsers" runat="server" class="col-xl-3 col-md-6 mb-4">
                                 <div class="card1 border-left-danger shadow h-90 py-2 card-bg4">
-                                    <div class="card-body">
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1 lblcount">
-                                                    Total Users
-                                                </div>
-                                                <div class="row no-gutters align-items-center">
-                                                    <div class="col-auto">
-                                                        <div class="h4 mb-0 mr-3 font-weight-bolder text-white">
-                                                            <asp:Label ID="lblUsercount" runat="server" Text="Label" Font-Size="Larger" Font-Bold="true"></asp:Label>
+                                    <a href="Addusers.aspx" style="text-decoration: none; display: block;">
+                                        <div class="card-body">
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col mr-2">
+                                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1 lblcount">
+                                                        Total Users
+                                                    </div>
+                                                    <div class="row no-gutters align-items-center">
+                                                        <div class="col-auto">
+                                                            <div class="h4 mb-0 mr-3 font-weight-bolder text-white">
+                                                                <asp:Label ID="lblUsercount" runat="server" Text="Label" Font-Size="Larger" Font-Bold="true"></asp:Label>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="fa fa-user fa-2x text-danger" aria-hidden="true"></i>
+                                                <div class="col-auto">
+                                                    <i class="fa fa-user fa-2x text-danger" aria-hidden="true"></i>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
-                            </div>
+                            </div>--%>
                         </div>
 
                         <div class="row">
@@ -463,7 +472,9 @@
                                                     </div>
 
                                                     <h2>
-                                                        <center><asp:Label ID="lblnoLogdatafound" runat="server" Text="" Visible="false" CssClass="lblboldred"></asp:Label></center>
+                                                        <center>
+                                                            <asp:Label ID="lblnoLogdatafound" runat="server" Text="" Visible="false" CssClass="lblboldred"></asp:Label>
+                                                        </center>
                                                     </h2>
                                                 </div>
                                                 <br />
@@ -514,265 +525,274 @@
                                         <div class="col-md-3">
                                             <asp:TextBox runat="server" ID="txtDate" CssClass="form-control myDate" placeholder="Select Date" autocomplete="off" AutoPostBack="true" OnTextChanged="txtDate_TextChanged"></asp:TextBox>
                                         </div>
-                                    </div>
-                                    <br />
-                                    <hr />
-                                    <div class="col-md-10">
-                                        <asp:Chart ID="Chart1" runat="server"
-                                            BackGradientStyle="LeftRight" Height="350px" Palette="None"
-                                            PaletteCustomColors="192, 0, 0" Width="1000px">
-                                            <Series>
-                                                <asp:Series Name="Series1">
-                                                </asp:Series>
-                                            </Series>
-                                            <ChartAreas>
-                                                <asp:ChartArea Name="ChartArea1">
-                                                </asp:ChartArea>
-                                            </ChartAreas>
-                                            <BorderSkin BackColor="" PageColor="192, 64, 0" />
-                                        </asp:Chart>
-
-                                    </div>
-                                </div>
-                                <br />
-                                <hr />
-                                <div class="col-md-12 d-none">
-                                    <div class="row">
-                                        <div class="col-md-2 spancls">From Date:</div>
-                                        <div class="col-md-2">
-                                            <asp:TextBox runat="server" ID="txtFromDate" CssClass="form-control myDate" placeholder="Select From Date" autocomplete="off"></asp:TextBox>
-                                        </div>
-                                        <div class="col-md-1 spancls">To Date:</div>
-                                        <div class="col-md-2">
-                                            <asp:TextBox runat="server" ID="txtToDate" CssClass="form-control myDate" placeholder="Select To Date" autocomplete="off"></asp:TextBox>
-                                        </div>
-                                        <div class="col-md-2 spancls">Department:</div>
-                                        <div class="col-md-2">
-                                            <asp:DropDownList ID="ddlDepartment" CssClass="form-control" runat="server" Width="100%" AutoPostBack="true">
-                                                <asp:ListItem Value="0">--Select--</asp:ListItem>
-                                                <asp:ListItem Value="Drawing">Drawing</asp:ListItem>
-                                                <asp:ListItem Value="Laser Programing">Laser Programing</asp:ListItem>
-                                                <asp:ListItem Value="Laser Cutting">Laser Cutting</asp:ListItem>
-                                                <asp:ListItem Value="CNC Bending">CNC Bending</asp:ListItem>
-                                                <asp:ListItem Value="Welding">Welding</asp:ListItem>
-                                                <asp:ListItem Value="Powder Coating">Powder Coating</asp:ListItem>
-                                                <asp:ListItem Value="Final Assembly">Final Assembly</asp:ListItem>
-                                                <asp:ListItem Value="Final Inspection">Final Inspection</asp:ListItem>
-                                                <asp:ListItem Value="Stock">Stock</asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
-                                    </div>
-                                    <br />
-                                    <div class="row">
-                                        <div class="col-md-5"></div>
                                         <div class="col-md-3">
-                                            <asp:Button runat="server" ID="btnGetData" Text="GET REPORT" CssClass="btn btn-primary" OnClick="btnGetData_Click" />
+                                            <%-- <asp:Button runat="server" OnClick="Unnamed_Click" Text="Refresh.." style="font-size: small; background-color: #01a9ac; color: black;"/> --%>
+                                            <asp:Button ID="btnRefresh" runat="server" OnClick="Unnamed_Click" Text="Refresh.." Style="display: none;" />
+                                            <i class="fa fa-undo" style="font-size: 25px!important; cursor: pointer;" onclick="document.getElementById('<%= btnRefresh.ClientID %>').click();"></i>
+
                                         </div>
-                                        <div class="col-md-4"></div>
+                                        <br />
+                                        <hr />
+                                        <div class="col-md-10">
+                                            <asp:Chart ID="Chart1" runat="server"
+                                                BackGradientStyle="LeftRight" Height="350px" Palette="None"
+                                                PaletteCustomColors="192, 0, 0" Width="1000px">
+                                                <Series>
+                                                    <asp:Series Name="Series1">
+                                                    </asp:Series>
+                                                </Series>
+                                                <ChartAreas>
+                                                    <asp:ChartArea Name="ChartArea1">
+                                                    </asp:ChartArea>
+                                                </ChartAreas>
+                                                <BorderSkin BackColor="" PageColor="192, 64, 0" />
+                                            </asp:Chart>
+
+                                        </div>
                                     </div>
                                     <br />
                                     <hr />
-                                    <div class="col-md-10">
-                                        <asp:Chart ID="Chart2" runat="server"
-                                            BackGradientStyle="LeftRight" Height="350px" Palette="None"
-                                            PaletteCustomColors="192, 0, 0" Width="1000px">
-                                            <Series>
-                                                <asp:Series Name="Series1">
-                                                </asp:Series>
-                                            </Series>
-                                            <ChartAreas>
-                                                <asp:ChartArea Name="ChartArea1">
-                                                </asp:ChartArea>
-                                            </ChartAreas>
-                                            <BorderSkin BackColor="" PageColor="192, 64, 0" />
-                                        </asp:Chart>
-
-                                    </div>
-                                </div>
-
-
-                                <div class="row" style="display: none">
-                                    <div class="col-md-12">
-                                        <div class="card-header bg-primary text-uppercase text-white">
-                                            <h5>Upcoming TBRO Details</h5>
-                                        </div>
+                                    <div class="col-md-12 d-none">
                                         <div class="row">
-                                            <div class="col-xl-12 col-md-12">
-                                                <div class="card">
-                                                    <div class="card-header">
-                                                        <div class="row">
-                                                            <div class="col-xl-10 col-md-10"></div>
-                                                            <div class="col-xl-2 col-md-2">
-                                                                <asp:DropDownList ID="ddlTbrofilter" runat="server" Width="100%" AutoPostBack="true" OnTextChanged="ddlTbrofilter_TextChanged">
-                                                                </asp:DropDownList>
-                                                            </div>
-                                                        </div>
-                                                        <div class="dt-responsive table-responsive">
-
-                                                            <asp:GridView ID="GvTBRO" runat="server" CssClass="table table-striped table-bordered nowrap" AutoGenerateColumns="false"
-                                                                DataKeyNames="id" AllowPaging="true" OnPageIndexChanging="GvTBRO_PageIndexChanging" PageSize="10">
-                                                                <Columns>
-                                                                    <asp:TemplateField HeaderText="S No." HeaderStyle-Width="50px" ItemStyle-HorizontalAlign="Center">
-                                                                        <ItemTemplate>
-                                                                            <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
-                                                                        </ItemTemplate>
-                                                                    </asp:TemplateField>
-
-                                                                    <asp:TemplateField HeaderText="Added By">
-                                                                        <ItemTemplate>
-                                                                            <asp:Label ID="lblempname" runat="server" Text='<%# Eval("name") %>'></asp:Label>
-                                                                        </ItemTemplate>
-                                                                    </asp:TemplateField>
-
-                                                                    <asp:TemplateField HeaderText="Date">
-                                                                        <ItemTemplate>
-                                                                            <asp:Label ID="lbldateofreminder" runat="server" Text='<%# Eval("dateofreminder") %>'></asp:Label>
-                                                                        </ItemTemplate>
-                                                                    </asp:TemplateField>
-
-                                                                    <asp:TemplateField HeaderText="Company Code" ItemStyle-HorizontalAlign="Center" Visible="false">
-                                                                        <ItemTemplate>
-                                                                            <asp:Label ID="lblccode" runat="server" Text='<%# Eval("ccode") %>'></asp:Label>
-                                                                        </ItemTemplate>
-                                                                    </asp:TemplateField>
-
-                                                                    <asp:TemplateField HeaderText="Company Name">
-                                                                        <ItemTemplate>
-                                                                            <asp:Label ID="lblcompname" runat="server" Text='<%# Eval("cname") %>'></asp:Label>
-                                                                        </ItemTemplate>
-                                                                    </asp:TemplateField>
-
-                                                                    <asp:TemplateField HeaderText="Title">
-                                                                        <ItemTemplate>
-                                                                            <asp:Label ID="lblownnamegv" runat="server" Text='<%# Eval("title") %>'></asp:Label>
-                                                                        </ItemTemplate>
-                                                                    </asp:TemplateField>
-
-                                                                    <asp:TemplateField HeaderText="Remark">
-                                                                        <ItemTemplate>
-                                                                            <asp:Label ID="lblremark" runat="server" Text='<%# Eval("remark") %>'></asp:Label>
-                                                                        </ItemTemplate>
-                                                                    </asp:TemplateField>
-
-                                                                </Columns>
-                                                            </asp:GridView>
-                                                            <h2>
-                                                                <center><asp:Label ID="lblnoTbrodatafound" runat="server" Text="" Visible="false" CssClass="lblboldred"></asp:Label></center>
-                                                            </h2>
-                                                        </div>
-                                                        <br />
-
-                                                    </div>
-                                                </div>
+                                            <div class="col-md-2 spancls">From Date:</div>
+                                            <div class="col-md-2">
+                                                <asp:TextBox runat="server" ID="txtFromDate" CssClass="form-control myDate" placeholder="Select From Date" autocomplete="off"></asp:TextBox>
+                                            </div>
+                                            <div class="col-md-1 spancls">To Date:</div>
+                                            <div class="col-md-2">
+                                                <asp:TextBox runat="server" ID="txtToDate" CssClass="form-control myDate" placeholder="Select To Date" autocomplete="off"></asp:TextBox>
+                                            </div>
+                                            <div class="col-md-2 spancls">Department:</div>
+                                            <div class="col-md-2">
+                                                <asp:DropDownList ID="ddlDepartment" CssClass="form-control" runat="server" Width="100%" AutoPostBack="true">
+                                                    <asp:ListItem Value="0">--Select--</asp:ListItem>
+                                                    <asp:ListItem Value="Drawing">Drawing</asp:ListItem>
+                                                    <asp:ListItem Value="Laser Programing">Laser Programing</asp:ListItem>
+                                                    <asp:ListItem Value="Laser Cutting">Laser Cutting</asp:ListItem>
+                                                    <asp:ListItem Value="CNC Bending">CNC Bending</asp:ListItem>
+                                                    <asp:ListItem Value="Welding">Welding</asp:ListItem>
+                                                    <asp:ListItem Value="Powder Coating">Powder Coating</asp:ListItem>
+                                                    <asp:ListItem Value="Final Assembly">Final Assembly</asp:ListItem>
+                                                    <asp:ListItem Value="Final Inspection">Final Inspection</asp:ListItem>
+                                                    <asp:ListItem Value="Stock">Stock</asp:ListItem>
+                                                </asp:DropDownList>
                                             </div>
                                         </div>
                                         <br />
-                                    </div>
-                                </div>
-
-                                <br />
-
-
-
-                                <hr class="new1 d-none" />
-                                <div class="row">
-                                    <div class="col-md-6"></div>
-                                    <div class="col-md-6" style="text-align: right; padding: 5px 20px 5px 0px;">
-                                        <asp:Label ID="lbllastlogin" CssClass="lblbold" runat="server" Text=""></asp:Label>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <div class="row" style="display: none">
-                            <div class="col-md-12">
-                                <div class="card-header bg-primary text-uppercase text-white">
-                                    <div class="row">
+                                        <div class="row">
+                                            <div class="col-md-5"></div>
+                                            <div class="col-md-3">
+                                                <asp:Button runat="server" ID="btnGetData" Text="GET REPORT" CssClass="btn btn-primary" OnClick="btnGetData_Click" />
+                                            </div>
+                                            <div class="col-md-4"></div>
+                                        </div>
+                                        <br />
+                                        <hr />
                                         <div class="col-md-10">
-                                            <h5>Date wise Processed Value</h5>
+                                            <asp:Chart ID="Chart2" runat="server"
+                                                BackGradientStyle="LeftRight" Height="350px" Palette="None"
+                                                PaletteCustomColors="192, 0, 0" Width="1000px">
+                                                <Series>
+                                                    <asp:Series Name="Series1">
+                                                    </asp:Series>
+                                                </Series>
+                                                <ChartAreas>
+                                                    <asp:ChartArea Name="ChartArea1">
+                                                    </asp:ChartArea>
+                                                </ChartAreas>
+                                                <BorderSkin BackColor="" PageColor="192, 64, 0" />
+                                            </asp:Chart>
+
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xl-12 col-md-12">
-                                    <div class="card">
-                                        <div class="card-header">
+
+
+                                    <div class="row" style="display: none">
+                                        <div class="col-md-12">
+                                            <div class="card-header bg-primary text-uppercase text-white">
+                                                <h5>Upcoming TBRO Details</h5>
+                                            </div>
                                             <div class="row">
+                                                <div class="col-xl-12 col-md-12">
+                                                    <div class="card">
+                                                        <div class="card-header">
+                                                            <div class="row">
+                                                                <div class="col-xl-10 col-md-10"></div>
+                                                                <div class="col-xl-2 col-md-2">
+                                                                    <asp:DropDownList ID="ddlTbrofilter" runat="server" Width="100%" AutoPostBack="true" OnTextChanged="ddlTbrofilter_TextChanged">
+                                                                    </asp:DropDownList>
+                                                                </div>
+                                                            </div>
+                                                            <div class="dt-responsive table-responsive">
 
-                                                <div class="col-xl-4 col-md-4" style="margin-left: 15px;">
-                                                    <asp:DropDownList ID="ddlModule" CssClass="form-control" runat="server" Width="100%" AutoPostBack="true">
-                                                        <asp:ListItem Value="0">--Select Module--</asp:ListItem>
-                                                        <asp:ListItem Value="Admin">Admin</asp:ListItem>
-                                                        <asp:ListItem Value="Production">Production</asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </div>
-                                                <div class="col-xl-4 col-md-4" style="margin-left: 15px;">
-                                                    <asp:DropDownList ID="ddlRole" CssClass="form-control" runat="server" Width="100%" AutoPostBack="true">
-                                                        <asp:ListItem Value="0">--Select Department--</asp:ListItem>
-                                                        <asp:ListItem Value="Admin">Admin</asp:ListItem>
-                                                        <asp:ListItem Value="drawing">Drawing Creation</asp:ListItem>
-                                                        <asp:ListItem Value="laserprogramming">Laser Programing</asp:ListItem>
-                                                        <asp:ListItem Value="lasercutting">Laser Cutting</asp:ListItem>
-                                                        <asp:ListItem Value="bending">CNC Bending</asp:ListItem>
-                                                        <asp:ListItem Value="welding">Welding</asp:ListItem>
-                                                        <asp:ListItem Value="powdercoating">Powder Coating</asp:ListItem>
-                                                        <asp:ListItem Value="assembly">Assembly</asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </div>
-                                                <div class="col-xl-4 col-md-4"></div>
-                                            </div>
-                                            <br />
-                                            <div class="dt-responsive table-responsive">
+                                                                <asp:GridView ID="GvTBRO" runat="server" CssClass="table table-striped table-bordered nowrap" AutoGenerateColumns="false"
+                                                                    DataKeyNames="id" AllowPaging="true" OnPageIndexChanging="GvTBRO_PageIndexChanging" PageSize="10">
+                                                                    <Columns>
+                                                                        <asp:TemplateField HeaderText="S No." HeaderStyle-Width="50px" ItemStyle-HorizontalAlign="Center">
+                                                                            <ItemTemplate>
+                                                                                <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
+                                                                            </ItemTemplate>
+                                                                        </asp:TemplateField>
 
-                                                <div class="col-md-12">
-                                                    <asp:GridView ID="dgvActiveUser" runat="server" CssClass="table table-striped table-bordered nowrap" AutoGenerateColumns="false"
-                                                        DataKeyNames="id" AllowPaging="true" PageSize="20">
-                                                        <Columns>
-                                                            <asp:TemplateField HeaderText="S No." HeaderStyle-Width="50px" ItemStyle-HorizontalAlign="Left">
-                                                                <ItemTemplate>
-                                                                    <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                            <asp:TemplateField HeaderText="Name" ItemStyle-HorizontalAlign="Left">
-                                                                <ItemTemplate>
-                                                                    <asp:Label ID="lblempname" runat="server" Text='<%# Eval("name") %>'></asp:Label>
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                            <asp:TemplateField HeaderText="Email" ItemStyle-HorizontalAlign="Left">
-                                                                <ItemTemplate>
-                                                                    <asp:Label ID="lblccode" runat="server" Text='<%# Eval("email") %>'></asp:Label>
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                            <asp:TemplateField HeaderText="Module" ItemStyle-HorizontalAlign="Left">
-                                                                <ItemTemplate>
-                                                                    <asp:Label ID="lblccode" runat="server" Text='<%# Eval("Department") %>'></asp:Label>
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                            <asp:TemplateField HeaderText="Department" ItemStyle-HorizontalAlign="Left">
-                                                                <ItemTemplate>
-                                                                    <asp:Label ID="lblccode" runat="server" Text='<%# Eval("role") %>'></asp:Label>
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                        </Columns>
-                                                    </asp:GridView>
-                                                </div>
+                                                                        <asp:TemplateField HeaderText="Added By">
+                                                                            <ItemTemplate>
+                                                                                <asp:Label ID="lblempname" runat="server" Text='<%# Eval("name") %>'></asp:Label>
+                                                                            </ItemTemplate>
+                                                                        </asp:TemplateField>
 
-                                                <h2>
-                                                    <center><asp:Label ID="Label1" runat="server" Text="" Visible="false" CssClass="lblboldred"></asp:Label></center>
-                                                </h2>
+                                                                        <asp:TemplateField HeaderText="Date">
+                                                                            <ItemTemplate>
+                                                                                <asp:Label ID="lbldateofreminder" runat="server" Text='<%# Eval("dateofreminder") %>'></asp:Label>
+                                                                            </ItemTemplate>
+                                                                        </asp:TemplateField>
+
+                                                                        <asp:TemplateField HeaderText="Company Code" ItemStyle-HorizontalAlign="Center" Visible="false">
+                                                                            <ItemTemplate>
+                                                                                <asp:Label ID="lblccode" runat="server" Text='<%# Eval("ccode") %>'></asp:Label>
+                                                                            </ItemTemplate>
+                                                                        </asp:TemplateField>
+
+                                                                        <asp:TemplateField HeaderText="Company Name">
+                                                                            <ItemTemplate>
+                                                                                <asp:Label ID="lblcompname" runat="server" Text='<%# Eval("cname") %>'></asp:Label>
+                                                                            </ItemTemplate>
+                                                                        </asp:TemplateField>
+
+                                                                        <asp:TemplateField HeaderText="Title">
+                                                                            <ItemTemplate>
+                                                                                <asp:Label ID="lblownnamegv" runat="server" Text='<%# Eval("title") %>'></asp:Label>
+                                                                            </ItemTemplate>
+                                                                        </asp:TemplateField>
+
+                                                                        <asp:TemplateField HeaderText="Remark">
+                                                                            <ItemTemplate>
+                                                                                <asp:Label ID="lblremark" runat="server" Text='<%# Eval("remark") %>'></asp:Label>
+                                                                            </ItemTemplate>
+                                                                        </asp:TemplateField>
+
+                                                                    </Columns>
+                                                                </asp:GridView>
+                                                                <h2>
+                                                                    <center>
+                                                                        <asp:Label ID="lblnoTbrodatafound" runat="server" Text="" Visible="false" CssClass="lblboldred"></asp:Label>
+                                                                    </center>
+                                                                </h2>
+                                                            </div>
+                                                            <br />
+
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <br />
                                         </div>
                                     </div>
+
+                                    <br />
+
+
+
+                                    <hr class="new1 d-none" />
+                                    <div class="row">
+                                        <div class="col-md-6"></div>
+                                        <div class="col-md-6" style="text-align: right; padding: 5px 20px 5px 0px;">
+                                            <asp:Label ID="lbllastlogin" CssClass="lblbold" runat="server" Text=""></asp:Label>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
-                            <br />
+
+                            <div class="row" style="display: none">
+                                <div class="col-md-12">
+                                    <div class="card-header bg-primary text-uppercase text-white">
+                                        <div class="row">
+                                            <div class="col-md-10">
+                                                <h5>Date wise Processed Value</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xl-12 col-md-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <div class="row">
+
+                                                    <div class="col-xl-4 col-md-4" style="margin-left: 15px;">
+                                                        <asp:DropDownList ID="ddlModule" CssClass="form-control" runat="server" Width="100%" AutoPostBack="true">
+                                                            <asp:ListItem Value="0">--Select Module--</asp:ListItem>
+                                                            <asp:ListItem Value="Admin">Admin</asp:ListItem>
+                                                            <asp:ListItem Value="Production">Production</asp:ListItem>
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                    <div class="col-xl-4 col-md-4" style="margin-left: 15px;">
+                                                        <asp:DropDownList ID="ddlRole" CssClass="form-control" runat="server" Width="100%" AutoPostBack="true">
+                                                            <asp:ListItem Value="0">--Select Department--</asp:ListItem>
+                                                            <asp:ListItem Value="Admin">Admin</asp:ListItem>
+                                                            <asp:ListItem Value="drawing">Drawing Creation</asp:ListItem>
+                                                            <asp:ListItem Value="laserprogramming">Laser Programing</asp:ListItem>
+                                                            <asp:ListItem Value="lasercutting">Laser Cutting</asp:ListItem>
+                                                            <asp:ListItem Value="bending">CNC Bending</asp:ListItem>
+                                                            <asp:ListItem Value="welding">Welding</asp:ListItem>
+                                                            <asp:ListItem Value="powdercoating">Powder Coating</asp:ListItem>
+                                                            <asp:ListItem Value="assembly">Assembly</asp:ListItem>
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                    <div class="col-xl-4 col-md-4"></div>
+                                                </div>
+                                                <br />
+                                                <div class="dt-responsive table-responsive">
+
+                                                    <div class="col-md-12">
+                                                        <asp:GridView ID="dgvActiveUser" runat="server" CssClass="table table-striped table-bordered nowrap" AutoGenerateColumns="false"
+                                                            DataKeyNames="id" AllowPaging="true" PageSize="20">
+                                                            <Columns>
+                                                                <asp:TemplateField HeaderText="S No." HeaderStyle-Width="50px" ItemStyle-HorizontalAlign="Left">
+                                                                    <ItemTemplate>
+                                                                        <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
+                                                                    </ItemTemplate>
+                                                                </asp:TemplateField>
+                                                                <asp:TemplateField HeaderText="Name" ItemStyle-HorizontalAlign="Left">
+                                                                    <ItemTemplate>
+                                                                        <asp:Label ID="lblempname" runat="server" Text='<%# Eval("name") %>'></asp:Label>
+                                                                    </ItemTemplate>
+                                                                </asp:TemplateField>
+                                                                <asp:TemplateField HeaderText="Email" ItemStyle-HorizontalAlign="Left">
+                                                                    <ItemTemplate>
+                                                                        <asp:Label ID="lblccode" runat="server" Text='<%# Eval("email") %>'></asp:Label>
+                                                                    </ItemTemplate>
+                                                                </asp:TemplateField>
+                                                                <asp:TemplateField HeaderText="Module" ItemStyle-HorizontalAlign="Left">
+                                                                    <ItemTemplate>
+                                                                        <asp:Label ID="lblccode" runat="server" Text='<%# Eval("Department") %>'></asp:Label>
+                                                                    </ItemTemplate>
+                                                                </asp:TemplateField>
+                                                                <asp:TemplateField HeaderText="Department" ItemStyle-HorizontalAlign="Left">
+                                                                    <ItemTemplate>
+                                                                        <asp:Label ID="lblccode" runat="server" Text='<%# Eval("role") %>'></asp:Label>
+                                                                    </ItemTemplate>
+                                                                </asp:TemplateField>
+                                                            </Columns>
+                                                        </asp:GridView>
+                                                    </div>
+
+                                                    <h2>
+                                                        <center>
+                                                            <asp:Label ID="Label1" runat="server" Text="" Visible="false" CssClass="lblboldred"></asp:Label>
+                                                        </center>
+                                                    </h2>
+                                                </div>
+                                                <br />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             </div>
         </ContentTemplate>
     </asp:UpdatePanel>

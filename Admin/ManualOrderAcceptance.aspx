@@ -364,7 +364,7 @@
     <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script type="text/javascript">
+   <%-- <script type="text/javascript">
         function pageLoad() {
             $(document).ready(function () {
                 $('.myDate').datepicker({
@@ -384,7 +384,7 @@
                 $('.ui-datepicker').hide();
             });
         }
-    </script>
+    </script>--%>
     <script type='text/javascript'>
         function scrollToElement() {
             var target = document.getElementById("divdtls").offsetTop;
@@ -910,12 +910,12 @@
                                                     <div class="row">
                                                         <div class="col-md-2 spancls">Delivery Date Required by customer<i class="reqcls">*&nbsp;</i> :</div>
                                                         <div class="col-md-4">
-                                                            <asp:TextBox ID="txtdeliverydatebycustomer" Width="100%" CssClass="myDate" runat="server" ReadOnly="true"></asp:TextBox>
+                                                            <asp:TextBox ID="txtdeliverydatebycustomer" Width="100%"  runat="server" ReadOnly="true"></asp:TextBox>
                                                             <asp:CalendarExtender ID="CalendarExtender4" TargetControlID="txtdeliverydatebycustomer" Format="dd-MM-yyyy" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>
                                                         </div>
                                                         <div class="col-md-2 spancls">Delivery Date Committed by us<i class="reqcls">*&nbsp;</i> :</div>
                                                         <div class="col-md-4">
-                                                            <asp:TextBox ID="txtdeliverydatebyus" Width="100%" CssClass="myDate" runat="server" ReadOnly="true"></asp:TextBox>
+                                                            <asp:TextBox ID="txtdeliverydatebyus" Width="100%"  runat="server" ReadOnly="true"></asp:TextBox>
                                                             <asp:CalendarExtender ID="CalendarExtender5" TargetControlID="txtdeliverydatebyus" Format="dd-MM-yyyy" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>
                                                         </div>
                                                     </div>

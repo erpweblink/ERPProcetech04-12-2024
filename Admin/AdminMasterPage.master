@@ -266,6 +266,13 @@
                                                 </a>
                                             </li>
 
+                                            <li id="Custdtlid" runat="server" class="">
+                                                <a href="CustomerDetailsList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-file"></i></span>
+                                                    <span class="pcoded-mtext">Customer Details</span>
+                                                </a>
+                                            </li>
+
                                             <li id="CompanyListid" runat="server" class="">
                                                 <a href="AllCompanyList.aspx">
                                                     <span class="pcoded-micon"><i class="feather icon-list"></i></span>

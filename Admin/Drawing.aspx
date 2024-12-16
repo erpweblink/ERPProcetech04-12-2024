@@ -250,6 +250,19 @@
             var checkboxval = ob.checked;
             if (checkboxval == true) {
                 $('#btnshowhide').show();
+                $.ajax({
+                    type: 'POST',
+                    url: 'Drawing.aspx/MakeSessionNull',
+                    data: '{}', 
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (response) {
+                      
+                    },
+                    error: function (xhr, status, error) {
+                       
+                    }
+                });
             }
             else {
                 $('#btnshowhide').hide();
@@ -265,25 +278,25 @@
         }
 
 
-        function Keydown(txt) {           
+        function Keydown(txt) {
             var grid = document.getElementById("<%= dgvDrawing.ClientID%>");
 
             var row = txt.parentNode.parentNode;
-            var rowIndex = row.rowIndex;           
+            var rowIndex = row.rowIndex;
             var dataValue = { "RowIndex": rowIndex, "InwardQty": inwardval, "OutwardQty": txtval };
 
             var inwardval = grid.rows[rowIndex].cells[7].childNodes[1].value;
             var txtval = txt.value;
 
-            if (parseFloat(txtval) <= parseFloat(inwardval)) {   
-                
+            if (parseFloat(txtval) <= parseFloat(inwardval)) {
+
                 alert("Inward Quantity will change after sending quantity to Next Stage.");
                 var checkbox = row.querySelector('input[type="checkbox"]');
                 if (checkbox) {
                     checkbox.disabled = false;
                 }
             } else {
-               
+
                 alert("The value should be less than or equal to the Inward Quantity.");
                 var checkbox = row.querySelector('input[type="checkbox"]');
                 if (checkbox) {
@@ -462,9 +475,19 @@
 
 
 
-                                <div class="col-md-2" id="btnshowhide">
+                                <%-- <div class="col-md-2" id="btnshowhide">
                                     <asp:LinkButton ID="btnGetSelected" runat="server" CssClass="btn btn-small btn-primary" OnClick="GetSelectedRecords"><i class="fa fa-angle-double-right"></i>&nbsp;Approve & Send</asp:LinkButton>
+                                </div>--%>
+
+                                <div class="col-md-2" id="btnshowhide">
+                                    <asp:LinkButton ID="btnGetSelected" runat="server" CssClass="btn btn-small btn-primary" OnClick="GetSelectedRecords" OnClientClick="this.disabled=true;this.value='Processing...';">
+                                          <i class="fa fa-angle-double-right"></i>&nbsp;Approve & Send
+                                    </asp:LinkButton>
                                 </div>
+
+
+
+
                                 <div class="col-md-2">
                                     <div class="row">
                                         <div class="col-md-2 spancls">

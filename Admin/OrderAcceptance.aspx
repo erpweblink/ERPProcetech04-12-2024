@@ -351,25 +351,25 @@
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript">
-        //function pageLoad() {
-        //    $(document).ready(function () {
-        //        $('.myDate').datepicker({
-        //            dateFormat: 'dd-mm-yy',
-        //            inline: true,
-        //            showOtherMonths: true,
-        //            changeMonth: true,
-        //            changeYear: true,
-        //            constrainInput: true,
-        //            firstDay: 1,
-        //            navigationAsDateFormat: true,
-        //            showAnim: "fold",
-        //            yearRange: "c-100:c+10",
-        //            dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-        //        });
-        //        //$('.myDate').datepicker('setDate', new Date());
-        //        $('.ui-datepicker').hide();
-        //    });
-        //}
+        function pageLoad() {
+            $(document).ready(function () {
+                $('.myDate').datepicker({
+                    dateFormat: 'dd-mm-yy',
+                    inline: true,
+                    showOtherMonths: true,
+                    changeMonth: true,
+                    changeYear: true,
+                    constrainInput: true,
+                    firstDay: 1,
+                    navigationAsDateFormat: true,
+                    showAnim: "fold",
+                    yearRange: "c-100:c+10",
+                    dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+                });
+                //$('.myDate').datepicker('setDate', new Date());
+                $('.ui-datepicker').hide();
+            });
+        }
     </script>
 </asp:Content>
 
@@ -735,10 +735,10 @@
                                                 <div class="row">
                                                     <div class="col-md-2 spancls">Delivery Date Required by customer<i class="reqcls">*&nbsp;</i> :</div>
                                                     <div class="col-md-4">
-                                                        <asp:TextBox ID="txtdeliverydatebycustomer" Width="100%" CssClass="myDate" runat="server" ReadOnly="true"></asp:TextBox>
-                                                       <%-- <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="Dynamic" ErrorMessage="Please Select Order Date"
+                                                   <asp:TextBox ID="txtdeliverydatebycustomer" Width="100%" runat="server" ReadOnly="true"></asp:TextBox>
+                                                      <%---  <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="Dynamic" ErrorMessage="Please Select Order Date"
                                                             ControlToValidate="txtdeliverydatebycustomer" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>--%>
-                                                        <%-- <asp:CalendarExtender ID="CalendarExtender4" TargetControlID="txtdeliverydatebycustomer" Format="dd-MM-yyyy" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>--%>
+                                                         <asp:CalendarExtender ID="CalendarExtender4" TargetControlID="txtdeliverydatebycustomer" Format="dd-MM-yyyy" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>
                                                     </div>
                                                     <div class="col-md-2 spancls">Delivery Date Committed by us<i class="reqcls">&nbsp;</i> :</div>
                                                     <div class="col-md-4">

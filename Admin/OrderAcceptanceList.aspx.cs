@@ -157,19 +157,22 @@ public partial class Admin_OrderAcceptanceList : System.Web.UI.Page
 
         if (e.CommandName == "RowDeleteOA")
         {
-            SqlCommand cmddelete2 = new SqlCommand("delete from OrderAccept where OAno='" + id + "'", con);
+            string[] args = e.CommandArgument.ToString().Split(',');
+            string oano = args[1];
+
+            SqlCommand cmddelete2 = new SqlCommand("delete from OrderAccept where OAno='" + oano + "'", con);
             con.Open();
             Thread.Sleep(1000);
             cmddelete2.ExecuteNonQuery();
             con.Close();
 
-            SqlCommand cmddelete4 = new SqlCommand("delete from OrderAcceptDtls where OAno='" + id + "'", con);
+            SqlCommand cmddelete4 = new SqlCommand("delete from [DB_ProcetechTesting].[DB_ProcetechERP].[OrderAcceptDtls] where OAno='" + oano + "'", con);
             con.Open();
             Thread.Sleep(1000);
             cmddelete4.ExecuteNonQuery();
             con.Close();
 
-            SqlCommand cmddelete3 = new SqlCommand("delete from OAList where oano='" + id + "'", con);
+            SqlCommand cmddelete3 = new SqlCommand("delete from OAList where oano='" + oano + "'", con);
             con.Open();
             Thread.Sleep(1000);
             cmddelete3.ExecuteNonQuery();

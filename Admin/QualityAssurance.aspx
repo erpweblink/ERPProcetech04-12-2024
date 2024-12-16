@@ -187,6 +187,19 @@
             var checkboxval = ob.checked;
             if (checkboxval == true) {
                 $('#btnshowhide').show();
+                $.ajax({
+                    type: 'POST',
+                    url: 'Drawing.aspx/MakeSessionNull',
+                    data: '{}',
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (response) {
+
+                    },
+                    error: function (xhr, status, error) {
+
+                    }
+                });
             }
             else {
                 $('#btnshowhide').hide();

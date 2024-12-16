@@ -412,7 +412,13 @@
                                                                         <asp:LinkButton ID="btnEdit" CssClass="btn btn-facebook" runat="server" Text="Edit OA" ToolTip="Edit OA" CommandName="RowEditOA" CommandArgument='<%# Eval("oano") %>' Enabled='<%# Eval("Status").ToString() == "edit" ? true : false %>'><i class="fa fa-edit" aria-hidden="true"></i></asp:LinkButton>
                                                                         <a href="../Admin/OARptPDF.aspx?ID=<%#Eval("oano")%>" target="_blank">
                                                                             <asp:Label ID="Label1" CssClass="btn btn-info" Style="padding: 5px 3px !important; margin-top: 0px; color: white;" Height="35px" runat="server" Text="Print" Font-Size="15px"><i class="fa fa-print" style="font-size:24px"></i></asp:Label></span></a>
-                                                                        <asp:LinkButton ID="btnDelete" CssClass="btn btn-danger" runat="server" Text="Delete OA" ToolTip="Delete OA" CommandName="RowDeleteOA" OnClientClick="return confirm('Do you want to delete this OA ?')" CommandArgument='<%# Eval("ID") %>'><i class="fa fa-trash" aria-hidden="true"></i></asp:LinkButton>
+                                                                        <%--<asp:LinkButton ID="btnDelete" CssClass="btn btn-danger" runat="server" Text="Delete OA" ToolTip="Delete OA" CommandName="RowDeleteOA" OnClientClick="return confirm('Do you want to delete this OA ?')" CommandArgument='<%# Eval("oano") %>'><i class="fa fa-trash" aria-hidden="true"></i></asp:LinkButton>--%>
+
+                                                                        
+                                                                        <asp:LinkButton ID="LinkButton1" CssClass="btn btn-danger" runat="server" Text="Delete OA" ToolTip="Delete OA" CommandName="RowDeleteOA"
+                                                                            OnClientClick="return confirm('Do you want to delete this OA ?')" CommandArgument='<%# Eval("ID") + "," + Eval("oano") %>'>
+                                                                           <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                           </asp:LinkButton>
 
                                                                         <%--<asp:LinkButton ID="lnkmailsend" CssClass="btn btn-primary " runat="server" Text="Send Mail" ToolTip="Send Mail" CommandName="Sendamil" OnClientClick="return confirm('Do you want to Send Maill ?')" CommandArgument='<%# Eval("oano") %>'  Visible="false"><i class="fa fa-envelope" aria-hidden="true"></i></asp:LinkButton>--%>
 

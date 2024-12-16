@@ -522,14 +522,21 @@
                                     <div class="row">
                                         <div class="col-md-3"></div>
                                         <div class="col-md-2 spancls">Date:</div>
-                                        <div class="col-md-3">
-                                            <asp:TextBox runat="server" ID="txtDate" CssClass="form-control myDate" placeholder="Select Date" autocomplete="off" AutoPostBack="true" OnTextChanged="txtDate_TextChanged"></asp:TextBox>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <%-- <asp:Button runat="server" OnClick="Unnamed_Click" Text="Refresh.." style="font-size: small; background-color: #01a9ac; color: black;"/> --%>
-                                            <asp:Button ID="btnRefresh" runat="server" OnClick="Unnamed_Click" Text="Refresh.." Style="display: none;" />
-                                            <i class="fa fa-undo" style="font-size: 25px!important; cursor: pointer;" onclick="document.getElementById('<%= btnRefresh.ClientID %>').click();"></i>
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <asp:TextBox runat="server" ID="txtDate" CssClass="form-control myDate" placeholder="Select Date" autocomplete="off" AutoPostBack="true" OnTextChanged="txtDate_TextChanged"></asp:TextBox>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <%-- <asp:Button runat="server" OnClick="Unnamed_Click" Text="Refresh.." style="font-size: small; background-color: #01a9ac; color: black;"/> --%>
+                                                <asp:Button ID="btnRefresh" runat="server" OnClick="Unnamed_Click" Text="Refresh.." Style="display: none;" />
+                                                <i class="fa fa-undo" style="font-size: 25px!important; cursor: pointer;" onclick="document.getElementById('<%= btnRefresh.ClientID %>').click();"></i>
 
+                                            </div>
+                                            <div class="col-md-5">
+                                                <span style="font-size: smaller; font-style: oblique;"><b>Y Axis: Quantity in numbers</b></span>
+                                                <br />
+                                                <span style="font-size: smaller; font-style: oblique;"><b>X Axis: Department</b></span>
+                                            </div>
                                         </div>
                                         <br />
                                         <hr />
@@ -547,9 +554,9 @@
                                                 </ChartAreas>
                                                 <BorderSkin BackColor="" PageColor="192, 64, 0" />
                                             </asp:Chart>
-
                                         </div>
                                     </div>
+
                                     <br />
                                     <hr />
                                     <div class="col-md-12 d-none">

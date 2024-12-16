@@ -1,21 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Data.SqlClient;
 using System.Configuration;
 using System.Data;
-using System.IO;
-using System.Text;
-using System.Security.Cryptography;
-using System.Net.Mail;
-using System.Web.UI.DataVisualization.Charting;
-using System.Globalization;
-using DocumentFormat.OpenXml.Bibliography;
+using System.Data.SqlClient;
 using System.Drawing;
-using AjaxControlToolkit;
+using System.Globalization;
+using System.Web.UI.DataVisualization.Charting;
+using System.Web.UI.WebControls;
 
 public partial class Admin_AdminDashboard : System.Web.UI.Page
 {
@@ -351,7 +341,7 @@ public partial class Admin_AdminDashboard : System.Web.UI.Page
 
         Chart1.ChartAreas["ChartArea1"].AxisX.MajorGrid.Enabled = false;
         Chart1.ChartAreas["ChartArea1"].AxisX.Title = "Department";
-        Chart1.ChartAreas["ChartArea1"].AxisY.Title = "Quantity";
+        Chart1.ChartAreas["ChartArea1"].AxisY.Title = "Quantity in numbers";
 
 
 
@@ -365,6 +355,41 @@ public partial class Admin_AdminDashboard : System.Web.UI.Page
 
         Color color = ColorTranslator.FromHtml("#ff4500");
         Chart1.Series[0].Color = color;
+
+
+        //Newly added code by Nikhil to show contains means note 16-12-2024
+
+        //// Remove any previous annotations or labels
+        // Chart1.Annotations.Clear();
+
+        //// Add a note (TextAnnotation) for the Y-axis and X-axis labels.
+        //TextAnnotation axisNote = new TextAnnotation
+        //{
+        //    Text = "Y Axis: Quantity in numbers",  // Note for Y-axis
+        //    ForeColor = Color.Black,
+        //    Font = new Font("Arial", 10, FontStyle.Bold),
+        //    X = 80.5, // Positioning on the chart area
+        //    Y = 11.05, // Adjust position to be outside the chart area
+        //    Alignment = ContentAlignment.MiddleCenter
+        //};
+
+        //// Add the annotation to the chart's annotations collection (for the Y axis)
+        //Chart1.Annotations.Add(axisNote);
+
+        //axisNote = new TextAnnotation
+        //{
+        //    Text = "X Axis: Department",  // Note for X-axis
+        //    ForeColor = Color.Black,
+        //    Font = new Font("Arial", 10, FontStyle.Bold),
+        //    X = 80.5, // Positioning on the chart area
+        //    Y = 6.05, // Adjust position to be below the chart area
+        //    Alignment = ContentAlignment.MiddleCenter
+        //};
+
+        //// Add the annotation to the chart's annotations collection (for the X axis)
+        //Chart1.Annotations.Add(axisNote);
+
+        //End  16-12-2024
 
 
         // Chart1.ChartAreas["ChartArea1"].AxisY.MajorGrid.Enabled = false;    

@@ -549,9 +549,19 @@ public partial class Admin_ManualOrderAcceptance : System.Web.UI.Page
                 con.Open();
                 string jobNo = Convert.ToString(scmds.ExecuteScalar());
                 txtJobNo.Text = jobNo;
-            }            
-            int maxid = dt.Rows[0]["maxid"].ToString() == "" ? MxID + 1 : Convert.ToInt32(dt.Rows[0]["maxid"].ToString()) + 1;
-            txtOAno.Text = "OA24250000" + maxid.ToString();
+            }
+            //Old Code
+            //int maxid = dt.Rows[0]["maxid"].ToString() == "" ? MxID + 1 : Convert.ToInt32(dt.Rows[0]["maxid"].ToString()) + 1;
+            //txtOAno.Text = "OA24250000" + maxid.ToString();
+
+            // New Code By Nikhil 16-12-2024
+            SqlCommand cmd = new SqlCommand("SP_GenerateNewOaNumber", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add("@NewOAno", SqlDbType.NVarChar, 20).Direction = ParameterDirection.Output;
+            cmd.ExecuteNonQuery();
+            string OaNo = Convert.ToString(cmd.Parameters["@NewOAno"].Value);
+
+            txtOAno.Text = OaNo;
 
         }
         else

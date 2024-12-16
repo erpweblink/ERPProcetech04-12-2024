@@ -450,6 +450,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
             Session["material"] = dtall.Rows[0]["material"].ToString();
             ddlpaymentterm.SelectedItem.Text = dtall.Rows[0]["paymentterm1"].ToString();
             txtinspection.Text = dtall.Rows[0]["inspection"].ToString();
+
             // txtsr1.Text = dtall.Rows[0]["sno"].ToString();
             //txtHsn1.Text = dtall.Rows[0]["hsncode"].ToString();
             //txtQty1.Text = dtall.Rows[0]["qty"].ToString();
@@ -509,6 +510,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
             if (!string.IsNullOrEmpty(dtall.Rows[0]["filename1"].ToString()))
             {
                 lblimg.Visible = true;
+                RequiredFieldValidator17.Enabled = false;
                 lblimg.Text = "<u>Attachment </u>: " + dtall.Rows[0]["filename1"].ToString();
                 oldfile1 = dtall.Rows[0]["filename1"].ToString();
                 oldfile2 = dtall.Rows[0]["filename2"].ToString();

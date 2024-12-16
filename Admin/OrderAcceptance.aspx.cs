@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Office.Word;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
@@ -126,7 +127,8 @@ public partial class Admin_OrderAcceptance : System.Web.UI.Page
         //    OANO = "PA/OA/" + previousyear.ToString() + "-" + FinYear + "/" + "01";
         //}
         //return OANO;
-        string OANO = "";
+
+        string OaNo = "";
         SqlDataAdapter ad = new SqlDataAdapter("SELECT max([id]) as maxid, max([JobNo]) as JobNo FROM [OrderAccept]", con);
         DataTable dt = new DataTable();
         ad.Fill(dt);
@@ -149,15 +151,25 @@ public partial class Admin_OrderAcceptance : System.Web.UI.Page
                 txtJobNo.Text = jobNo;
             }
 
-            int maxid = dt.Rows[0]["maxid"].ToString() == "" ? MxID + 1 : Convert.ToInt32(dt.Rows[0]["maxid"].ToString()) + 1;
-            OANO = "OA24250000" + maxid.ToString();
-            txtOAno.Text = "OA24250000" + maxid.ToString();
+            // Old code to generate OA no 
+            //int maxid = dt.Rows[0]["maxid"].ToString() == "" ? MxID + 1 : Convert.ToInt32(dt.Rows[0]["maxid"].ToString()) + 1;
+            // OANO = "OA24250000" + maxid.ToString();
+            // txtOAno.Text = "OA24250000" + maxid.ToString();
+
+            // New Code By Nikhil 16-12-2024
+            SqlCommand cmd = new SqlCommand("SP_GenerateNewOaNumber", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add("@NewOAno", SqlDbType.NVarChar, 20).Direction = ParameterDirection.Output;
+            cmd.ExecuteNonQuery();
+             OaNo = Convert.ToString(cmd.Parameters["@NewOAno"].Value);
+
+            txtOAno.Text = OaNo;
         }
         else
         {
             //ComCode = string.Empty;
         }
-        return OANO;
+        return OaNo;
     }
 
 

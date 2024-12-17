@@ -573,8 +573,8 @@ public partial class Admin_Welding : System.Web.UI.Page
                         else
                         {
 
-
-                            int TotalReturn_Outward = Convert.ToInt32(hdnInwardQty.Value) - Convert.ToInt32(txtReturnInward.Text);
+                            Inwardqty = 0;
+                            //int TotalReturn_Outward = Convert.ToInt32(hdnInwardQty.Value) - Convert.ToInt32(txtReturnInward.Text);
                             int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
 
                             //Updated current stage
@@ -585,7 +585,8 @@ public partial class Admin_Welding : System.Web.UI.Page
                             //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblCNCBending] SET [InwardQty] = '" + TotalReturnInward + "' ,[IsComplete] = NULL  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
                             //cmdupdate1.ExecuteNonQuery();
 
-                            Setreturnquantity(TotalReturn_Outward, TotalReturnInward);
+                            //Setreturnquantity(TotalReturn_Outward, TotalReturnInward);
+                            InsertFullReturnQuantity(TotalReturnInward);
 
 
                         }
@@ -876,8 +877,20 @@ public partial class Admin_Welding : System.Web.UI.Page
 
             if (Success >= 0)
             {
-                SqlCommand cmdDelete = new SqlCommand("DELETE FROM [tblWelding] WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                cmdDelete.ExecuteNonQuery();
+                SqlCommand cmdselect = new SqlCommand("select InwardQty from  tblWelding  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                Object Inwardqty = cmdselect.ExecuteScalar();
+                if (Inwardqty == null)
+                {
+                    SqlCommand cmdDelete = new SqlCommand("DELETE FROM [tblWelding] WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                    cmdDelete.ExecuteNonQuery();
+                }
+                else
+                {
+                    int inquity = Convert.ToInt32(Inwardqty) - Convert.ToInt32(TotalReturnInward);
+
+                    SqlCommand cmdsupdate = new SqlCommand("UPDATE [tblWelding] SET [InwardQty] = '" + inquity + "' WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                    cmdsupdate.ExecuteNonQuery();
+                }
             }
         }
         else

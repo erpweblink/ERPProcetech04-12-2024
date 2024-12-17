@@ -638,9 +638,9 @@ public partial class Admin_QualityAssurance : System.Web.UI.Page
                         }
                         else
                         {
+                            Inwardqty = 0;
 
-
-                            int TotalReturn_Outward = Convert.ToInt32(hdnInwardQty.Value) - Convert.ToInt32(txtReturnInward.Text);
+                           // int TotalReturn_Outward = Convert.ToInt32(hdnInwardQty.Value) - Convert.ToInt32(txtReturnInward.Text);
                             int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
 
                             //Updated current stage
@@ -652,7 +652,8 @@ public partial class Admin_QualityAssurance : System.Web.UI.Page
                             //cmdupdate1.ExecuteNonQuery();
 
 
-                            Setreturnquantity(TotalReturn_Outward, TotalReturnInward);
+                            // Setreturnquantity(TotalReturn_Outward, TotalReturnInward);
+                            InsertFullReturnQuantity(TotalReturnInward);
 
                         }
                         con.Close();
@@ -906,8 +907,20 @@ public partial class Admin_QualityAssurance : System.Web.UI.Page
 
             if (Success >= 0)
             {
-                SqlCommand cmdDelete = new SqlCommand("DELETE FROM [tblQualityAsurance] WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                cmdDelete.ExecuteNonQuery();
+                SqlCommand cmdselect = new SqlCommand("select InwardQty from  tblQualityAsurance  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                Object Inwardqty = cmdselect.ExecuteScalar();
+                if (Inwardqty == null)
+                {
+                    SqlCommand cmdDelete = new SqlCommand("DELETE FROM [tblQualityAsurance] WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                    cmdDelete.ExecuteNonQuery();
+                }
+                else
+                {
+                    int inquity = Convert.ToInt32(Inwardqty) - Convert.ToInt32(TotalReturnInward);
+
+                    SqlCommand cmdsupdate = new SqlCommand("UPDATE [tblQualityAsurance] SET [InwardQty] = '" + inquity + "' WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                    cmdsupdate.ExecuteNonQuery();
+                }
             }
         }
         else

@@ -512,13 +512,13 @@ public partial class Admin_LaserCutting : System.Web.UI.Page
                         string Tbale = ddlstages.SelectedValue;
                         SqlCommand cmdselect = new SqlCommand("select InwardQty from  " + Tbale + "  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
                         Object Inwardqty = cmdselect.ExecuteScalar();
-
+                      
 
                         if (Convert.ToInt32(txtReturnInward.Text) == Convert.ToInt32(hdnInwardQty.Value))
                         {
                             if (Inwardqty != null)
                             {
-                                //Inwardqty = 0;
+                                Inwardqty = 0;
                                 // If all record return
                                 //SqlCommand cmdDelete = new SqlCommand("Delete from tblLaserCutting WHERE SubOA='" + hdnSubOANo.Value + "'", con);
                                 //cmdDelete.ExecuteNonQuery();
@@ -563,8 +563,8 @@ public partial class Admin_LaserCutting : System.Web.UI.Page
                             }
                             else
                             {
-                                //Inwardqty = 0;
-                                int TotalReturn_Outward = Convert.ToInt32(hdnInwardQty.Value) - Convert.ToInt32(txtReturnInward.Text);
+                                Inwardqty = 0;
+                                //int TotalReturn_Outward = Convert.ToInt32(hdnInwardQty.Value) - Convert.ToInt32(txtReturnInward.Text);
                                 int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
 
                                 ////Updated current stage
@@ -574,7 +574,9 @@ public partial class Admin_LaserCutting : System.Web.UI.Page
                                 ////Updated Prev stage 
                                 //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + TotalReturnInward + "' ,[IsComplete] = NULL  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
                                 //cmdupdate1.ExecuteNonQuery();
-                                Setreturnquantity(TotalReturn_Outward, TotalReturnInward);
+                                //Setreturnquantity(TotalReturn_Outward, TotalReturnInward);
+
+                                InsertFullReturnQuantity(TotalReturnInward);
                             }
 
 
@@ -870,7 +872,7 @@ public partial class Admin_LaserCutting : System.Web.UI.Page
             reader.Close();
 
             SqlCommand cmdupdate = new SqlCommand(
-                "INSERT INTO '" + Table + "' (OAnumber, SubOA, customername, size, TotalQty, InwardDtTime, InwardQty, DeliveryDate, JobNo, IsComplete,IsApprove) " +
+                "INSERT INTO " + Table + " (OAnumber, SubOA, customername, size, TotalQty, InwardDtTime, InwardQty, DeliveryDate, JobNo, IsComplete,IsApprove) " +
                 "VALUES (@OAnumber, @SubOA, @customername, @size, @totalinward, @inwarddatetime, @inwardqty, @deliverydate, @JobNo, NULL,1)", con);
 
 
@@ -888,8 +890,20 @@ public partial class Admin_LaserCutting : System.Web.UI.Page
 
             if (Success >= 0)
             {
-                SqlCommand cmdDelete = new SqlCommand("DELETE FROM [tblLaserCutting] WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                cmdDelete.ExecuteNonQuery();
+                SqlCommand cmdselect = new SqlCommand("select InwardQty from  tblLaserCutting  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                Object Inwardqty = cmdselect.ExecuteScalar();
+                if(Inwardqty == null)
+                {
+                    SqlCommand cmdDelete = new SqlCommand("DELETE FROM [tblLaserCutting] WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                    cmdDelete.ExecuteNonQuery();
+                }
+                else
+                {
+                    int inquity = Convert.ToInt32(Inwardqty) - Convert.ToInt32(TotalReturnInward);
+
+                    SqlCommand cmdsupdate = new SqlCommand("UPDATE [tblLaserCutting] SET [InwardQty] = '" + inquity + "' WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                    cmdsupdate.ExecuteNonQuery();
+                }
             }
         }
         else

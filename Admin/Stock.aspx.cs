@@ -563,7 +563,9 @@ public partial class Admin_Stock : System.Web.UI.Page
 
     protected void lnkbtnReturn_Click(object sender, EventArgs e)
     {
-        if (ddlstages.SelectedValue != "0")
+        if (Session["OneTimeFlag"] == null || Session["OneTimeFlag"].ToString() == "")
+        {
+            if (ddlstages.SelectedValue != "0")
         {
             try
             {
@@ -682,7 +684,11 @@ public partial class Admin_Stock : System.Web.UI.Page
         {
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('select stage..!');window.location.href='Stock.aspx';", true);
         }
-
+        }
+        else
+        {
+            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Quantity has been Return Successfully..!');window.location.href='Stock.aspx';", true);
+        }
     }
     protected void btnPrintData_Click(object sender, EventArgs e)
     {

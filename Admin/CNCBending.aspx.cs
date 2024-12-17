@@ -361,50 +361,80 @@ public partial class Admin_CNCBending : System.Web.UI.Page
         }
     }
 
-#endregion
+    #endregion
 
 
-protected void ddlONumber_SelectedIndexChanged(object sender, EventArgs e)
-{
-    GetCNCBendingData();
-    txtcustomerName.Enabled = false;
-}
-
-protected void txtOANumber_TextChanged(object sender, EventArgs e)
-{
-    GetCNCBendingData();
-    ddlONumber.Enabled = false;
-}
-
-protected void btnReset_Click(object sender, EventArgs e)
-{
-    Resetdata();
-}
-
-protected void Resetdata()
-{
-    //txtcustomerName.Text = ""; ddlONumber.Text = "--Select--"; ddlONumber.Enabled = true;
-    //dgvCNCBending.DataSource = null;
-    //dgvCNCBending.DataBind();
-    btnGetSelected.Visible = false;
-    // txtcustomerName.Enabled = true;
-    //Response.Redirect("LaserProgramming.aspx");
-    GetCNCBendingData();
-}
-
-//Checkbox All checked
-protected void chkRow_CheckedChanged(object sender, EventArgs e)
-{
-    foreach (GridViewRow row in dgvCNCBending.Rows)
+    protected void ddlONumber_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (row.RowType == DataControlRowType.DataRow)
+        GetCNCBendingData();
+        txtcustomerName.Enabled = false;
+    }
+
+    protected void txtOANumber_TextChanged(object sender, EventArgs e)
+    {
+        GetCNCBendingData();
+        ddlONumber.Enabled = false;
+    }
+
+    protected void btnReset_Click(object sender, EventArgs e)
+    {
+        Resetdata();
+    }
+
+    protected void Resetdata()
+    {
+        //txtcustomerName.Text = ""; ddlONumber.Text = "--Select--"; ddlONumber.Enabled = true;
+        //dgvCNCBending.DataSource = null;
+        //dgvCNCBending.DataBind();
+        btnGetSelected.Visible = false;
+        // txtcustomerName.Enabled = true;
+        //Response.Redirect("LaserProgramming.aspx");
+        GetCNCBendingData();
+    }
+
+    //Checkbox All checked
+    protected void chkRow_CheckedChanged(object sender, EventArgs e)
+    {
+        foreach (GridViewRow row in dgvCNCBending.Rows)
         {
-            CheckBox chkRow = (row.Cells[1].FindControl("chkRow") as CheckBox);
-            int totalCount = dgvCNCBending.Rows.Cast<GridViewRow>().Count(r => ((CheckBox)r.FindControl("chkRow")).Checked);
-            TextBox Inwardtb = (TextBox)row.Cells[1].FindControl("txtInwardQty");
-            int InwardQty = Convert.ToInt32(Inwardtb.Text);
-            if (chkRow.Checked == true)
+            if (row.RowType == DataControlRowType.DataRow)
             {
+                CheckBox chkRow = (row.Cells[1].FindControl("chkRow") as CheckBox);
+                int totalCount = dgvCNCBending.Rows.Cast<GridViewRow>().Count(r => ((CheckBox)r.FindControl("chkRow")).Checked);
+                TextBox Inwardtb = (TextBox)row.Cells[1].FindControl("txtInwardQty");
+                int InwardQty = Convert.ToInt32(Inwardtb.Text);
+                if (chkRow.Checked == true)
+                {
+                    if (totalCount > 0)
+                    {
+                        if (InwardQty == 0)
+                        {
+                            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Less Quantity- You have sent Quantity to Welding department...!')", true);
+                        }
+                        else
+                        {
+                            btnGetSelected.Visible = true;
+                        }
+                    }
+                    else
+                    {
+                        btnGetSelected.Visible = false;
+                    }
+                }
+            }
+        }
+    }
+
+    protected void checkAll_CheckedChanged(object sender, EventArgs e)
+    {
+        foreach (GridViewRow row in dgvCNCBending.Rows)
+        {
+            if (row.RowType == DataControlRowType.DataRow)
+            {
+                CheckBox chkRow = (row.Cells[1].FindControl("chkRow") as CheckBox);
+                int totalCount = dgvCNCBending.Rows.Cast<GridViewRow>().Count(r => ((CheckBox)r.FindControl("chkRow")).Checked);
+                TextBox Inwardtb = (TextBox)row.Cells[1].FindControl("txtInwardQty");
+                int InwardQty = Convert.ToInt32(Inwardtb.Text);
                 if (totalCount > 0)
                 {
                     if (InwardQty == 0)
@@ -423,400 +453,376 @@ protected void chkRow_CheckedChanged(object sender, EventArgs e)
             }
         }
     }
-}
 
-protected void checkAll_CheckedChanged(object sender, EventArgs e)
-{
-    foreach (GridViewRow row in dgvCNCBending.Rows)
+    private void calculationA(GridViewRow row)
     {
-        if (row.RowType == DataControlRowType.DataRow)
-        {
-            CheckBox chkRow = (row.Cells[1].FindControl("chkRow") as CheckBox);
-            int totalCount = dgvCNCBending.Rows.Cast<GridViewRow>().Count(r => ((CheckBox)r.FindControl("chkRow")).Checked);
-            TextBox Inwardtb = (TextBox)row.Cells[1].FindControl("txtInwardQty");
-            int InwardQty = Convert.ToInt32(Inwardtb.Text);
-            if (totalCount > 0)
-            {
-                if (InwardQty == 0)
-                {
-                    ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Less Quantity- You have sent Quantity to Welding department...!')", true);
-                }
-                else
-                {
-                    btnGetSelected.Visible = true;
-                }
-            }
-            else
-            {
-                btnGetSelected.Visible = false;
-            }
-        }
+        TextBox txt_Inward = (TextBox)row.FindControl("txtInwardQty");
+        TextBox txt_Outward = (TextBox)row.FindControl("txtOutwardQty");
+        txt_Inward.Text = (Convert.ToDecimal(txt_Inward.Text.Trim()) - Convert.ToDecimal(txt_Outward.Text.Trim())).ToString();
     }
-}
 
-private void calculationA(GridViewRow row)
-{
-    TextBox txt_Inward = (TextBox)row.FindControl("txtInwardQty");
-    TextBox txt_Outward = (TextBox)row.FindControl("txtOutwardQty");
-    txt_Inward.Text = (Convert.ToDecimal(txt_Inward.Text.Trim()) - Convert.ToDecimal(txt_Outward.Text.Trim())).ToString();
-}
-
-protected void txtOutwardQty_TextChanged(object sender, EventArgs e)
-{
-    ViewState["Iscomplete"] = "1";
-    GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
-    calculationA(row);
-}
-
-public string encrypt(string encryptString)
-{
-    string EncryptionKey = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    byte[] clearBytes = Encoding.Unicode.GetBytes(encryptString);
-    using (Aes encryptor = Aes.Create())
+    protected void txtOutwardQty_TextChanged(object sender, EventArgs e)
     {
-        Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] {
+        ViewState["Iscomplete"] = "1";
+        GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
+        calculationA(row);
+    }
+
+    public string encrypt(string encryptString)
+    {
+        string EncryptionKey = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        byte[] clearBytes = Encoding.Unicode.GetBytes(encryptString);
+        using (Aes encryptor = Aes.Create())
+        {
+            Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] {
             0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76
         });
-        encryptor.Key = pdb.GetBytes(32);
-        encryptor.IV = pdb.GetBytes(16);
-        using (MemoryStream ms = new MemoryStream())
-        {
-            using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+            encryptor.Key = pdb.GetBytes(32);
+            encryptor.IV = pdb.GetBytes(16);
+            using (MemoryStream ms = new MemoryStream())
             {
-                cs.Write(clearBytes, 0, clearBytes.Length);
-                cs.Close();
+                using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+                {
+                    cs.Write(clearBytes, 0, clearBytes.Length);
+                    cs.Close();
+                }
+                encryptString = Convert.ToBase64String(ms.ToArray());
             }
-            encryptString = Convert.ToBase64String(ms.ToArray());
         }
+        return encryptString;
     }
-    return encryptString;
-}
 
-public string Between(string STR, string FirstString, string LastString)
-{
-    string FinalString;
-    int Pos1 = STR.IndexOf(FirstString) + FirstString.Length;
-    int Pos2 = STR.IndexOf(LastString);
-    FinalString = STR.Substring(Pos1, Pos2 - Pos1);
-    return FinalString;
-}
-
-protected void lnkbtnReturn_Click(object sender, EventArgs e)
-{
-    //try
-    //{
-    //    if (Convert.ToInt32(txtReturnInward.Text) > Convert.ToInt32(hdnInwardQty.Value))
-    //    {
-    //        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Inward Qauntity Should be Smaller than or equal to Outward Quantity..!')", true);
-    //        txtReturnInward.Focus();
-    //    }
-    //    else
-    //    {
-    //        con.Open();
-
-    //        //Get Exsiting Record
-    //        //SqlCommand cmdselect = new SqlCommand("select InwardQty from tblLaserCutting WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-    //        //Object Inwardqty = cmdselect.ExecuteScalar();
-
-    //        string Tbale = ddlstages.SelectedValue;
-    //        SqlCommand cmdselect = new SqlCommand("select InwardQty from  " + Tbale + "  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-    //        Object Inwardqty = cmdselect.ExecuteScalar();
-
-
-    //        if (Convert.ToInt32(txtReturnInward.Text) == Convert.ToInt32(hdnInwardQty.Value))
-    //        {
-    //            // If all record return
-    //            //SqlCommand cmdDelete = new SqlCommand("Delete from [tblCNCBending] WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-    //            //cmdDelete.ExecuteNonQuery();
-
-    //            int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
-    //            //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserCutting] SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-    //            //cmdupdate1.ExecuteNonQuery();
-    //            SetFullReturnquntity(TotalReturnInward);
-
-    //        }
-    //        else
-    //        {
-
-
-    //            int TotalReturn_Outward = Convert.ToInt32(hdnInwardQty.Value) - Convert.ToInt32(txtReturnInward.Text);
-    //            int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
-
-    //            ////Updated current stage
-    //            //SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblCNCBending] SET [InwardQty] = '" + TotalReturn_Outward + "',[OutwardQty] = '" + TotalReturn_Outward + "' WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-    //            //cmdupdate.ExecuteNonQuery();
-
-    //            ////Updated Prev stage 
-    //            //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserCutting] SET [InwardQty] = '" + TotalReturnInward + "' ,[IsComplete] = NULL  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-    //            //cmdupdate1.ExecuteNonQuery();
-
-    //            Setreturnquantity(TotalReturn_Outward, TotalReturnInward);
-
-    //        }
-    //        con.Close();
-    //        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Quantity has been Return Successfully..!');window.location.href='CNCBending.aspx';", true);
-    //    }
-    //}
-    //catch (Exception)
-    //{
-    //    throw;
-    //}
-
-
-    if (ddlstages.SelectedValue != "0")
+    public string Between(string STR, string FirstString, string LastString)
     {
-        try
+        string FinalString;
+        int Pos1 = STR.IndexOf(FirstString) + FirstString.Length;
+        int Pos2 = STR.IndexOf(LastString);
+        FinalString = STR.Substring(Pos1, Pos2 - Pos1);
+        return FinalString;
+    }
+
+    protected void lnkbtnReturn_Click(object sender, EventArgs e)
+    {
+        //try
+        //{
+        //    if (Convert.ToInt32(txtReturnInward.Text) > Convert.ToInt32(hdnInwardQty.Value))
+        //    {
+        //        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Inward Qauntity Should be Smaller than or equal to Outward Quantity..!')", true);
+        //        txtReturnInward.Focus();
+        //    }
+        //    else
+        //    {
+        //        con.Open();
+
+        //        //Get Exsiting Record
+        //        //SqlCommand cmdselect = new SqlCommand("select InwardQty from tblLaserCutting WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+        //        //Object Inwardqty = cmdselect.ExecuteScalar();
+
+        //        string Tbale = ddlstages.SelectedValue;
+        //        SqlCommand cmdselect = new SqlCommand("select InwardQty from  " + Tbale + "  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+        //        Object Inwardqty = cmdselect.ExecuteScalar();
+
+
+        //        if (Convert.ToInt32(txtReturnInward.Text) == Convert.ToInt32(hdnInwardQty.Value))
+        //        {
+        //            // If all record return
+        //            //SqlCommand cmdDelete = new SqlCommand("Delete from [tblCNCBending] WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+        //            //cmdDelete.ExecuteNonQuery();
+
+        //            int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
+        //            //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserCutting] SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+        //            //cmdupdate1.ExecuteNonQuery();
+        //            SetFullReturnquntity(TotalReturnInward);
+
+        //        }
+        //        else
+        //        {
+
+
+        //            int TotalReturn_Outward = Convert.ToInt32(hdnInwardQty.Value) - Convert.ToInt32(txtReturnInward.Text);
+        //            int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
+
+        //            ////Updated current stage
+        //            //SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblCNCBending] SET [InwardQty] = '" + TotalReturn_Outward + "',[OutwardQty] = '" + TotalReturn_Outward + "' WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+        //            //cmdupdate.ExecuteNonQuery();
+
+        //            ////Updated Prev stage 
+        //            //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserCutting] SET [InwardQty] = '" + TotalReturnInward + "' ,[IsComplete] = NULL  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+        //            //cmdupdate1.ExecuteNonQuery();
+
+        //            Setreturnquantity(TotalReturn_Outward, TotalReturnInward);
+
+        //        }
+        //        con.Close();
+        //        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Quantity has been Return Successfully..!');window.location.href='CNCBending.aspx';", true);
+        //    }
+        //}
+        //catch (Exception)
+        //{
+        //    throw;
+        //}
+        if (Session["OneTimeFlag"] == null || Session["OneTimeFlag"].ToString() == "")
         {
-            if (Convert.ToInt32(txtReturnInward.Text) > Convert.ToInt32(hdnInwardQty.Value))
+
+            if (ddlstages.SelectedValue != "0")
             {
-                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Inward Qauntity Should be Smaller than or equal to Outward Quantity..!')", true);
-                txtReturnInward.Focus();
+                try
+                {
+                    if (Convert.ToInt32(txtReturnInward.Text) > Convert.ToInt32(hdnInwardQty.Value))
+                    {
+                        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Inward Qauntity Should be Smaller than or equal to Outward Quantity..!')", true);
+                        txtReturnInward.Focus();
+                    }
+                    else
+                    {
+                        con.Open();
+
+                        //Get Exsiting Record
+                        //SqlCommand cmdselect = new SqlCommand("select InwardQty from tblLaserPrograming WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                        //Object Inwardqty = cmdselect.ExecuteScalar();
+
+                        string Tbale = ddlstages.SelectedValue;
+                        SqlCommand cmdselect = new SqlCommand("select InwardQty from  " + Tbale + "  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                        Object Inwardqty = cmdselect.ExecuteScalar();
+
+
+                        if (Convert.ToInt32(txtReturnInward.Text) == Convert.ToInt32(hdnInwardQty.Value))
+                        {
+                            if (Inwardqty != null)
+                            {
+                                //Inwardqty = 0;
+                                // If all record return
+                                //SqlCommand cmdDelete = new SqlCommand("Delete from tblLaserCutting WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                                //cmdDelete.ExecuteNonQuery();
+
+                                int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
+                                //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                                //cmdupdate1.ExecuteNonQuery();
+
+                                SetFullReturnquntity(TotalReturnInward);
+                            }
+                            else
+                            {
+                                //Uncommented the InwardQty = 0 and changed the method name from [SetFullReturnquntity] to new one below
+                                //By Nikhil if there is No data presnet in returing table 11-12-2024
+
+                                Inwardqty = 0;
+                                // If all record return
+                                //SqlCommand cmdDelete = new SqlCommand("Delete from tblLaserCutting WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                                //cmdDelete.ExecuteNonQuery();
+
+                                int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
+                                //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                                //cmdupdate1.ExecuteNonQuery();
+
+                                InsertFullReturnQuantity(TotalReturnInward);
+                            }
+                        }
+
+                        else
+                        {
+
+                            if (Inwardqty != null)
+                            {
+                                int TotalReturn_Outward = Convert.ToInt32(hdnInwardQty.Value) - Convert.ToInt32(txtReturnInward.Text);
+                                int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
+
+                                ////Updated current stage
+                                //SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblLaserCutting] SET [InwardQty] = '" + TotalReturn_Outward + "',[OutwardQty] = '" + TotalReturn_Outward + "' WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                                //cmdupdate.ExecuteNonQuery();
+
+                                ////Updated Prev stage 
+                                //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + TotalReturnInward + "' ,[IsComplete] = NULL  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                                //cmdupdate1.ExecuteNonQuery();
+                                Setreturnquantity(TotalReturn_Outward, TotalReturnInward);
+                            }
+                            else
+                            {
+                                //Inwardqty = 0;
+                                int TotalReturn_Outward = Convert.ToInt32(hdnInwardQty.Value) - Convert.ToInt32(txtReturnInward.Text);
+                                int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
+
+                                ////Updated current stage
+                                //SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblLaserCutting] SET [InwardQty] = '" + TotalReturn_Outward + "',[OutwardQty] = '" + TotalReturn_Outward + "' WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                                //cmdupdate.ExecuteNonQuery();
+
+                                ////Updated Prev stage 
+                                //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + TotalReturnInward + "' ,[IsComplete] = NULL  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                                //cmdupdate1.ExecuteNonQuery();
+                                Setreturnquantity(TotalReturn_Outward, TotalReturnInward);
+                            }
+
+
+
+                        }
+                        con.Close();
+                        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Quantity has been Return Successfully..!');window.location.href='LaserCutting.aspx';", true);
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
             }
             else
             {
-                con.Open();
-
-                //Get Exsiting Record
-                //SqlCommand cmdselect = new SqlCommand("select InwardQty from tblLaserPrograming WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                //Object Inwardqty = cmdselect.ExecuteScalar();
-
-                string Tbale = ddlstages.SelectedValue;
-                SqlCommand cmdselect = new SqlCommand("select InwardQty from  " + Tbale + "  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                Object Inwardqty = cmdselect.ExecuteScalar();
-
-
-                if (Convert.ToInt32(txtReturnInward.Text) == Convert.ToInt32(hdnInwardQty.Value))
-                {
-                    if (Inwardqty != null)
-                    {
-                        //Inwardqty = 0;
-                        // If all record return
-                        //SqlCommand cmdDelete = new SqlCommand("Delete from tblLaserCutting WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                        //cmdDelete.ExecuteNonQuery();
-
-                        int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
-                        //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                        //cmdupdate1.ExecuteNonQuery();
-
-                        SetFullReturnquntity(TotalReturnInward);
-                    }
-                    else
-                    {
-                        //Uncommented the InwardQty = 0 and changed the method name from [SetFullReturnquntity] to new one below
-                        //By Nikhil if there is No data presnet in returing table 11-12-2024
-
-                        Inwardqty = 0;
-                        // If all record return
-                        //SqlCommand cmdDelete = new SqlCommand("Delete from tblLaserCutting WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                        //cmdDelete.ExecuteNonQuery();
-
-                        int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
-                        //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                        //cmdupdate1.ExecuteNonQuery();
-
-                        InsertFullReturnQuantity(TotalReturnInward);
-                    }
-                }
-
-                else
-                {
-
-                    if (Inwardqty != null)
-                    {
-                        int TotalReturn_Outward = Convert.ToInt32(hdnInwardQty.Value) - Convert.ToInt32(txtReturnInward.Text);
-                        int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
-
-                        ////Updated current stage
-                        //SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblLaserCutting] SET [InwardQty] = '" + TotalReturn_Outward + "',[OutwardQty] = '" + TotalReturn_Outward + "' WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                        //cmdupdate.ExecuteNonQuery();
-
-                        ////Updated Prev stage 
-                        //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + TotalReturnInward + "' ,[IsComplete] = NULL  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                        //cmdupdate1.ExecuteNonQuery();
-                        Setreturnquantity(TotalReturn_Outward, TotalReturnInward);
-                    }
-                    else
-                    {
-                        //Inwardqty = 0;
-                        int TotalReturn_Outward = Convert.ToInt32(hdnInwardQty.Value) - Convert.ToInt32(txtReturnInward.Text);
-                        int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
-
-                        ////Updated current stage
-                        //SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblLaserCutting] SET [InwardQty] = '" + TotalReturn_Outward + "',[OutwardQty] = '" + TotalReturn_Outward + "' WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                        //cmdupdate.ExecuteNonQuery();
-
-                        ////Updated Prev stage 
-                        //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + TotalReturnInward + "' ,[IsComplete] = NULL  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                        //cmdupdate1.ExecuteNonQuery();
-                        Setreturnquantity(TotalReturn_Outward, TotalReturnInward);
-                    }
-
-
-
-                }
-                con.Close();
-                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Quantity has been Return Successfully..!');window.location.href='LaserCutting.aspx';", true);
+                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('select stage..!');window.location.href='Stock.aspx';", true);
             }
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
-    else
-    {
-        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('select stage..!');window.location.href='Stock.aspx';", true);
-    }
 
-
-
-
-}
-
-protected void dgvCNCBending_RowCommand(object sender, GridViewCommandEventArgs e)
-{
-    if (e.CommandName == "selectOAnumber")
-    {
-        string oaNumber = Convert.ToString(e.CommandArgument.ToString());
-        ViewState["OANumber"] = oaNumber;
-        if (oaNumber != "")
-        {
-            SqlCommand cmd = new SqlCommand("select OutwardQty from tblRptCNCBending WHERE SubOA='" + oaNumber + "'", con);
-            string InwardQty = "";
-            con.Open();
-            using (SqlDataReader dr = cmd.ExecuteReader())
-            {
-                if (dr.HasRows)
-                {
-                    while (dr.Read())
-                    {
-                        //txtReturnOutward.Text = dr["OutwardQty"].ToString();
-                        //divReturn.Visible = true;
-                    }
-                }
-                else
-                {
-                    ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Outward Quantity Not Found..!')", true);
-                }
-            }
-            con.Close();
         }
         else
         {
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('OA number Does not exsist..!')", true);
+            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Quantity has been Return Successfully..!');window.location.href='LaserCutting.aspx';", true);
+
         }
+
+
     }
-}
 
-protected void dgvCNCBending_RowDataBound(object sender, GridViewRowEventArgs e)
-{
-    if (e.Row.RowType == DataControlRowType.DataRow)
+    protected void dgvCNCBending_RowCommand(object sender, GridViewCommandEventArgs e)
     {
-        TextBox txtOutwardQty = e.Row.FindControl("txtOutwardQty") as TextBox;
-
-        string empcode = Session["empcode"].ToString();
-        DataTable Dt = new DataTable();
-        SqlDataAdapter Sd = new SqlDataAdapter("Select id from [employees] where [empcode]='" + empcode + "'", con);
-        Sd.Fill(Dt);
-        if (Dt.Rows.Count > 0)
+        if (e.CommandName == "selectOAnumber")
         {
-            string idd = Dt.Rows[0]["id"].ToString();
-            DataTable Dtt = new DataTable();
-            SqlDataAdapter Sdd = new SqlDataAdapter("Select * FROM [DB_ProcetechERP].[tblUserRoleAuthorization] where UserID = '" + idd + "' AND PageName = 'CNCBending.aspx' AND PagesView = '1'", con);
-            Sdd.Fill(Dtt);
-            if (Dtt.Rows.Count > 0)
+            string oaNumber = Convert.ToString(e.CommandArgument.ToString());
+            ViewState["OANumber"] = oaNumber;
+            if (oaNumber != "")
             {
-                dgvCNCBending.Columns[1].Visible = false;
-                dgvCNCBending.Columns[13].Visible = false;
-                txtOutwardQty.ReadOnly = true;
-                btnPrintData.Visible = false;
+                SqlCommand cmd = new SqlCommand("select OutwardQty from tblRptCNCBending WHERE SubOA='" + oaNumber + "'", con);
+                string InwardQty = "";
+                con.Open();
+                using (SqlDataReader dr = cmd.ExecuteReader())
+                {
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            //txtReturnOutward.Text = dr["OutwardQty"].ToString();
+                            //divReturn.Visible = true;
+                        }
+                    }
+                    else
+                    {
+                        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Outward Quantity Not Found..!')", true);
+                    }
+                }
+                con.Close();
+            }
+            else
+            {
+                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('OA number Does not exsist..!')", true);
             }
         }
-
-
-
-        string Id = dgvCNCBending.DataKeys[e.Row.RowIndex].Value.ToString();
-        GridView gvDetails = e.Row.FindControl("gvDetails") as GridView;
-        gvDetails.DataSource = GetData(string.Format("select * from [DB_ProcetechERP].[vwCNCBending] where SubOA='{0}'", Id));
-        gvDetails.DataBind();
     }
-}
-private static DataTable GetData(string query)
-{
-    string strConnString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
-    using (SqlConnection con = new SqlConnection(strConnString))
+
+    protected void dgvCNCBending_RowDataBound(object sender, GridViewRowEventArgs e)
     {
-        using (SqlCommand cmd = new SqlCommand())
+        if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            cmd.CommandText = query;
-            using (SqlDataAdapter sda = new SqlDataAdapter())
+            TextBox txtOutwardQty = e.Row.FindControl("txtOutwardQty") as TextBox;
+
+            string empcode = Session["empcode"].ToString();
+            DataTable Dt = new DataTable();
+            SqlDataAdapter Sd = new SqlDataAdapter("Select id from [employees] where [empcode]='" + empcode + "'", con);
+            Sd.Fill(Dt);
+            if (Dt.Rows.Count > 0)
             {
-                cmd.Connection = con;
-                sda.SelectCommand = cmd;
-                using (DataSet ds = new DataSet())
+                string idd = Dt.Rows[0]["id"].ToString();
+                DataTable Dtt = new DataTable();
+                SqlDataAdapter Sdd = new SqlDataAdapter("Select * FROM [DB_ProcetechERP].[tblUserRoleAuthorization] where UserID = '" + idd + "' AND PageName = 'CNCBending.aspx' AND PagesView = '1'", con);
+                Sdd.Fill(Dtt);
+                if (Dtt.Rows.Count > 0)
                 {
-                    DataTable dt = new DataTable();
-                    sda.Fill(dt);
-                    return dt;
+                    dgvCNCBending.Columns[1].Visible = false;
+                    dgvCNCBending.Columns[13].Visible = false;
+                    txtOutwardQty.ReadOnly = true;
+                    btnPrintData.Visible = false;
+                }
+            }
+
+
+
+            string Id = dgvCNCBending.DataKeys[e.Row.RowIndex].Value.ToString();
+            GridView gvDetails = e.Row.FindControl("gvDetails") as GridView;
+            gvDetails.DataSource = GetData(string.Format("select * from [DB_ProcetechERP].[vwCNCBending] where SubOA='{0}'", Id));
+            gvDetails.DataBind();
+        }
+    }
+    private static DataTable GetData(string query)
+    {
+        string strConnString = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+        using (SqlConnection con = new SqlConnection(strConnString))
+        {
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.CommandText = query;
+                using (SqlDataAdapter sda = new SqlDataAdapter())
+                {
+                    cmd.Connection = con;
+                    sda.SelectCommand = cmd;
+                    using (DataSet ds = new DataSet())
+                    {
+                        DataTable dt = new DataTable();
+                        sda.Fill(dt);
+                        return dt;
+                    }
                 }
             }
         }
     }
-}
-protected void btnPrintData_Click(object sender, EventArgs e)
-{
-    try
+    protected void btnPrintData_Click(object sender, EventArgs e)
     {
-        //string URL = "PDFShow.aspx?Name=Drawing";
-        //string modified_URL = "window.open('" + URL + "', '_blank');";
-        //ScriptManager.RegisterStartupScript(this, typeof(string), "OPEN_WINDOW", modified_URL, true);
-        Response.Redirect("PDFShow.aspx?Name=CNC Bending");
-    }
-    catch (Exception ex)
-    {
-        throw ex;
-    }
-}
-
-protected void btnexcel_Click(object sender, EventArgs e)
-{
-    //string Report = "CNCBEN";
-    //string url = "ProductionExcel.aspx?Dep=" + Server.UrlEncode(Report);
-    //Response.Redirect(url);
-
-
-
-    if (txtCustomerNameNew.Text == "")
-    {
-        string Report = "CNCBEN";
-        string url = "ProductionExcel.aspx?Dep=" + Server.UrlEncode(Report);
-        Response.Redirect(url);
+        try
+        {
+            //string URL = "PDFShow.aspx?Name=Drawing";
+            //string modified_URL = "window.open('" + URL + "', '_blank');";
+            //ScriptManager.RegisterStartupScript(this, typeof(string), "OPEN_WINDOW", modified_URL, true);
+            Response.Redirect("PDFShow.aspx?Name=CNC Bending");
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
     }
 
-    else
+    protected void btnexcel_Click(object sender, EventArgs e)
     {
-        string Report = "CNCBEN";
-        string Customer = Server.UrlEncode(txtCustomerNameNew.Text);
-        string url = "ProductionExcel.aspx?Dep=" + Server.UrlEncode(Report) + "&Customer=" + Customer;
-        Response.Redirect(url);
+        //string Report = "CNCBEN";
+        //string url = "ProductionExcel.aspx?Dep=" + Server.UrlEncode(Report);
+        //Response.Redirect(url);
+
+
+
+        if (txtCustomerNameNew.Text == "")
+        {
+            string Report = "CNCBEN";
+            string url = "ProductionExcel.aspx?Dep=" + Server.UrlEncode(Report);
+            Response.Redirect(url);
+        }
+
+        else
+        {
+            string Report = "CNCBEN";
+            string Customer = Server.UrlEncode(txtCustomerNameNew.Text);
+            string url = "ProductionExcel.aspx?Dep=" + Server.UrlEncode(Report) + "&Customer=" + Customer;
+            Response.Redirect(url);
+        }
     }
-}
 
 
-protected void txtCustomerNameNew_TextChanged(object sender, EventArgs e)
-{
-    FillGrid();
-}
-
-
-
-public void FillGrid()
-{
-
-    try
+    protected void txtCustomerNameNew_TextChanged(object sender, EventArgs e)
     {
-        string query = string.Empty;
-        query = @"SELECT [CNCBendingId],[OANumber],[SubOA],[CustomerName],[Size],[TotalQty],[InwardDtTime],[InwardQty],[OutwardDtTime],[OutwardQty],
+        FillGrid();
+    }
+
+
+
+    public void FillGrid()
+    {
+
+        try
+        {
+            string query = string.Empty;
+            query = @"SELECT [CNCBendingId],[OANumber],[SubOA],[CustomerName],[Size],[TotalQty],[InwardDtTime],[InwardQty],[OutwardDtTime],[OutwardQty],
                 [DeliveryDate],[IsApprove],[IsPending],[IsCancel],[CreatedBy],[CreatedDate],A.[UpdatedBy],[UpdatedDate] 
               ,CustomerCode  FROM tblCNCBending AS A                
 			   LEFT JOIN Company AS C ON C.cname=A.customername
@@ -825,140 +831,140 @@ public void FillGrid()
                 ORDER BY CONVERT(DateTime, DeliveryDate, 103) ASC";
 
 
-        SqlDataAdapter ad = new SqlDataAdapter(query, con);
-        DataTable dt = new DataTable();
-        ad.Fill(dt);
-        if (dt.Rows.Count > 0)
+            SqlDataAdapter ad = new SqlDataAdapter(query, con);
+            DataTable dt = new DataTable();
+            ad.Fill(dt);
+            if (dt.Rows.Count > 0)
+            {
+                dgvCNCBending.DataSource = dt;
+                dgvCNCBending.DataBind();
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "Key", "<script>MakeStaticHeader('" + dgvCNCBending.ClientID + "', 900, 1020 , 40 ,true); </script>", false);
+            }
+            else
+            {
+                dgvCNCBending.DataSource = null;
+                dgvCNCBending.DataBind();
+                ScriptManager.RegisterStartupScript(Page, this.GetType(), "Key", "<script>MakeStaticHeader('" + dgvCNCBending.ClientID + "', 900, 1020 , 40 ,true); </script>", false);
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Pending Record Not Found..!');", true);
+            }
+        }
+        catch (Exception ex)
         {
-            dgvCNCBending.DataSource = dt;
-            dgvCNCBending.DataBind();
-            ScriptManager.RegisterStartupScript(Page, this.GetType(), "Key", "<script>MakeStaticHeader('" + dgvCNCBending.ClientID + "', 900, 1020 , 40 ,true); </script>", false);
+            throw ex;
+        }
+
+    }
+
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetCustomerList(string prefixText, int count)
+    {
+        return AutoFillCustomerlist(prefixText);
+    }
+
+    public static List<string> AutoFillCustomerlist(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.CommandText = "select DISTINCT cname from Company where " + "cname like @Search + '%'";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> Qno = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        Qno.Add(sdr["cname"].ToString());
+                    }
+                }
+                con.Close();
+                return Qno;
+            }
+        }
+    }
+
+    public void SetFullReturnquntity(int TotalReturnInward)
+    {
+        string Table = ddlstages.SelectedValue;
+        SqlCommand cmdupdate1 = new SqlCommand("UPDATE " + Table + " SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+        int Success = cmdupdate1.ExecuteNonQuery();
+        if (Success >= 0)
+        {
+            SqlCommand cmdDelete = new SqlCommand("Delete from [tblCNCBending] WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+            cmdDelete.ExecuteNonQuery();
+        }
+
+
+    }
+
+    //Added By Nikhil if there is No data presnet in returing table 11-12-2024
+    public void InsertFullReturnQuantity(int TotalReturnInward)
+    {
+
+        string Table = ddlstages.SelectedValue;
+        SqlCommand cmdupdate1 = new SqlCommand("SELECT * FROM [tblCNCBending] WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+        SqlDataReader reader = cmdupdate1.ExecuteReader();
+        if (reader.HasRows)
+        {
+            reader.Read();
+            string OAnumber = reader["OAnumber"].ToString();
+            string SubOA = reader["SubOA"].ToString();
+            string customername = reader["customername"].ToString();
+            string size = reader["size"].ToString();
+            int totalinward = Convert.ToInt32(reader["TotalQty"]);
+            DateTime inwarddatetime = Convert.ToDateTime(reader["InwardDtTime"]);
+            int inwardqty = Convert.ToInt32(reader["InwardQty"]);
+            DateTime deliverydate = Convert.ToDateTime(reader["DeliveryDate"]);
+            string JobNo = reader["JobNo"].ToString();
+
+            reader.Close();
+
+            SqlCommand cmdupdate = new SqlCommand(
+                "INSERT INTO " + Table + " (OAnumber, SubOA, customername, size, TotalQty, InwardDtTime, InwardQty, DeliveryDate, JobNo, IsComplete,IsApprove) " +
+                "VALUES (@OAnumber, @SubOA, @customername, @size, @totalinward, @inwarddatetime, @inwardqty, @deliverydate, @JobNo, NULL,1)", con);
+
+
+            cmdupdate.Parameters.AddWithValue("@OAnumber", OAnumber);
+            cmdupdate.Parameters.AddWithValue("@SubOA", SubOA);
+            cmdupdate.Parameters.AddWithValue("@customername", customername);
+            cmdupdate.Parameters.AddWithValue("@size", size);
+            cmdupdate.Parameters.AddWithValue("@totalinward", totalinward);
+            cmdupdate.Parameters.AddWithValue("@inwarddatetime", inwarddatetime);
+            cmdupdate.Parameters.AddWithValue("@inwardqty", TotalReturnInward);
+            cmdupdate.Parameters.AddWithValue("@deliverydate", deliverydate);
+            cmdupdate.Parameters.AddWithValue("@JobNo", JobNo);
+
+            int Success = cmdupdate.ExecuteNonQuery();
+
+            if (Success >= 0)
+            {
+                SqlCommand cmdDelete = new SqlCommand("DELETE FROM [tblCNCBending] WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                cmdDelete.ExecuteNonQuery();
+            }
         }
         else
         {
-            dgvCNCBending.DataSource = null;
-            dgvCNCBending.DataBind();
-            ScriptManager.RegisterStartupScript(Page, this.GetType(), "Key", "<script>MakeStaticHeader('" + dgvCNCBending.ClientID + "', 900, 1020 , 40 ,true); </script>", false);
-
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Pending Record Not Found..!');", true);
+            Console.WriteLine("No records found for SubOA: " + hdnSubOANo.Value);
         }
     }
-    catch (Exception ex)
+
+    public void Setreturnquantity(int TotalReturn_Outward, int TotalReturnInward)
     {
-        throw ex;
+        string Table = ddlstages.SelectedValue;
+        //Updated current stage
+        SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblCNCBending] SET [InwardQty] = '" + TotalReturn_Outward + "',[OutwardQty] = '" + TotalReturn_Outward + "' WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+        cmdupdate.ExecuteNonQuery();
+
+        //Updated Prev stage 
+        SqlCommand cmdupdate1 = new SqlCommand("UPDATE " + Table + " SET [InwardQty] = '" + TotalReturnInward + "' ,[IsComplete] = NULL  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+        cmdupdate1.ExecuteNonQuery();
     }
-
-}
-
-[System.Web.Script.Services.ScriptMethod()]
-[System.Web.Services.WebMethod]
-public static List<string> GetCustomerList(string prefixText, int count)
-{
-    return AutoFillCustomerlist(prefixText);
-}
-
-public static List<string> AutoFillCustomerlist(string prefixText)
-{
-    using (SqlConnection con = new SqlConnection())
-    {
-        con.ConnectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-
-        using (SqlCommand com = new SqlCommand())
-        {
-            com.CommandText = "select DISTINCT cname from Company where " + "cname like @Search + '%'";
-
-            com.Parameters.AddWithValue("@Search", prefixText);
-            com.Connection = con;
-            con.Open();
-            List<string> Qno = new List<string>();
-            using (SqlDataReader sdr = com.ExecuteReader())
-            {
-                while (sdr.Read())
-                {
-                    Qno.Add(sdr["cname"].ToString());
-                }
-            }
-            con.Close();
-            return Qno;
-        }
-    }
-}
-
-public void SetFullReturnquntity(int TotalReturnInward)
-{
-    string Table = ddlstages.SelectedValue;
-    SqlCommand cmdupdate1 = new SqlCommand("UPDATE " + Table + " SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-    int Success = cmdupdate1.ExecuteNonQuery();
-    if (Success >= 0)
-    {
-        SqlCommand cmdDelete = new SqlCommand("Delete from [tblCNCBending] WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-        cmdDelete.ExecuteNonQuery();
-    }
-
-
-}
-
-//Added By Nikhil if there is No data presnet in returing table 11-12-2024
-public void InsertFullReturnQuantity(int TotalReturnInward)
-{
-
-    string Table = ddlstages.SelectedValue;
-    SqlCommand cmdupdate1 = new SqlCommand("SELECT * FROM [tblCNCBending] WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-    SqlDataReader reader = cmdupdate1.ExecuteReader();
-    if (reader.HasRows)
-    {
-        reader.Read();
-        string OAnumber = reader["OAnumber"].ToString();
-        string SubOA = reader["SubOA"].ToString();
-        string customername = reader["customername"].ToString();
-        string size = reader["size"].ToString();
-        int totalinward = Convert.ToInt32(reader["TotalQty"]);
-        DateTime inwarddatetime = Convert.ToDateTime(reader["InwardDtTime"]);
-        int inwardqty = Convert.ToInt32(reader["InwardQty"]);
-        DateTime deliverydate = Convert.ToDateTime(reader["DeliveryDate"]);
-        string JobNo = reader["JobNo"].ToString();
-
-        reader.Close();
-
-        SqlCommand cmdupdate = new SqlCommand(
-            "INSERT INTO " + Table + " (OAnumber, SubOA, customername, size, TotalQty, InwardDtTime, InwardQty, DeliveryDate, JobNo, IsComplete,IsApprove) " +
-            "VALUES (@OAnumber, @SubOA, @customername, @size, @totalinward, @inwarddatetime, @inwardqty, @deliverydate, @JobNo, NULL,1)", con);
-
-
-        cmdupdate.Parameters.AddWithValue("@OAnumber", OAnumber);
-        cmdupdate.Parameters.AddWithValue("@SubOA", SubOA);
-        cmdupdate.Parameters.AddWithValue("@customername", customername);
-        cmdupdate.Parameters.AddWithValue("@size", size);
-        cmdupdate.Parameters.AddWithValue("@totalinward", totalinward);
-        cmdupdate.Parameters.AddWithValue("@inwarddatetime", inwarddatetime);
-        cmdupdate.Parameters.AddWithValue("@inwardqty", TotalReturnInward);
-        cmdupdate.Parameters.AddWithValue("@deliverydate", deliverydate);
-        cmdupdate.Parameters.AddWithValue("@JobNo", JobNo);
-
-        int Success = cmdupdate.ExecuteNonQuery();
-
-        if (Success >= 0)
-        {
-            SqlCommand cmdDelete = new SqlCommand("DELETE FROM [tblCNCBending] WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-            cmdDelete.ExecuteNonQuery();
-        }
-    }
-    else
-    {
-        Console.WriteLine("No records found for SubOA: " + hdnSubOANo.Value);
-    }
-}
-
-public void Setreturnquantity(int TotalReturn_Outward, int TotalReturnInward)
-{
-    string Table = ddlstages.SelectedValue;
-    //Updated current stage
-    SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblCNCBending] SET [InwardQty] = '" + TotalReturn_Outward + "',[OutwardQty] = '" + TotalReturn_Outward + "' WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-    cmdupdate.ExecuteNonQuery();
-
-    //Updated Prev stage 
-    SqlCommand cmdupdate1 = new SqlCommand("UPDATE " + Table + " SET [InwardQty] = '" + TotalReturnInward + "' ,[IsComplete] = NULL  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-    cmdupdate1.ExecuteNonQuery();
-}
 
 }

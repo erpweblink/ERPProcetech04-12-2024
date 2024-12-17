@@ -557,118 +557,125 @@ public partial class Admin_FinalAssembly : System.Web.UI.Page
 
     protected void lnkbtnReturn_Click(object sender, EventArgs e)
     {
-        if (ddlstages.SelectedValue != "0")
+        if (Session["OneTimeFlag"] == null || Session["OneTimeFlag"].ToString() == "")
         {
-            try
+            if (ddlstages.SelectedValue != "0")
             {
-                if (Convert.ToInt32(txtReturnInward.Text) > Convert.ToInt32(hdnInwardQty.Value))
+                try
                 {
-                    ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Inward Qauntity Should be Smaller than or equal to Outward Quantity..!')", true);
-                    txtReturnInward.Focus();
-                }
-                else
-                {
-                    con.Open();
-
-                    //Get Exsiting Record
-                    //SqlCommand cmdselect = new SqlCommand("select InwardQty from tblPowderCoating WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                    //Object Inwardqty = cmdselect.ExecuteScalar();
-
-                    string Tbale = ddlstages.SelectedValue;
-                    SqlCommand cmdselect = new SqlCommand("select InwardQty from  " + Tbale + "  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                    Object Inwardqty = cmdselect.ExecuteScalar();
-
-
-
-
-                    if (Convert.ToInt32(txtReturnInward.Text) == Convert.ToInt32(hdnInwardQty.Value))
+                    if (Convert.ToInt32(txtReturnInward.Text) > Convert.ToInt32(hdnInwardQty.Value))
                     {
-                        // OLD Code before 11-12-2024 
-
-                        //// If all record return
-                        ////SqlCommand cmdDelete = new SqlCommand("Delete from tblFinalAssembly WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                        ////cmdDelete.ExecuteNonQuery();
-
-                        //int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
-                        ////SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblPowderCoating] SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                        ////cmdupdate1.ExecuteNonQuery();
-
-
-                        //if (ddlstages.SelectedValue != "0")
-                        //{
-                        //    //string Table = ddlstages.SelectedValue;
-                        //    //SqlCommand cmdupdate1 = new SqlCommand("UPDATE '"+ Table +"' SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                        //    //cmdupdate1.ExecuteNonQuery();
-                        //    SetFullReturnquntity(TotalReturnInward);
-                        //}
-
-                        //End
-
-                        //////////////////*****************************************************************////////////////////
-
-                        // New Code Changed by Nikhil 11-12-2024
-                        if (Inwardqty != null)
-                        {
-                            //Inwardqty = 0;
-                            // If all record return
-                            //SqlCommand cmdDelete = new SqlCommand("Delete from tblLaserCutting WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                            //cmdDelete.ExecuteNonQuery();
-
-                            int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
-                            //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                            //cmdupdate1.ExecuteNonQuery();
-
-                            SetFullReturnquntity(TotalReturnInward);
-                        }
-                        else
-                        {
-                            //Uncommented the InwardQty = 0 and changed the method name from [SetFullReturnquntity] to new one below
-                            //By Nikhil if there is No data presnet in returing table 11-12-2024
-
-                            Inwardqty = 0;
-                            // If all record return
-                            //SqlCommand cmdDelete = new SqlCommand("Delete from tblLaserCutting WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                            //cmdDelete.ExecuteNonQuery();
-
-                            int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
-                            //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                            //cmdupdate1.ExecuteNonQuery();
-
-                            InsertFullReturnQuantity(TotalReturnInward);
-                        }
-
+                        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Inward Qauntity Should be Smaller than or equal to Outward Quantity..!')", true);
+                        txtReturnInward.Focus();
                     }
                     else
                     {
+                        con.Open();
+
+                        //Get Exsiting Record
+                        //SqlCommand cmdselect = new SqlCommand("select InwardQty from tblPowderCoating WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                        //Object Inwardqty = cmdselect.ExecuteScalar();
+
+                        string Tbale = ddlstages.SelectedValue;
+                        SqlCommand cmdselect = new SqlCommand("select InwardQty from  " + Tbale + "  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                        Object Inwardqty = cmdselect.ExecuteScalar();
 
 
-                        int TotalReturn_Outward = Convert.ToInt32(hdnInwardQty.Value) - Convert.ToInt32(txtReturnInward.Text);
-                        int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
-
-                        //Updated current stage
-                        //SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblFinalAssembly] SET [InwardQty] = '" + TotalReturn_Outward + "',[OutwardQty] = '" + TotalReturn_Outward + "' WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                        //cmdupdate.ExecuteNonQuery();
-
-                        ////Updated Prev stage 
-                        //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblPowderCoating] SET [InwardQty] = '" + TotalReturnInward + "' ,[IsComplete] = NULL  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
-                        //cmdupdate1.ExecuteNonQuery();
 
 
-                        Setreturnquantity(TotalReturn_Outward, TotalReturnInward);
+                        if (Convert.ToInt32(txtReturnInward.Text) == Convert.ToInt32(hdnInwardQty.Value))
+                        {
+                            // OLD Code before 11-12-2024 
 
+                            //// If all record return
+                            ////SqlCommand cmdDelete = new SqlCommand("Delete from tblFinalAssembly WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                            ////cmdDelete.ExecuteNonQuery();
+
+                            //int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
+                            ////SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblPowderCoating] SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                            ////cmdupdate1.ExecuteNonQuery();
+
+
+                            //if (ddlstages.SelectedValue != "0")
+                            //{
+                            //    //string Table = ddlstages.SelectedValue;
+                            //    //SqlCommand cmdupdate1 = new SqlCommand("UPDATE '"+ Table +"' SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                            //    //cmdupdate1.ExecuteNonQuery();
+                            //    SetFullReturnquntity(TotalReturnInward);
+                            //}
+
+                            //End
+
+                            //////////////////*****************************************************************////////////////////
+
+                            // New Code Changed by Nikhil 11-12-2024
+                            if (Inwardqty != null)
+                            {
+                                //Inwardqty = 0;
+                                // If all record return
+                                //SqlCommand cmdDelete = new SqlCommand("Delete from tblLaserCutting WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                                //cmdDelete.ExecuteNonQuery();
+
+                                int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
+                                //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                                //cmdupdate1.ExecuteNonQuery();
+
+                                SetFullReturnquntity(TotalReturnInward);
+                            }
+                            else
+                            {
+                                //Uncommented the InwardQty = 0 and changed the method name from [SetFullReturnquntity] to new one below
+                                //By Nikhil if there is No data presnet in returing table 11-12-2024
+
+                                Inwardqty = 0;
+                                // If all record return
+                                //SqlCommand cmdDelete = new SqlCommand("Delete from tblLaserCutting WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                                //cmdDelete.ExecuteNonQuery();
+
+                                int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
+                                //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + TotalReturnInward + "',[IsComplete] = NULL WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                                //cmdupdate1.ExecuteNonQuery();
+
+                                InsertFullReturnQuantity(TotalReturnInward);
+                            }
+
+                        }
+                        else
+                        {
+
+
+                            int TotalReturn_Outward = Convert.ToInt32(hdnInwardQty.Value) - Convert.ToInt32(txtReturnInward.Text);
+                            int TotalReturnInward = Convert.ToInt32(Inwardqty.ToString()) + Convert.ToInt32(txtReturnInward.Text);
+
+                            //Updated current stage
+                            //SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblFinalAssembly] SET [InwardQty] = '" + TotalReturn_Outward + "',[OutwardQty] = '" + TotalReturn_Outward + "' WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                            //cmdupdate.ExecuteNonQuery();
+
+                            ////Updated Prev stage 
+                            //SqlCommand cmdupdate1 = new SqlCommand("UPDATE [dbo].[tblPowderCoating] SET [InwardQty] = '" + TotalReturnInward + "' ,[IsComplete] = NULL  WHERE SubOA='" + hdnSubOANo.Value + "'", con);
+                            //cmdupdate1.ExecuteNonQuery();
+
+
+                            Setreturnquantity(TotalReturn_Outward, TotalReturnInward);
+
+                        }
+                        con.Close();
+                        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Quantity has been Return Successfully..!');window.location.href='FinalAssembly.aspx';", true);
                     }
-                    con.Close();
-                    ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Quantity has been Return Successfully..!');window.location.href='FinalAssembly.aspx';", true);
+                }
+                catch (Exception)
+                {
+                    throw;
                 }
             }
-            catch (Exception)
+            else
             {
-                throw;
+                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('select stage..!');window.location.href='Stock.aspx';", true);
             }
         }
         else
         {
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('select stage..!');window.location.href='Stock.aspx';", true);
+            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Quantity has been Return Successfully..!');window.location.href='FinalAssembly.aspx';", true);
         }
     }
 

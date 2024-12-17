@@ -15,6 +15,7 @@
         .starcls {
             color: red;
             font-size: 18px;
+
             font-weight: 700;
         }
 

@@ -287,24 +287,11 @@
     <asp:ToolkitScriptManager ID="ToolkitScriptManager2" runat="server"></asp:ToolkitScriptManager>
 
     <div class="page-wrapper">
-        <div class="page-body">
-            <div class="row">
-                <div class="col-md-7">
-                    <div class="page-header-breadcrumb">
-                        <div style="float: left; font-size: 15px;">
-                            <span><i class="feather icon-home"></i>&nbsp;Add Customer</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-5">
-                </div>
-            </div>
-
+        <div class="page-body">           
             <div class="container py-3">
                 <div class="card">
                     <div class="card-header bg-primary text-uppercase text-white">
-                        <h5><i class="fa fa-user-plus"></i>Add Customer</h5>
+                        <h4><i class="fa fa-user-plus"></i>&nbsp;&nbsp;Add Customer</h4>
                     </div>
 
                     <div class="row">

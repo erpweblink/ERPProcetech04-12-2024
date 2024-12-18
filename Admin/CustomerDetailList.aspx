@@ -141,29 +141,14 @@
     <asp:HiddenField ID="BdeMailId" runat="server" />
     <div class="page-wrapper">
         <div class="page-body">
-
-            <div class="row">
-                <div class="col-md-7">
-                </div>
-
-
-                <div class="col-md-5">
-                    <div class="page-header-breadcrumb">
-                        <div style="float: right; margin: 3px; margin-bottom: 5px;">
-                            <span id="btnAddCompany" runat="server"><a href="CustomerDetails.aspx" style="font-size: 14px; border: 6px double #01a9ac ; padding: 7px;">&nbsp;Add Customer</a>&nbsp;&nbsp;                               
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="container py-3">
                 <div class="card">
                     <div class="card-header bg-primary text-uppercase text-white">
                         <div class="row">
-                            <div class="col-md-4">
-                                <h5>Customer List</h5>
-                            </div>
                             <div class="col-md-6">
+                                <h4><i class="fa fa-universal-access"></i>Sales List</h4>
+                            </div>
+                            <div class="col-md-4">
                             </div>
                             <div class="col-md-2">
                                 <asp:DropDownList ID="ddlsalesMainfilter" runat="server" AutoPostBack="true" OnTextChanged="ddlsalesMainfilter_TextChanged" Style="margin-bottom: 5px; width: 100%;"></asp:DropDownList>
@@ -184,13 +169,19 @@
                                                 TargetControlID="txtcnamefilter">
                                             </asp:AutoCompleteExtender>
                                         </div>
-                                                                            
+
                                         <div class="col-xl-1">
-                                            <asp:Button ID="btnresetfilter" CssClass="btn btn-danger" runat="server" Text="Reset" Style="padding: 3px 10px !important; background-color:#01a9ac !important" OnClick="btnresetfilter_Click" />
+                                            <asp:Button ID="btnresetfilter" CssClass="btn btn-danger" runat="server" Text="Reset" Style="padding: 3px 10px !important; background-color: #01a9ac !important" OnClick="btnresetfilter_Click" />
+                                        </div>
+                                        <div class="col-md-3"></div>
+                                        <div class="col-md-2" style="float: right; margin-left: 87px;">
+                                            <%-- Old color #01a9ac --%>
+                                            <span id="btnAddCompany" runat="server"><a href="CustomerDetails.aspx" style="font-size: 15px; border: 3px solid #0d9d2c; padding: 4px;background: #0d9d2c; color: aliceblue;">&nbsp;<b>Add Customer</b></a>&nbsp;&nbsp;                               
+                                            </span>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-12" style="padding: 0px; margin-top:24px">
+                                    <div class="col-md-12" style="padding: 0px; margin-top: 24px">
                                         <div id="DivRoot" align="left">
                                             <div style="overflow: scroll;" class="dt-responsive table-responsive" onscroll="OnScrollDiv(this)" id="DivMainContent">
                                                 <asp:GridView ID="gvCustomerDetails" runat="server" CssClass="table table-striped table-bordered nowrap" AutoGenerateColumns="false"
@@ -254,13 +245,13 @@
 
                                                         <asp:TemplateField HeaderText="Action" ItemStyle-HorizontalAlign="Center">
                                                             <ItemTemplate>
-                                                                <asp:LinkButton ID="linkbtnedit" runat="server" CssClass="linkbtn" CommandName="RowEdit"  Style="background-color: #09989a !important; color: #fff;padding:3px 5px 3px 5px" CommandArgument='<%# Eval("CustomerID") %>' ToolTip="Edit">Edit</asp:LinkButton>
-                                                                <asp:LinkButton ID="Linkbtndelete" runat="server" CssClass="linkbtn" CommandName="Delete" Style="background-color: #ff0000 !important; color: #fff;padding:3px 5px 3px 5px" OnClientClick="return confirm('Do you want to delete this record ?')" CommandArgument='<%# Eval("CustomerID") %>' ToolTip="Delete">Delete</asp:LinkButton>
+                                                                <asp:LinkButton ID="linkbtnedit" runat="server" CssClass="linkbtn" CommandName="RowEdit" Style="background-color: #09989a !important; color: #fff; padding: 3px 5px 3px 5px" CommandArgument='<%# Eval("CustomerID") %>' ToolTip="Edit">Edit</asp:LinkButton>
+                                                                <asp:LinkButton ID="Linkbtndelete" runat="server" CssClass="linkbtn" CommandName="Delete" Style="background-color: #ff0000 !important; color: #fff; padding: 3px 5px 3px 5px" OnClientClick="return confirm('Do you want to delete this record ?')" CommandArgument='<%# Eval("CustomerID") %>' ToolTip="Delete">Delete</asp:LinkButton>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                     </Columns>
                                                 </asp:GridView>
-                                                <div id="DivFooterRow" style="overflow: hidden">                                                        
+                                                <div id="DivFooterRow" style="overflow: hidden">
                                                 </div>
                                             </div>
                                         </div>
@@ -275,4 +266,5 @@
                 </div>
             </div>
         </div>
+    </div>
 </asp:Content>

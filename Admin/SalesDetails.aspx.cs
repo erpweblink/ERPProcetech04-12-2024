@@ -18,7 +18,7 @@ public partial class Admin_CustomerDetails : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        lblMessage.Visible = false;
+        lblMessage.Visible = false;      
         if (!IsPostBack)
         {
             if (Request.QueryString["cdd"] != null)
@@ -90,7 +90,7 @@ public partial class Admin_CustomerDetails : System.Web.UI.Page
             {
                 SqlCommand cmd = new SqlCommand("UPDATE CustomerDetails SET CustomerName = @CustomerName, BasicAmount = @BasicAmount, " +
                     "CGST = @CGST, SGST = @SGST, IGST = @IGST, GrandTotal = @GrandTotal, UpdatedBy = @UpdatedBy,UpdatedDate=@UpdatedDate" +
-                    ",InvoiceNo = @InvoiceNo,InvoiceDate =@InvoiceDate WHERE CustomerID = @CustomerID", con);
+                    ",InvoiceNo = @InvoiceNo,InvoiceDate =@InvoiceDate, GSTTotAmount = @GSTTotAmount WHERE CustomerID = @CustomerID", con);
                 cmd.Parameters.AddWithValue("@CustomerID", customerId);
                 cmd.Parameters.AddWithValue("@CustomerName", txtCustomerName.Text);
 
@@ -114,7 +114,7 @@ public partial class Admin_CustomerDetails : System.Web.UI.Page
                     string invoiceDateStr = Request.Form[txtInvoiceDate.UniqueID].ToString();
                     cmd.Parameters.AddWithValue("@InvoiceDate", invoiceDateStr);
                 }
-
+                cmd.Parameters.AddWithValue("@GSTTotAmount", txtGstTot.Text);
                 con.Open();
                 cmd.ExecuteNonQuery();
                 lblMessage.Text = "Record Updated successfully!";
@@ -131,8 +131,8 @@ public partial class Admin_CustomerDetails : System.Web.UI.Page
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 SqlCommand cmd = new SqlCommand("INSERT INTO CustomerDetails" +
-                    " (CustomerName, HsnDate, BasicAmount, CGST, SGST, IGST, GrandTotal,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,InvoiceNo,InvoiceDate) " +
-                    "VALUES (@CustomerName, GETDATE(), @BasicAmount, @CGST, @SGST, @IGST, @GrandTotal,@CreatedBy,@CreatedDate,@UpdatedBy,@UpdatedDate,@InvoiceNo,@InvoiceDate)", con);
+                    " (CustomerName, HsnDate, BasicAmount, CGST, SGST, IGST, GrandTotal,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,InvoiceNo,InvoiceDate,GSTTotAmount) " +
+                    "VALUES (@CustomerName, GETDATE(), @BasicAmount, @CGST, @SGST, @IGST, @GrandTotal,@CreatedBy,@CreatedDate,@UpdatedBy,@UpdatedDate,@InvoiceNo,@InvoiceDate,@GSTTotAmount)", con);
                 cmd.Parameters.AddWithValue("@CustomerName", txtCustomerName.Text);
                 cmd.Parameters.AddWithValue("@BasicAmount", txtBasicAmount.Text);
                 cmd.Parameters.AddWithValue("@CGST", txtCGST.Text);
@@ -149,6 +149,8 @@ public partial class Admin_CustomerDetails : System.Web.UI.Page
                     string invoiceDateStr = Request.Form[txtInvoiceDate.UniqueID].ToString();
                     cmd.Parameters.AddWithValue("@InvoiceDate", invoiceDateStr);
                 }
+                cmd.Parameters.AddWithValue("@GSTTotAmount", txtGstTot.Text);
+
                 con.Open();
                 cmd.ExecuteNonQuery();
             }
@@ -176,6 +178,7 @@ public partial class Admin_CustomerDetails : System.Web.UI.Page
             txtInvoiceNo.Text = dt.Rows[0]["InvoiceNo"].ToString();
             txtInvoiceDate.Text = dt.Rows[0]["InvoiceDate"].ToString();
             txtCustomerName.Text = dt.Rows[0]["CustomerName"].ToString();
+            txtGstTot.Text = dt.Rows[0]["GSTTotAmount"].ToString();
             txtBasicAmount.Text = dt.Rows[0]["BasicAmount"].ToString();
             if (dt.Rows[0]["CGST"].ToString() == "&nbsp;" || dt.Rows[0]["CGST"].ToString() == "0" || dt.Rows[0]["CGST"].ToString() == "")
             {
@@ -231,7 +234,7 @@ public partial class Admin_CustomerDetails : System.Web.UI.Page
         txtIGST.Text = string.Empty;
         txtGrandTotal.Text = string.Empty;
 
-        Response.Redirect("CustomerDetailList.aspx");
+        Response.Redirect("SalesDetailList.aspx");
     }
 
     protected void txtCGST_TextChanged(object sender, EventArgs e)
@@ -273,7 +276,7 @@ public partial class Admin_CustomerDetails : System.Web.UI.Page
                 }
 
                 decimal tots = cgst_amt + sgst_amt;
-
+                txtGstTot.Text = tots.ToString();
                 decimal tot = total + tots;
                 txtGrandTotal.Text = tot.ToString();
             }
@@ -319,7 +322,7 @@ public partial class Admin_CustomerDetails : System.Web.UI.Page
                 }
 
                 decimal tots = cgst_amt + sgst_amt;
-
+                txtGstTot.Text = tots.ToString();
                 decimal tot = total + tots;
 
                 txtGrandTotal.Text = tot.ToString();
@@ -352,6 +355,7 @@ public partial class Admin_CustomerDetails : System.Web.UI.Page
                 {
                     igst_amt = Convert.ToDecimal(total.ToString()) * Convert.ToDecimal(txtIGST.Text) / 100;
                 }
+                txtGstTot.Text = igst_amt.ToString();
 
                 decimal tot = total + igst_amt;
                 txtGrandTotal.Text = tot.ToString();

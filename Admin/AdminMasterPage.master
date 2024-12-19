@@ -266,15 +266,6 @@
                                                 </a>
                                             </li>
 
-                                            <%-- New Code By Nikhil 17-12-2024 --%>
-                                            <li id="Custdtlid" runat="server" class="">
-                                                <a href="CustomerDetailList.aspx">
-                                                    <span class="pcoded-micon"><i class="feather icon-file"></i></span>
-                                                    <span class="pcoded-mtext">Customer Details</span>
-                                                </a>
-                                            </li>
-                                            <%-- End  --%>
-
                                             <li id="CompanyListid" runat="server" class="">
                                                 <a href="AllCompanyList.aspx">
                                                     <span class="pcoded-micon"><i class="feather icon-list"></i></span>
@@ -483,6 +474,14 @@
                                                     <span class="pcoded-mtext">Credit/Debit Note Sale</span>
                                                 </a>
                                             </li>
+                                            <%-- New Code By Nikhil 17-12-2024 --%>
+                                            <li id="Custdtlid" runat="server" class="">
+                                                <a href="SalesDetailList.aspx">
+                                                    <span class="pcoded-micon"><i class="feather icon-file"></i></span>
+                                                    <span class="pcoded-mtext">Sales Details</span>
+                                                </a>
+                                            </li>
+                                            <%-- End  --%>
 
                                             <%-- <li class="" runat="server" id="liAccountBill">
                                                 <a href="../Account/CreditDebitNoteList.aspx">
@@ -694,6 +693,7 @@
                                 <%--<div class="protected">--%>
                                 <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
                                 </asp:ContentPlaceHolder>
+                                
                                 <%-- </div>--%>
                                 <%-- <div id="styleSelector">
                                 </div>--%>

@@ -1,11 +1,11 @@
-﻿using DocumentFormat.OpenXml.ExtendedProperties;
+﻿using DocumentFormat.OpenXml.Drawing;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -56,12 +56,18 @@ public partial class Admin_CustomerDetailList : System.Web.UI.Page
         if (value == "Deleted")
         {
             value = "";
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Successfully- Record Deleted Successfully...!');;window.location.href='CustomerDetailList.aspx';", true);
+            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Successfully- Record Deleted Successfully...!');;window.location.href='SalesDetailList.aspx';", true);
         }
         string query = string.Empty;
-        if (ddlsalesMainfilter.Text != "All")
+        if (txtDateSearchfrom.Text != "" && txtDateSearchto.Text != "")
         {
-            query = @"SELECT * FROM [CustomerDetails] Where CustomerId = '" + ddlsalesMainfilter.Text + "'  order by Customerid desc";
+            DateTime date1 = DateTime.ParseExact(txtDateSearchfrom.Text, "yyyy-MM-dd", null);
+            DateTime date2 = DateTime.ParseExact(txtDateSearchto.Text, "yyyy-MM-dd", null);
+
+            string formDate = date1.ToString("yyyy-dd-MM");
+            string ToDate = date2.ToString("yyyy-dd-MM");
+
+            query = @"SELECT * FROM [CustomerDetails] WHERE InvoiceDate >='" + formDate + "' AND InvoiceDate <'" + ToDate + "' order by Customerid desc";
         }
         else
         {
@@ -115,7 +121,7 @@ public partial class Admin_CustomerDetailList : System.Web.UI.Page
             string DocType = e.CommandArgument.ToString();
             if (DocType != "")
             {
-                Response.Redirect("CustomerDetails.aspx?cdd=" + encrypt(DocType.ToString()));
+                Response.Redirect("SalesDetails.aspx?cdd=" + encrypt(DocType.ToString()));
             }
         }
     }
@@ -227,7 +233,7 @@ public partial class Admin_CustomerDetailList : System.Web.UI.Page
 
     protected void btnresetfilter_Click(object sender, EventArgs e)
     {
-        Response.Redirect("CustomerDetailList.aspx");
+        Response.Redirect("SalesDetailList.aspx");
     }
 
     [System.Web.Script.Services.ScriptMethod()]
@@ -270,4 +276,138 @@ public partial class Admin_CustomerDetailList : System.Web.UI.Page
     {
         Gvbind();
     }
+
+    protected void gvCustomerDetails_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            // Find the label control in the current row
+            Label lblInvoiceDate = (Label)e.Row.FindControl("lblInvoiceDate");
+
+            // Get the InvoiceDate value from the DataItem
+            if (lblInvoiceDate != null)
+            {
+                string invoiceDate = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "InvoiceDate"));
+                if (invoiceDate != "")
+                {
+                    DateTime date = DateTime.ParseExact(invoiceDate, "yyyy-dd-MM", CultureInfo.InvariantCulture);
+                    lblInvoiceDate.Text = date.ToString("dd-MM-yyyy");
+                }
+            }
+        }
+
+        if (e.Row.RowType == DataControlRowType.Footer)
+        {
+            decimal totalBasic = 0;
+            decimal grandTotal = 0;
+            decimal TotalQuantity = 0;
+
+
+
+            // Loop through the data rows to calculate the totals
+            foreach (GridViewRow row in gvCustomerDetails.Rows)
+            {
+                if (row.RowType == DataControlRowType.DataRow)
+                {
+                    // Calculate the total for each column
+                    totalBasic += Convert.ToDecimal((row.FindControl("lblBasicAmount") as Label).Text);
+                    string val = (row.FindControl("lblGSTAmount") as Label).Text;
+                    if (val != "")
+                    {
+                        grandTotal += Convert.ToDecimal((row.FindControl("lblGSTAmount") as Label).Text);
+                    }
+                    TotalQuantity += Convert.ToDecimal((row.FindControl("lblGrandTotal") as Label).Text);
+                }
+            }
+
+        // Display the totals in the footer labels
+        (e.Row.FindControl("lblTotalBasicAmount") as Label).Text = "Basic Amt:<br /><br /><br /> ₹ " + totalBasic.ToString();
+            (e.Row.FindControl("lblTotalGSTAmount") as Label).Text = "GST Amt:<br /><br /><br /> ₹ " + grandTotal.ToString();
+            (e.Row.FindControl("lblTotalGrandTotal") as Label).Text = "Grand Amt:  <br /><br /><br /> ₹ " + TotalQuantity.ToString();
+        }
+    }
+
+    protected void btnexportexcel_Click(object sender, EventArgs e)
+    {
+        try
+        {                     
+            DataTable dt = new DataTable();
+            dt.Columns.AddRange(new DataColumn[10]
+            {
+            new DataColumn("S No."),
+            new DataColumn("Invoice No"),
+            new DataColumn("Invoice Date"),
+            new DataColumn("Customer Name"),
+            new DataColumn("Basic Amount"),
+            new DataColumn("CGST"),
+            new DataColumn("SGST"),
+            new DataColumn("IGST"),
+            new DataColumn("GST Amount"),
+            new DataColumn("Grand Total")
+            });
+
+           
+            string totalBasicAmount = (gvCustomerDetails.FooterRow.FindControl("lblTotalBasicAmount") as Label).Text
+                 .Replace("<br />", "").Trim() ?? "0";
+
+            string totalGSTAmount = (gvCustomerDetails.FooterRow.FindControl("lblTotalGSTAmount") as Label).Text
+                .Replace("<br />", "").Trim() ?? "0";
+
+            string totalGrandTotal = (gvCustomerDetails.FooterRow.FindControl("lblTotalGrandTotal") as Label).Text
+                .Replace("<br />", "").Trim() ?? "0";
+
+
+            foreach (GridViewRow row in gvCustomerDetails.Rows)
+            {
+              
+                string lblSno = (row.FindControl("lblsno") as Label).Text;
+                string lblInvoiceNo = (row.FindControl("lblInvoiceNo") as Label).Text;
+                string lblInvoiceDate = (row.FindControl("lblInvoiceDate") as Label).Text;
+                string lblCustomerName = (row.FindControl("lblcustnamr") as Label).Text;
+                string lblBasicAmount = (row.FindControl("lblBasicAmount") as Label).Text;
+                string lblCGST = (row.FindControl("Label1") as Label).Text;
+                string lblSGST = (row.FindControl("Label2") as Label).Text;
+                string lblIGST = (row.FindControl("Label3") as Label).Text;
+                string lblGSTAmount = (row.FindControl("lblGSTAmount") as Label).Text;
+                string lblGrandTotal = (row.FindControl("lblGrandTotal") as Label).Text;
+
+                dt.Rows.Add(lblSno, lblInvoiceNo, lblInvoiceDate, lblCustomerName, lblBasicAmount, lblCGST, lblSGST, lblIGST, lblGSTAmount, lblGrandTotal);
+            }
+            dt.Rows.Add("Total", "", "", "", totalBasicAmount, "", "", "", totalGSTAmount, totalGrandTotal);
+
+            GridView GridView1 = new GridView();
+            GridView1.AllowPaging = false;
+            GridView1.DataSource = dt;
+            GridView1.DataBind();
+
+            string todayDate = DateTime.Now.ToString("dd-MM-yyyy");
+            Response.Clear();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment;filename=SalesDetails_" + todayDate + ".xls");
+            Response.Charset = "";
+            Response.ContentType = "application/ms-excel";
+
+            StringWriter sw = new StringWriter();
+            HtmlTextWriter hw = new HtmlTextWriter(sw);
+           
+            for (int i = 0; i < GridView1.Rows.Count; i++)
+            {
+                GridView1.Rows[i].Attributes.Add("class", "textmode");
+            }
+
+            GridView1.RenderControl(hw);
+           
+            string style = @"<style> .textmode { mso-number-format:\@; } </style>";
+            Response.Write(style);
+            Response.Output.Write(sw.ToString());
+            Response.Flush();
+            Response.End();
+        }
+        catch (Exception ex)
+        {           
+            throw ex;
+        }
+    }
+
+
 }

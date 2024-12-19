@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Admin/AdminMasterPage.master" AutoEventWireup="true" CodeFile="CustomerDetails.aspx.cs" Inherits="Admin_CustomerDetails" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Admin/AdminMasterPage.master" AutoEventWireup="true" CodeFile="SalesDetails.aspx.cs" Inherits="Admin_CustomerDetails" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
@@ -287,11 +287,11 @@
     <asp:ToolkitScriptManager ID="ToolkitScriptManager2" runat="server"></asp:ToolkitScriptManager>
 
     <div class="page-wrapper">
-        <div class="page-body">           
+        <div class="page-body">
             <div class="container py-3">
                 <div class="card">
                     <div class="card-header bg-primary text-uppercase text-white">
-                        <h4><i class="fa fa-user-plus"></i>&nbsp;&nbsp;Add Customer</h4>
+                        <h4><i class="fa fa-user-plus"></i>&nbsp;&nbsp;Add Sales</h4>
                     </div>
 
                     <div class="row">
@@ -302,27 +302,8 @@
                                     <asp:Label ID="lblErrorMessage" runat="server" CssClass="text-danger"></asp:Label>
 
                                     <div class="row">
-
-                                        <div class="form-group col-md-6">
-                                            <asp:Label ID="lblInvoiceNo" runat="server" class="form-label">Invoice No.<i class="reqcls">*&nbsp;</i></asp:Label>
-                                            <asp:TextBox ID="txtInvoiceNo" runat="server" CssClass="form-control" MaxLength="50"></asp:TextBox>
-                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" Display="Dynamic" ErrorMessage="Please Enter Invoice No"
-                                                ControlToValidate="txtInvoiceNo" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <asp:Label ID="lblInvoiceDate" runat="server" class="form-label">Invoice Date<i class="reqcls">*&nbsp;</i></asp:Label>
-                                            <asp:TextBox ID="txtInvoiceDate" Width="100%" runat="server" ReadOnly="true"></asp:TextBox>
-                                            <asp:CalendarExtender ID="CalendarExtender2" TargetControlID="txtInvoiceDate" Format="yyyy-dd-MM" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>
-                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="Dynamic" ErrorMessage="Please choose invoice date"
-                                                ControlToValidate="txtInvoiceDate" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-
-                                        <div class="form-group col-md-6">
-                                            <asp:Label ID="Label1" runat="server" class="form-label">Customer Name<i class="reqcls">*&nbsp;</i></asp:Label>
+                                        <div class="form-group col-md-3">
+                                            <asp:Label ID="Label1" runat="server" class="form-label"><b>Customer Name</b><i class="reqcls">*&nbsp;</i></asp:Label>
                                             <asp:TextBox ID="txtCustomerName" CssClass="form-control" runat="server" Width="100%"></asp:TextBox>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" Display="Dynamic" ErrorMessage="Please Enter Customer Name"
                                                 ControlToValidate="txtCustomerName" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
@@ -334,8 +315,22 @@
                                             <asp:Label ID="lblmsg" runat="server" Text="" ForeColor="Red" Visible="false"></asp:Label>
                                         </div>
 
-                                        <div class="form-group col-md-6">
-                                            <asp:Label ID="lblbasic" runat="server" class="form-label">Basic Amount<i class="reqcls">*&nbsp;</i></asp:Label>
+                                        <div class="form-group col-md-3">
+                                            <asp:Label ID="lblInvoiceNo" runat="server" class="form-label"><b>Invoice No.</b><i class="reqcls">*&nbsp;</i></asp:Label>
+                                            <asp:TextBox ID="txtInvoiceNo" runat="server" CssClass="form-control" MaxLength="50"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" Display="Dynamic" ErrorMessage="Please Enter Invoice No"
+                                                ControlToValidate="txtInvoiceNo" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <asp:Label ID="lblInvoiceDate" runat="server" class="form-label"><b>Invoice Date</b><i class="reqcls">*&nbsp;</i></asp:Label>
+                                            <asp:TextBox ID="txtInvoiceDate" Width="100%" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
+                                            <asp:CalendarExtender ID="CalendarExtender2" TargetControlID="txtInvoiceDate" Format="yyyy-dd-MM" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>
+                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="Dynamic" ErrorMessage="Please choose invoice date"
+                                                ControlToValidate="txtInvoiceDate" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <asp:Label ID="lblbasic" runat="server" class="form-label"><b>Basic Amount</b><i class="reqcls">*&nbsp;</i></asp:Label>
                                             <asp:TextBox ID="txtBasicAmount" runat="server" CssClass="form-control" OnTextChanged="txtBasicAmount_TextChanged" AutoPostBack="true"></asp:TextBox>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" Display="Dynamic" ErrorMessage="Please enter basic amount"
                                                 ControlToValidate="txtBasicAmount" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
@@ -343,33 +338,36 @@
                                     </div>
 
                                     <div class="row">
-
-                                        <div class="form-group col-md-6">
-                                            <asp:Label ID="lblcgst" runat="server" class="form-label">CGST<i class="reqcls">*&nbsp;</i></asp:Label>
+                                        <div class="form-group col-md-3">
+                                            <asp:Label ID="lblcgst" runat="server" class="form-label"><b>CGST</b><i class="reqcls">*&nbsp;</i></asp:Label>
                                             <asp:TextBox ID="txtCGST" runat="server" CssClass="form-control" OnTextChanged="txtCGST_TextChanged" AutoPostBack="true"></asp:TextBox>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" Display="Dynamic" ErrorMessage="Please enter cgst percentage"
                                                 ControlToValidate="txtCGST" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                         </div>
-
-                                        <div class="form-group col-md-6">
-                                            <asp:Label ID="lblsgst" runat="server" class="form-label">SGST<i class="reqcls">*&nbsp;</i></asp:Label>
+                                        <div class="form-group col-md-3">
+                                            <asp:Label ID="lblsgst" runat="server" class="form-label"><b>SGST</b><i class="reqcls">*&nbsp;</i></asp:Label>
                                             <asp:TextBox ID="txtSGST" runat="server" CssClass="form-control" OnTextChanged="txtSGST_TextChanged" AutoPostBack="true"></asp:TextBox>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" Display="Dynamic" ErrorMessage="Please enter sgst percentage"
                                                 ControlToValidate="txtSGST" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                         </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="form-group col-md-6">
-                                            <asp:Label ID="lbligst" runat="server" class="form-label">IGST<i class="reqcls">*&nbsp;</i></asp:Label>
+                                        <div class="form-group col-md-3">
+                                            <asp:Label ID="lbligst" runat="server" class="form-label"><b>IGST</b><i class="reqcls">*&nbsp;</i></asp:Label>
                                             <asp:TextBox ID="txtIGST" runat="server" CssClass="form-control" OnTextChanged="txtIGST_TextChanged" AutoPostBack="true"></asp:TextBox>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator7" runat="server" Display="Dynamic" ErrorMessage="Please enter igst percentage"
                                                 ControlToValidate="txtIGST" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                         </div>
-                                        <div class="form-group col-md-6">
-                                            <asp:Label ID="lblgrand" runat="server" class="form-label">Grand Total<i class="reqcls">*&nbsp;</i></asp:Label>
+                                        <div class="form-group col-md-3">
+                                            <asp:Label ID="lblGstTot" runat="server" class="form-label"><b>GST Amount </b><i class="reqcls">*&nbsp;</i></asp:Label>
+                                            <asp:TextBox ID="txtGstTot" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <asp:Label ID="lblgrand" runat="server" class="form-label"><b>Grand Total</b><i class="reqcls">*&nbsp;</i></asp:Label>
                                             <asp:TextBox ID="txtGrandTotal" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
                                         </div>
+                                        <div class="form-group col-md-9"></div>
                                     </div>
                                     <br />
                                     <br />

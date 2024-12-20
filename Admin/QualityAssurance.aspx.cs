@@ -703,7 +703,7 @@ public partial class Admin_QualityAssurance : System.Web.UI.Page
 
             string Id = dgvFinalAssembly.DataKeys[e.Row.RowIndex].Value.ToString();
             GridView gvDetails = e.Row.FindControl("gvDetails") as GridView;
-            gvDetails.DataSource = GetData(string.Format("select * from [DB_ProcetechERP].[vwFinalAssembly] where SubOA='{0}'", Id));
+            gvDetails.DataSource = GetData(string.Format("select * from [DB_ProcetechERP].[vwQualityAsurance] where SubOA='{0}'", Id));
             gvDetails.DataBind();
         }
     }

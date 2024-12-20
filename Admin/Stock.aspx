@@ -522,7 +522,7 @@
                                                                             <asp:BoundField ItemStyle-Width="150px" DataField="TotalQty" HeaderText="Total Qty" />
 
                                                                             <asp:BoundField ItemStyle-Width="150px" DataField="InwardDtTime" HeaderText="Inward DateTime" />
-                                                                            <asp:BoundField ItemStyle-Width="150px" DataField="OutwardDtTime" HeaderText="Outward DateTime" />
+                                                                            <%--<asp:BoundField ItemStyle-Width="150px" DataField="OutwardDtTime" HeaderText="Outward DateTime" />--%>
                                                                         </Columns>
                                                                     </asp:GridView>
                                                                 </asp:Panel>

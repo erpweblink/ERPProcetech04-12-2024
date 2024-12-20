@@ -67,7 +67,7 @@ public partial class Admin_CustomerDetailList : System.Web.UI.Page
             string formDate = date1.ToString("yyyy-dd-MM");
             string ToDate = date2.ToString("yyyy-dd-MM");
 
-            query = @"SELECT * FROM [CustomerDetails] WHERE InvoiceDate >='" + formDate + "' AND InvoiceDate <'" + ToDate + "' order by Customerid desc";
+            query = @"SELECT * FROM [CustomerDetails] WHERE InvoiceDate >='" + formDate + "' AND InvoiceDate <='" + ToDate + "' order by Customerid desc";
         }
         else
         {

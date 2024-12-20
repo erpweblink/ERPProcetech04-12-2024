@@ -533,7 +533,7 @@ public partial class Admin_Stock : System.Web.UI.Page
             ViewState["Id"] = dgvStock.DataKeys[e.Row.RowIndex].Value.ToString();
             string Id = dgvStock.DataKeys[e.Row.RowIndex].Value.ToString();
             GridView gvDetails = e.Row.FindControl("gvDetails") as GridView;
-            gvDetails.DataSource = GetData(string.Format("select * from [DB_ProcetechERP].[vwFinalAssembly] where SubOA='{0}'", Id));
+            gvDetails.DataSource = GetData(string.Format("select * from [DB_ProcetechERP].[vwStock] where SubOA='{0}'", Id));
             gvDetails.DataBind();
             string id = ViewState["Id"].ToString();
 

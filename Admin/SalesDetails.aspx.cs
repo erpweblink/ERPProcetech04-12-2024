@@ -88,7 +88,7 @@ public partial class Admin_CustomerDetails : System.Web.UI.Page
 
             using (SqlConnection con = new SqlConnection(connectionString))
             {
-                SqlCommand cmd = new SqlCommand("UPDATE CustomerDetails SET CustomerName = @CustomerName, BasicAmount = @BasicAmount, " +
+                SqlCommand cmd = new SqlCommand("UPDATE SalesDetails SET CustomerName = @CustomerName, BasicAmount = @BasicAmount, " +
                     "CGST = @CGST, SGST = @SGST, IGST = @IGST, GrandTotal = @GrandTotal, UpdatedBy = @UpdatedBy,UpdatedDate=@UpdatedDate" +
                     ",InvoiceNo = @InvoiceNo,InvoiceDate =@InvoiceDate, GSTTotAmount = @GSTTotAmount WHERE CustomerID = @CustomerID", con);
                 cmd.Parameters.AddWithValue("@CustomerID", customerId);
@@ -130,7 +130,7 @@ public partial class Admin_CustomerDetails : System.Web.UI.Page
 
             using (SqlConnection con = new SqlConnection(connectionString))
             {
-                SqlCommand cmd = new SqlCommand("INSERT INTO CustomerDetails" +
+                SqlCommand cmd = new SqlCommand("INSERT INTO SalesDetails" +
                     " (CustomerName, HsnDate, BasicAmount, CGST, SGST, IGST, GrandTotal,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,InvoiceNo,InvoiceDate,GSTTotAmount) " +
                     "VALUES (@CustomerName, GETDATE(), @BasicAmount, @CGST, @SGST, @IGST, @GrandTotal,@CreatedBy,@CreatedDate,@UpdatedBy,@UpdatedDate,@InvoiceNo,@InvoiceDate,@GSTTotAmount)", con);
                 cmd.Parameters.AddWithValue("@CustomerName", txtCustomerName.Text);
@@ -169,7 +169,7 @@ public partial class Admin_CustomerDetails : System.Web.UI.Page
     {
 
         string query1 = string.Empty;
-        query1 = "SELECT *  from [CustomerDetails] where CustomerID='" + id + "'";
+        query1 = "SELECT *  from [SalesDetails] where CustomerID='" + id + "'";
         SqlDataAdapter ad = new SqlDataAdapter(query1, connectionString);
         DataTable dt = new DataTable();
         ad.Fill(dt);

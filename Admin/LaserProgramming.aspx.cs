@@ -1064,7 +1064,7 @@ public partial class Admin_LaserProgramming : System.Web.UI.Page
         {
             string query = string.Empty;
 
-            query = @"SELECT [LaserProgId],[OANumber],[SubOA],[CustomerName],[Size],[TotalQty],[InwardDtTime],[InwardQty],[OutwardDtTime],[OutwardQty],
+            query = @"SELECT [JobNo],[LaserProgId],[OANumber],[SubOA],[CustomerName],[Size],[TotalQty],[InwardDtTime],[InwardQty],[OutwardDtTime],[OutwardQty],
                 [DeliveryDate],[IsApprove],[IsPending],[IsCancel],[CreatedBy],[CreatedDate],A.[UpdatedBy],[UpdatedDate] 
                 ,C.CustomerCode FROM [dbo].[tblLaserPrograming] AS A                
 			   LEFT JOIN Company AS C ON C.cname=A.customername

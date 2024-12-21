@@ -657,7 +657,7 @@ public partial class Admin_QualityAssurance : System.Web.UI.Page
 
                         }
                         con.Close();
-                        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Quantity has been Return Successfully..!');window.location.href='FinalAssembly.aspx';", true);
+                        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Quantity has been Return Successfully..!');window.location.href='QualityAssurance.aspx';", true);
                     }
                 }
                 catch (Exception)
@@ -672,7 +672,7 @@ public partial class Admin_QualityAssurance : System.Web.UI.Page
         }
         else
         {
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Quantity has been Return Successfully..!');window.location.href='FinalAssembly.aspx';", true);
+            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Quantity has been Return Successfully..!');window.location.href='QualityAssurance.aspx';", true);
         }
 
     }
@@ -780,7 +780,7 @@ public partial class Admin_QualityAssurance : System.Web.UI.Page
         {
             string query = string.Empty;
 
-            query = @"SELECT [FinalAssemblyId],[OANumber],[SubOA],[CustomerName],[Size],[TotalQty],[InwardDtTime],[InwardQty],[OutwardDtTime],[OutwardQty],
+            query = @"SELECT [JobNo],[QualityAssuranceId],[OANumber],[SubOA],[CustomerName],[Size],[TotalQty],[InwardDtTime],[InwardQty],[OutwardDtTime],[OutwardQty],
                 [DeliveryDate],[IsApprove],[IsPending],[IsCancel],[CreatedBy],[CreatedDate],A.[UpdatedBy],[UpdatedDate] 
                      ,CustomerCode  FROM tblQualityAsurance              AS A                
 			   LEFT JOIN Company AS C ON C.cname=A.customername
@@ -880,10 +880,42 @@ public partial class Admin_QualityAssurance : System.Web.UI.Page
             string SubOA = reader["SubOA"].ToString();
             string customername = reader["customername"].ToString();
             string size = reader["size"].ToString();
-            int totalinward = Convert.ToInt32(reader["TotalQty"]);
-            DateTime inwarddatetime = Convert.ToDateTime(reader["InwardDtTime"]);
-            int inwardqty = Convert.ToInt32(reader["InwardQty"]);
-            DateTime deliverydate = Convert.ToDateTime(reader["DeliveryDate"]);
+            int totalinward;
+            DateTime? inwarddatetime;
+            int inwardqty;
+            DateTime? deliverydate;
+            if (reader["TotalQty"] != "")
+            {
+                totalinward = Convert.ToInt32(reader["TotalQty"]);
+            }
+            else
+            {
+                totalinward = 0;
+            }
+            if (reader["InwardDtTime"] != "")
+            {
+                inwarddatetime = Convert.ToDateTime(reader["InwardDtTime"]);
+            }
+            else
+            {
+                inwarddatetime = null;
+            }
+            if (reader["InwardQty"] != "")
+            {
+                inwardqty = Convert.ToInt32(reader["InwardQty"]);
+            }
+            else
+            {
+                inwardqty = 0;
+            }
+            if (reader["DeliveryDate"] != "")
+            {
+                deliverydate = Convert.ToDateTime(reader["DeliveryDate"]);
+            }
+            else
+            {
+                deliverydate = null;
+            }
             string JobNo = reader["JobNo"].ToString();
 
             reader.Close();
@@ -898,9 +930,23 @@ public partial class Admin_QualityAssurance : System.Web.UI.Page
             cmdupdate.Parameters.AddWithValue("@customername", customername);
             cmdupdate.Parameters.AddWithValue("@size", size);
             cmdupdate.Parameters.AddWithValue("@totalinward", totalinward);
-            cmdupdate.Parameters.AddWithValue("@inwarddatetime", inwarddatetime);
+            if (inwarddatetime == null)
+            {
+                cmdupdate.Parameters.AddWithValue("@inwarddatetime", DBNull.Value);
+            }
+            else
+            {
+                cmdupdate.Parameters.AddWithValue("@inwarddatetime", inwarddatetime);
+            }
             cmdupdate.Parameters.AddWithValue("@inwardqty", TotalReturnInward);
-            cmdupdate.Parameters.AddWithValue("@deliverydate", deliverydate);
+            if (deliverydate == null)
+            {
+                cmdupdate.Parameters.AddWithValue("@deliverydate", DBNull.Value);
+            }
+            else
+            {
+                cmdupdate.Parameters.AddWithValue("@deliverydate", deliverydate);
+            }
             cmdupdate.Parameters.AddWithValue("@JobNo", JobNo);
 
             int Success = cmdupdate.ExecuteNonQuery();

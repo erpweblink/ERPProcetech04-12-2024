@@ -811,7 +811,7 @@ public partial class Admin_Drawing : System.Web.UI.Page
             //            query = @"SELECT [VWID],[id] as mainID, [OAno],[currentdate],[customername],[deliverydatereqbycust],[IsDrawingcomplete],[Description],[Qty],[Price],[Discount]
             //,[TotalAmount],[CGST],[SGST],[IGST],[SubOANumber] FROM vwOrderAccept where IsComplete is null order by deliverydatereqbycust asc";
 
-            query = @"SELECT [pono],A.[id] as mainID,[OANumber],[Size],[TotalQty],[InwardDtTime],[InwardQty],[deliverydatereqbycust],[customername],SubOA
+            query = @"SELECT [JobNo],[pono],A.[id] as mainID,[OANumber],[Size],[TotalQty],[InwardDtTime],[InwardQty],[OutwardDtTime],[deliverydatereqbycust],[customername],SubOA
               ,C.CustomerCode FROM [DB_ProcetechERP].[vwDrawerCreation] AS A 
 			   LEFT JOIN Company AS C ON C.cname=A.customername where IsComplete is null and customername like '" + txtCustomerName.Text.Trim() + "%'   order by deliverydatereqbycust asc";
 

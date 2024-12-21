@@ -67,11 +67,11 @@ public partial class Admin_CustomerDetailList : System.Web.UI.Page
             string formDate = date1.ToString("yyyy-dd-MM");
             string ToDate = date2.ToString("yyyy-dd-MM");
 
-            query = @"SELECT * FROM [CustomerDetails] WHERE InvoiceDate >='" + formDate + "' AND InvoiceDate <='" + ToDate + "' order by Customerid desc";
+            query = @"SELECT * FROM [SalesDetails] WHERE InvoiceDate >='" + formDate + "' AND InvoiceDate <='" + ToDate + "' order by Customerid desc";
         }
         else
         {
-            query = @"SELECT * from [CustomerDetails] order by  UpdatedDate desc";
+            query = @"SELECT * from [SalesDetails] order by  UpdatedDate desc";
         }
 
         SqlDataAdapter ad = new SqlDataAdapter(query, con);
@@ -94,7 +94,7 @@ public partial class Admin_CustomerDetailList : System.Web.UI.Page
 
     private void DdlSalesBind()
     {
-        SqlDataAdapter ad = new SqlDataAdapter("SELECT [CustomerId],[CustomerName] FROM [CustomerDetails]  order by Customerid desc", con);
+        SqlDataAdapter ad = new SqlDataAdapter("SELECT [CustomerId],[CustomerName] FROM [SalesDetails]  order by Customerid desc", con);
         DataTable dt = new DataTable();
         ad.Fill(dt);
         if (dt.Rows.Count > 0)
@@ -137,7 +137,7 @@ public partial class Admin_CustomerDetailList : System.Web.UI.Page
 
         using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
         {
-            SqlCommand cmd = new SqlCommand("DELETE FROM CustomerDetails WHERE CustomerID = @CustomerID", con);
+            SqlCommand cmd = new SqlCommand("DELETE FROM SalesDetails WHERE CustomerID = @CustomerID", con);
             cmd.Parameters.AddWithValue("@CustomerID", userid);
             con.Open();
             value = "Deleted";
@@ -184,11 +184,11 @@ public partial class Admin_CustomerDetailList : System.Web.UI.Page
         string query = string.Empty;
         if (!string.IsNullOrEmpty(txtcnamefilter.Text.Trim()))
         {
-            query = "SELECT * FROM [CustomerDetails] where  CustomerName like '" + txtcnamefilter.Text.Trim() + "%' order by Customerid desc";
+            query = "SELECT * FROM [SalesDetails] where  CustomerName like '" + txtcnamefilter.Text.Trim() + "%' order by Customerid desc";
         }
         else
         {
-            query = "SELECT * FROM [CustomerDetails] order by Customerid desc";
+            query = "SELECT * FROM [SalesDetails] order by Customerid desc";
         }
 
         SqlDataAdapter ad = new SqlDataAdapter(query, con);
@@ -212,7 +212,7 @@ public partial class Admin_CustomerDetailList : System.Web.UI.Page
     {
         string query = string.Empty;
 
-        query = "SELECT * FROM [CustomerDetails]  order by Customerid desc";
+        query = "SELECT * FROM [SalesDetails]  order by Customerid desc";
         SqlDataAdapter ad = new SqlDataAdapter(query, con);
         DataTable dt = new DataTable();
         ad.Fill(dt);

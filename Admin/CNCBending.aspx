@@ -531,10 +531,11 @@
                                                             <asp:Label ID="lblSubOANumberr" runat="server" Text='<%# Eval("SubOA") %>' Visible="false"></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
+
                                                     <asp:TemplateField HeaderText="Customer Code" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center" Visible="true">
                                                         <ItemTemplate>
                                                             <asp:TextBox runat="server" ID="lblCustName" ReadOnly="true" TextMode="MultiLine" Visible="false" Rows="4" Width="130" CssClass="form-control" Text='<%# Eval("customername") %>'></asp:TextBox>
-                                                            <asp:Label ID="lblSubOANumber" runat="server" Text='<%# Eval("SubOA") %>' Visible="true"></asp:Label>
+                                                            <asp:Label ID="lblSubOANumber" runat="server" Text='<%# Eval("SubOA") %>' Visible="false"></asp:Label>
                                                             <asp:Label ID="lblCustCode" runat="server" Text='<%# Eval("CustomerCode").ToString().Replace(" ", "<br /><br />") %>'></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>

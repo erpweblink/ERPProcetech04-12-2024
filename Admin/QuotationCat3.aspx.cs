@@ -179,7 +179,8 @@ public partial class Admin_Quotation : System.Web.UI.Page
         txtCGSTamt.Text = string.Empty;
         txtSGSTamt.Text = string.Empty;
         txtIGSTamt.Text = string.Empty;
-        txtdisc1.Text = string.Empty;
+        //txtdisc1.Text = string.Empty;
+        txtdisc1.Text = "0";
         txtAmt1.Text = string.Empty;
     }
     protected void getQutationdts()
@@ -11217,7 +11218,6 @@ public partial class Admin_Quotation : System.Web.UI.Page
     }
 
     public void Getorderlist()
-
     {
         try
         {

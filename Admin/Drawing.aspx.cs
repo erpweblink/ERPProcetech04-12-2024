@@ -150,6 +150,7 @@ public partial class Admin_Drawing : System.Web.UI.Page
                     {
                         CheckBox chkRow = (row.Cells[1].FindControl("chkRow") as CheckBox);
                         int totalCount = dgvDrawing.Rows.Cast<GridViewRow>().Count(r => ((CheckBox)r.FindControl("chkRow")).Checked);
+                        int dtCount = 0;
                         if (totalCount <= 0)
                         {
                             ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Please Select Atleast One Row..!!');", true);
@@ -224,153 +225,157 @@ public partial class Admin_Drawing : System.Web.UI.Page
 
                                         // New Code added by Nikhil 09-12-2024
                                         dt.Rows.Add(OANumber, SubOA, CustName, Size, TotalQty, InwardDtTime, InwardQty, OutwardDtTime, OutwardQty, DeliveryDt, JobNo, true);
+                                        dtCount = dt.Rows.Count;
                                     }
 
-
-                                    using (con)
+                                    if(dtCount == totalCount)
                                     {
-                                        using (SqlCommand cmd = con.CreateCommand())
+                                        using (con)
                                         {
-                                            cmd.CommandType = CommandType.Text;
-                                            bool IsApprove = true, IsPending = false, IsCancel = false, Iscomplete;
-                                            string CreatedBy = Session["name"].ToString(), UpdatedBy = "";
-                                            string UpdatedDate = DateTime.Now.ToShortDateString(), CreatedDate = DateTime.Now.ToShortDateString();
-                                            bool flgInsert = false;
-                                            foreach (DataRow roww in dt.Rows)
+                                            using (SqlCommand cmd = con.CreateCommand())
                                             {
-                                                con.Open();
-                                                if (roww["inwardqty"].ToString() == roww["outwardqty"].ToString())
+                                                cmd.CommandType = CommandType.Text;
+                                                bool IsApprove = true, IsPending = false, IsCancel = false, Iscomplete;
+                                                string CreatedBy = Session["name"].ToString(), UpdatedBy = "";
+                                                string UpdatedDate = DateTime.Now.ToShortDateString(), CreatedDate = DateTime.Now.ToShortDateString();
+                                                bool flgInsert = false;
+                                                foreach (DataRow roww in dt.Rows)
                                                 {
-                                                    Iscomplete = true;
-                                                }
-                                                else
-                                                {
-                                                    Iscomplete = false;
-                                                }
-                                                SqlCommand cmdexsist = new SqlCommand("select OANumber,InwardQty,OutwardQty,SubOA from tblLaserPrograming WHERE SubOA='" + roww["SubOA"].ToString() + "'", con);
-                                                string OanumberExsists = "", InwardQty = "", OutwardQty = "";
-                                                using (SqlDataReader dr = cmdexsist.ExecuteReader())
-                                                {
-                                                    while (dr.Read())
+                                                    con.Open();
+                                                    if (roww["inwardqty"].ToString() == roww["outwardqty"].ToString())
                                                     {
-                                                        OanumberExsists = dr["SubOA"].ToString();
-                                                        InwardQty = dr["InwardQty"].ToString();
-                                                        OutwardQty = dr["OutwardQty"].ToString();
-                                                    }
-                                                }
-                                                SqlCommand cmd2 = new SqlCommand("select OutwardQty from tblDrawing WHERE SubOA='" + roww["SubOA"].ToString() + "'", con);
-                                                string Outward2Qty = "";
-                                                using (SqlDataReader dr = cmd2.ExecuteReader())
-                                                {
-                                                    while (dr.Read())
-                                                    {
-                                                        Outward2Qty = dr["OutwardQty"].ToString();
-                                                    }
-                                                }
-                                                if (OanumberExsists == "")
-                                                {
-                                                    tempdt.Rows.Add(roww["OAnumber"].ToString(),
-                                                        roww["SubOA"].ToString(),
-                                                        roww["customername"].ToString(),
-                                                        roww["size"].ToString(),
-                                                        roww["totalinward"].ToString(),
-                                                        DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"),
-                                                        roww["outwardqty"].ToString(),
-                                                        DateTime.Now,                           // no need to insert (Wrong Input)
-                                                        roww["outwardqty"].ToString(),           // no need to insert (Wrong Input)
-                                                        roww["deliverydate"].ToString(),
-                                                        // New Line Addedby Nikhil  09-12-2024
-                                                        roww["JobNo"].ToString(),
-
-                                                        true);
-
-                                                    string JobNo = roww["JobNo"].ToString();
-
-                                                    using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(con))
-                                                    {
-                                                        string converteddate =
-                                                         //Set the database table name
-                                                         sqlBulkCopy.DestinationTableName = "dbo.tblLaserPrograming";
-                                                        sqlBulkCopy.ColumnMappings.Add("OAnumber", "OANumber");
-                                                        sqlBulkCopy.ColumnMappings.Add("SubOA", "SubOA");
-                                                        sqlBulkCopy.ColumnMappings.Add("customername", "CustomerName");
-                                                        sqlBulkCopy.ColumnMappings.Add("size", "Size");
-                                                        sqlBulkCopy.ColumnMappings.Add("totalinward", "TotalQty");
-                                                        sqlBulkCopy.ColumnMappings.Add("inwarddatetime", "InwardDtTime");
-                                                        sqlBulkCopy.ColumnMappings.Add("inwardqty", "InwardQty");
-                                                        //sqlBulkCopy.ColumnMappings.Add("outwarddatetime", "OutwardDtTime");
-                                                        //sqlBulkCopy.ColumnMappings.Add("outwardqty", "OutwardQty");
-                                                        sqlBulkCopy.ColumnMappings.Add("deliverydate", "DeliveryDate");
-
-                                                        // New Line Added by Nikhil  09-12-2024
-                                                        sqlBulkCopy.ColumnMappings.Add("JobNo", "JobNo");
-
-                                                        sqlBulkCopy.ColumnMappings.Add("Isapprove", "IsApprove");
-                                                        sqlBulkCopy.WriteToServer(tempdt);
-
-                                                        tempdt.Clear();
-                                                      
-                                                    }
-
-                                                    //    cmd.CommandText += "INSERT INTO [dbo].[tblLaserPrograming]([OANumber],[CustomerName],[Size],[TotalQty],[InwardDtTime],[InwardQty],[OutwardDtTime],[OutwardQty],[DeliveryDate],[IsApprove],[IsPending],[IsCancel],[CreatedBy],[CreatedDate],[UpdatedBy],[UpdatedDate],[SubOA])" +
-                                                    //"VALUES('" + row["OAnumber"].ToString() + "','" + row["customername"].ToString() + "'," +
-                                                    //"'" + row["size"].ToString() + "','" + row["totalinward"].ToString() + "'," +
-                                                    //"'" + row["outwarddatetime"].ToString() + "','" + row["outwardqty"].ToString() + "'," +
-                                                    //"'" + row["outwarddatetime"].ToString() + "','0'," +
-                                                    //"'" + row["deliverydate"].ToString() + "','" + IsApprove + "','" + IsPending + "','" + IsCancel + "'," +
-                                                    //"'" + CreatedBy + "','" + CreatedDate + "','" + UpdatedBy + "','','" + row["SubOA"].ToString() + "'); ";
-                                                    //    cmd.ExecuteNonQuery();
-                                                }
-                                                else
-                                                {
-                                                    int totOutwardqnt = Convert.ToInt32(InwardQty) + Convert.ToInt32(roww["outwardqty"].ToString());
-                                                    SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + totOutwardqnt.ToString() + "',[IsComplete]=NULL,[InwardDtTime]='" + roww["outwarddatetime"].ToString() + "' WHERE SubOA='" + roww["SubOA"].ToString() + "'", con);
-                                                    cmdupdate.ExecuteNonQuery();
-                                                  
-                                                }
-
-                                                if (roww["inwardqty"].ToString() == roww["outwardqty"].ToString())
-                                                {
-                                                    string OutwardDtTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
-                                                    SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblDrawing] SET [OutwardQty] = '" + roww["totalinward"].ToString() + "',[InwardQty]='0',[IsComplete]=1,OutwardDtTime= '" + OutwardDtTime.ToString() + "',UpdatedDate='" + OutwardDtTime.ToString() + "' WHERE SubOA='" + roww["SubOA"].ToString() + "'", con);
-                                                    cmdupdate.ExecuteNonQuery();
-                                                  
-                                                }
-                                                else
-                                                {
-                                                    string OutwardDtTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
-                                                    int totoutward;
-                                                    int inwardqy;
-                                                    if (Outward2Qty == "")
-                                                    {
-                                                        Outward2Qty = "0";
-                                                        inwardqy = Convert.ToInt32(roww["inwardqty"].ToString()) - Convert.ToInt32(roww["outwardqty"].ToString());
-                                                        totoutward = Convert.ToInt32(Outward2Qty) + Convert.ToInt32(roww["outwardqty"].ToString());
+                                                        Iscomplete = true;
                                                     }
                                                     else
                                                     {
-                                                        //Added by Nikhil  to get new outward qty every time 13-12-2024
-                                                        Outward2Qty = "0";
+                                                        Iscomplete = false;
+                                                    }
+                                                    SqlCommand cmdexsist = new SqlCommand("select OANumber,InwardQty,OutwardQty,SubOA from tblLaserPrograming WHERE SubOA='" + roww["SubOA"].ToString() + "'", con);
+                                                    string OanumberExsists = "", InwardQty = "", OutwardQty = "";
+                                                    using (SqlDataReader dr = cmdexsist.ExecuteReader())
+                                                    {
+                                                        while (dr.Read())
+                                                        {
+                                                            OanumberExsists = dr["SubOA"].ToString();
+                                                            InwardQty = dr["InwardQty"].ToString();
+                                                            OutwardQty = dr["OutwardQty"].ToString();
+                                                        }
+                                                    }
+                                                    SqlCommand cmd2 = new SqlCommand("select OutwardQty from tblDrawing WHERE SubOA='" + roww["SubOA"].ToString() + "'", con);
+                                                    string Outward2Qty = "";
+                                                    using (SqlDataReader dr = cmd2.ExecuteReader())
+                                                    {
+                                                        while (dr.Read())
+                                                        {
+                                                            Outward2Qty = dr["OutwardQty"].ToString();
+                                                        }
+                                                    }
+                                                    if (OanumberExsists == "")
+                                                    {
+                                                        tempdt.Rows.Add(roww["OAnumber"].ToString(),
+                                                            roww["SubOA"].ToString(),
+                                                            roww["customername"].ToString(),
+                                                            roww["size"].ToString(),
+                                                            roww["totalinward"].ToString(),
+                                                            DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"),
+                                                            roww["outwardqty"].ToString(),
+                                                            DateTime.Now,                           // no need to insert (Wrong Input)
+                                                            roww["outwardqty"].ToString(),           // no need to insert (Wrong Input)
+                                                            roww["deliverydate"].ToString(),
+                                                            // New Line Addedby Nikhil  09-12-2024
+                                                            roww["JobNo"].ToString(),
 
-                                                        inwardqy = Convert.ToInt32(roww["inwardqty"].ToString()) - Convert.ToInt32(roww["outwardqty"].ToString());
-                                                        totoutward = Convert.ToInt32(Outward2Qty) + Convert.ToInt32(roww["outwardqty"].ToString());
+                                                            true);
+
+                                                        string JobNo = roww["JobNo"].ToString();
+
+                                                        using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(con))
+                                                        {
+                                                            string converteddate =
+                                                             //Set the database table name
+                                                             sqlBulkCopy.DestinationTableName = "dbo.tblLaserPrograming";
+                                                            sqlBulkCopy.ColumnMappings.Add("OAnumber", "OANumber");
+                                                            sqlBulkCopy.ColumnMappings.Add("SubOA", "SubOA");
+                                                            sqlBulkCopy.ColumnMappings.Add("customername", "CustomerName");
+                                                            sqlBulkCopy.ColumnMappings.Add("size", "Size");
+                                                            sqlBulkCopy.ColumnMappings.Add("totalinward", "TotalQty");
+                                                            sqlBulkCopy.ColumnMappings.Add("inwarddatetime", "InwardDtTime");
+                                                            sqlBulkCopy.ColumnMappings.Add("inwardqty", "InwardQty");
+                                                            //sqlBulkCopy.ColumnMappings.Add("outwarddatetime", "OutwardDtTime");
+                                                            //sqlBulkCopy.ColumnMappings.Add("outwardqty", "OutwardQty");
+                                                            sqlBulkCopy.ColumnMappings.Add("deliverydate", "DeliveryDate");
+
+                                                            // New Line Added by Nikhil  09-12-2024
+                                                            sqlBulkCopy.ColumnMappings.Add("JobNo", "JobNo");
+
+                                                            sqlBulkCopy.ColumnMappings.Add("Isapprove", "IsApprove");
+                                                            sqlBulkCopy.WriteToServer(tempdt);
+
+                                                            tempdt.Clear();
+
+                                                        }
+
+                                                        //    cmd.CommandText += "INSERT INTO [dbo].[tblLaserPrograming]([OANumber],[CustomerName],[Size],[TotalQty],[InwardDtTime],[InwardQty],[OutwardDtTime],[OutwardQty],[DeliveryDate],[IsApprove],[IsPending],[IsCancel],[CreatedBy],[CreatedDate],[UpdatedBy],[UpdatedDate],[SubOA])" +
+                                                        //"VALUES('" + row["OAnumber"].ToString() + "','" + row["customername"].ToString() + "'," +
+                                                        //"'" + row["size"].ToString() + "','" + row["totalinward"].ToString() + "'," +
+                                                        //"'" + row["outwarddatetime"].ToString() + "','" + row["outwardqty"].ToString() + "'," +
+                                                        //"'" + row["outwarddatetime"].ToString() + "','0'," +
+                                                        //"'" + row["deliverydate"].ToString() + "','" + IsApprove + "','" + IsPending + "','" + IsCancel + "'," +
+                                                        //"'" + CreatedBy + "','" + CreatedDate + "','" + UpdatedBy + "','','" + row["SubOA"].ToString() + "'); ";
+                                                        //    cmd.ExecuteNonQuery();
+                                                    }
+                                                    else
+                                                    {
+                                                        int totOutwardqnt = Convert.ToInt32(InwardQty) + Convert.ToInt32(roww["outwardqty"].ToString());
+                                                        SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblLaserPrograming] SET [InwardQty] = '" + totOutwardqnt.ToString() + "',[IsComplete]=NULL,[InwardDtTime]='" + roww["outwarddatetime"].ToString() + "' WHERE SubOA='" + roww["SubOA"].ToString() + "'", con);
+                                                        cmdupdate.ExecuteNonQuery();
+
                                                     }
 
-                                                    //DateTime conversion issue here
-                                                    SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblDrawing] SET [InwardQty] = '" + inwardqy.ToString() + "', [OutwardQty] = '" + totoutward.ToString() + "',OutwardDtTime= '" + OutwardDtTime.ToString() + "',UpdatedDate='" + OutwardDtTime.ToString() + "'  WHERE SubOA='" + roww["SubOA"].ToString() + "'", con);
-                                                    cmdupdate.ExecuteNonQuery();
-                                                  
-                                                }
-                                                con.Close();
-                                            }
-                                            if (flgInsert == true)
-                                            {
+                                                    if (roww["inwardqty"].ToString() == roww["outwardqty"].ToString())
+                                                    {
+                                                        string OutwardDtTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                                                        SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblDrawing] SET [OutwardQty] = '" + roww["totalinward"].ToString() + "',[InwardQty]='0',[IsComplete]=1,OutwardDtTime= '" + OutwardDtTime.ToString() + "',UpdatedDate='" + OutwardDtTime.ToString() + "' WHERE SubOA='" + roww["SubOA"].ToString() + "'", con);
+                                                        cmdupdate.ExecuteNonQuery();
 
+                                                    }
+                                                    else
+                                                    {
+                                                        string OutwardDtTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                                                        int totoutward;
+                                                        int inwardqy;
+                                                        if (Outward2Qty == "")
+                                                        {
+                                                            Outward2Qty = "0";
+                                                            inwardqy = Convert.ToInt32(roww["inwardqty"].ToString()) - Convert.ToInt32(roww["outwardqty"].ToString());
+                                                            totoutward = Convert.ToInt32(Outward2Qty) + Convert.ToInt32(roww["outwardqty"].ToString());
+                                                        }
+                                                        else
+                                                        {
+                                                            //Added by Nikhil  to get new outward qty every time 13-12-2024
+                                                            Outward2Qty = "0";
+
+                                                            inwardqy = Convert.ToInt32(roww["inwardqty"].ToString()) - Convert.ToInt32(roww["outwardqty"].ToString());
+                                                            totoutward = Convert.ToInt32(Outward2Qty) + Convert.ToInt32(roww["outwardqty"].ToString());
+                                                        }
+
+                                                        //DateTime conversion issue here
+                                                        SqlCommand cmdupdate = new SqlCommand("UPDATE [dbo].[tblDrawing] SET [InwardQty] = '" + inwardqy.ToString() + "', [OutwardQty] = '" + totoutward.ToString() + "',OutwardDtTime= '" + OutwardDtTime.ToString() + "',UpdatedDate='" + OutwardDtTime.ToString() + "'  WHERE SubOA='" + roww["SubOA"].ToString() + "'", con);
+                                                        cmdupdate.ExecuteNonQuery();
+
+                                                    }
+                                                    con.Close();
+                                                }
+                                                if (flgInsert == true)
+                                                {
+
+                                                }
+                                                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Successfully- Approved and send to TPP Programming Department...!');window.location.href='Drawing.aspx';", true);
+                                                // Response.Redirect("Drawing.aspx");
                                             }
-                                            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Successfully- Approved and send to TPP Programming Department...!');window.location.href='Drawing.aspx';", true);
-                                            // Response.Redirect("Drawing.aspx");
                                         }
                                     }
+                                   
                                 }
                                 else
                                 {

@@ -524,7 +524,7 @@ public partial class Admin_LaserCutting : System.Web.UI.Page
                         {
                             if (Inwardqty != null)
                             {
-                                Inwardqty = 0;
+                                //Inwardqty = 0;
                                 // If all record return
                                 //SqlCommand cmdDelete = new SqlCommand("Delete from tblLaserCutting WHERE SubOA='" + hdnSubOANo.Value + "'", con);
                                 //cmdDelete.ExecuteNonQuery();

@@ -15,7 +15,6 @@
         .starcls {
             color: red;
             font-size: 18px;
-
             font-weight: 700;
         }
 
@@ -245,12 +244,13 @@
             }
         }
         function Linkclicked(txt) {
+            debugger;
 
             var grid = document.getElementById("<%= dgvCNCBending.ClientID%>");
             var row = txt.parentNode.parentNode;
             var rowIndex = row.rowIndex;
             //var Userid = row.cells[3].innerHTML;
-           // var suboanumber = grid.rows[rowIndex].cells[3].childNodes[1].childNodes[0].data;
+            //var suboanumber = grid.rows[rowIndex].cells[3].childNodes[1].childNodes[0].data;
             var suboanumber = grid.rows[rowIndex].cells[4].childNodes[1].childNodes[0].data;
             var InwardQty = grid.rows[rowIndex].cells[7].childNodes[1].value;
 
@@ -288,7 +288,7 @@
             }
             document.forms[0].appendChild(confirm_value);
         }
-      
+
     </script>
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
@@ -516,7 +516,7 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
 
-                                                    
+
                                                     <%-- New Filed added by Nikhil 10-12-2024 --%>
                                                     <asp:TemplateField HeaderText="Job No" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center">
                                                         <ItemTemplate>
@@ -535,16 +535,16 @@
                                                     <asp:TemplateField HeaderText="Customer Code" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center" Visible="true">
                                                         <ItemTemplate>
                                                             <asp:TextBox runat="server" ID="lblCustName" ReadOnly="true" TextMode="MultiLine" Visible="false" Rows="4" Width="130" CssClass="form-control" Text='<%# Eval("customername") %>'></asp:TextBox>
-                                                            <asp:Label ID="lblSubOANumber" runat="server" Text='<%# Eval("SubOA") %>' Visible="false"></asp:Label>
+                                                            <asp:Label ID="lblSubOANumber" runat="server" CssClass="lblsuboa" Text='<%# Eval("SubOA") %>' Visible="true"></asp:Label>
                                                             <asp:Label ID="lblCustCode" runat="server" Text='<%# Eval("CustomerCode").ToString().Replace(" ", "<br /><br />") %>'></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <%--          <asp:TemplateField HeaderText="Customer Name" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center" Visible="true">
-                                                        <ItemTemplate>
-                                                            <asp:Label ID="lblSubOANumber" CssClass="lblsuboa" runat="server" Text='<%# Eval("SubOA") %>' Visible="true"></asp:Label>
-                                                            <asp:TextBox runat="server" ID="lblCustName" ReadOnly="true" TextMode="MultiLine" Rows="4" Width="100%" CssClass="form-control" Text='<%# Eval("CustomerName") %>'></asp:TextBox>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>--%>
+            <ItemTemplate>
+                <asp:Label ID="lblSubOANumber" CssClass="lblsuboa" runat="server" Text='<%# Eval("SubOA") %>' Visible="true"></asp:Label>
+                <asp:TextBox runat="server" ID="lblCustName" ReadOnly="true" TextMode="MultiLine" Rows="4" Width="100%" CssClass="form-control" Text='<%# Eval("CustomerName") %>'></asp:TextBox>
+            </ItemTemplate>
+        </asp:TemplateField>--%>
                                                     <asp:TemplateField HeaderText="Size" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center" Visible="true">
                                                         <ItemTemplate>
                                                             <asp:TextBox runat="server" ID="lblSize" ReadOnly="true" TextMode="MultiLine" Rows="5" Width="100%" CssClass="form-control" Text='<%# Eval("Size") %>'></asp:TextBox>
@@ -578,7 +578,7 @@
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="Out Qty" ItemStyle-Width="150" ItemStyle-HorizontalAlign="Center">
                                                         <ItemTemplate>
-                                                            <asp:TextBox runat="server" Width="100%" ID="txtOutwardQty" onkeypress="return ValidNumeric()"  AutoPostBack="false" CssClass="form-control" Text='<%# Eval("InwardQty") %>'></asp:TextBox>
+                                                            <asp:TextBox runat="server" Width="100%" ID="txtOutwardQty" onkeypress="return ValidNumeric()" AutoPostBack="false" CssClass="form-control" Text='<%# Eval("InwardQty") %>'></asp:TextBox>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="Action" ItemStyle-Width="100" ItemStyle-HorizontalAlign="Center" Visible="false">

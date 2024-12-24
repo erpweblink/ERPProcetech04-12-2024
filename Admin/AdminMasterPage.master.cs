@@ -715,4 +715,9 @@ public partial class Admin_AdminMasterPage : System.Web.UI.MasterPage
         }
     }
 
+    protected void TodaysCount()
+    {
+
+    }
+
 }

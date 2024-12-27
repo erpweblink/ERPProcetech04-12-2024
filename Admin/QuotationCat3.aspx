@@ -377,6 +377,166 @@
         }
     </script>
 
+
+    <script type="text/javascript">
+
+        function captureFormData() {
+            var customerId = document.getElementById('<%= HFccode.ClientID %>').value;
+            var customerName = document.getElementById('<%= txtcname.ClientID %>').value;
+            var quotationNo = document.getElementById('<%= txQutno.ClientID %>').value;
+            var kindAtt = document.getElementById('<%= ddlkindatt.ClientID %>').value;
+            var quotationDate = document.getElementById('<%= txtdate.ClientID %>').value;
+            var shippingAddress = document.getElementById('<%= txtshippingaddress.ClientID %>').value;
+            var remark = document.getElementById('<%= txtremark.ClientID %>').value;
+            var paymentTerm = document.getElementById('<%= ddlpaymentterm.ClientID %>').value;
+            var taxation = document.getElementById('<%= ddltaxation.ClientID %>').value;
+            var currency = document.getElementById('<%= ddlCurrency.ClientID %>').value;
+
+            var formData = {
+                "CustomerId": customerId,
+                "CustomerName": customerName,
+                "QuotationNo": quotationNo,
+                "KindAtt": kindAtt,
+                "QuotationDate": quotationDate,
+                "ShippingAddress": shippingAddress,
+                "Remark": remark,
+                "PaymentTerm": paymentTerm,
+                "Taxation": taxation,
+                "Currency": currency
+            };
+
+
+            var products = [];
+
+            if (typeof quotationData !== 'undefined' && quotationData.length > 0) {
+                for (var i = 0; i < quotationData.length; i++) {
+
+                    if (i == 0) {
+
+                        var existingData = JSON.parse(localStorage.getItem("quotationData"));
+
+                        if (existingData && existingData.Products) {
+                            existingData.Products = [];
+                        } else {
+
+                            existingData = { Products: [] };
+                        }
+                    }
+
+                    var row = quotationData[i];
+
+                    if (row && row.description && row.hsncode && row.qty && row.uom && row.rate) {
+                        var product = {
+                            "SrNo": row.id,
+                            "Description": row.description,
+                            "HSN": row.hsncode,
+                            "Qty": row.qty,
+                            "UOM": row.uom,
+                            "Price": row.rate,
+                            "CGST": {
+                                "percent": row.CGST,
+                                "amount": row.CGSTamt
+                            },
+                            "SGST": {
+                                "percent": row.SGST,
+                                "amount": row.SGSTamt
+                            },
+                            "IGST": {
+                                "percent": row.IGST,
+                                "amount": row.IGSTamt
+                            },
+                            "Discount": row.discount,
+                            "TotalAmount": row.amount
+                        };
+                        products.push(product);
+                    }
+                }
+            }
+
+            formData["Products"] = products;
+
+            localStorage.setItem("quotationData", JSON.stringify(formData));
+            LoadProducts();
+            sessionStorage.setItem("quotationData", JSON.stringify(formData));
+        }
+    </script>
+    <script type="text/javascript">
+        var enquiryData = localStorage.getItem("quotationData");
+        var formData = JSON.parse(enquiryData);
+        var custId = formData.CustomerId;
+        function checkEnquiryDataAfterLogin() {
+            var CustomerId = document.getElementById('<%= HFccode.ClientID %>').value;
+            if (CustomerId === formData.CustomerId) {
+                if (enquiryData) {
+                    bindMainFormData(formData);
+                }
+            }
+        }
+
+        function LoadProducts() {
+            var CustomerId = document.getElementById('<%= HFccode.ClientID %>').value;
+            var enquiryData = localStorage.getItem("quotationData");
+            var formData = JSON.parse(enquiryData);
+            if (formData != null && CustomerId === custId) {
+                var data = formData.Products;
+            } else {
+                data = "Empty";
+            }
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "QuotationCat3.aspx/AddProductsToViewState", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                }
+            };
+            xhr.send(JSON.stringify({ productsJson: JSON.stringify(data) }));
+
+        }
+
+        function bindMainFormData(formData) {
+            var txtcname = document.getElementById('<%= txtcname.ClientID %>');
+            if (txtcname) txtcname.value = formData.CustomerName;
+
+            var txQutno = document.getElementById('<%= txQutno.ClientID %>');
+            if (txQutno) txQutno.value = formData.QuotationNo;
+
+            var ddlkindatt = document.getElementById('<%= ddlkindatt.ClientID %>');
+            if (ddlkindatt) ddlkindatt.value = formData.KindAtt;
+
+            var txtdate = document.getElementById('<%= txtdate.ClientID %>');
+            if (txtdate) txtdate.value = formData.QuotationDate;
+
+            var txtshippingaddress = document.getElementById('<%= txtshippingaddress.ClientID %>');
+            if (txtshippingaddress) txtshippingaddress.value = formData.ShippingAddress;
+
+            var txtremark = document.getElementById('<%= txtremark.ClientID %>');
+            if (txtremark) txtremark.value = formData.Remark;
+
+            var ddlpaymentterm = document.getElementById('<%= ddlpaymentterm.ClientID %>');
+            if (ddlpaymentterm) ddlpaymentterm.value = formData.PaymentTerm;
+
+            var ddltaxation = document.getElementById('<%= ddltaxation.ClientID %>');
+            if (ddltaxation) {
+                ddltaxation.value = formData.Taxation;
+                var event = new Event('change');
+                ddltaxation.dispatchEvent(event);
+            }
+
+            var ddlCurrency = document.getElementById('<%= ddlCurrency.ClientID %>');
+            if (ddlCurrency) ddlCurrency.value = formData.Currency;
+
+        }
+
+
+        function RemoveLocalStorage() {
+          
+            localStorage.removeItem("quotationData");
+            LoadProducts();
+        }
+    </script>
+
+
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
@@ -391,16 +551,12 @@
 
                 <div class="row">
                     <div class="col-md-7">
-                        <%--<div class="page-header-breadcrumb">
-                        <div style="float: left; font-size: 15px;">
-                            <span><i class="feather icon-home"></i>&nbsp;Register an Enquiry</span>
-                        </div>
-                    </div>--%>
                     </div>
 
                     <div class="col-md-5">
                         <div class="page-header-breadcrumb">
                             <div style="float: right; margin: 3px; margin-bottom: 5px;">
+                                <asp:Button ID="btnclear" CssClass="btn-danger" runat="server" Text="Clear Record" OnClientClick="RemoveLocalStorage(); return false;" />
                                 <span><a href="AllCompanyList.aspx" style="font-size: 16px; border: 1px dashed gray; padding: 4px;">&nbsp;Company List</a>&nbsp;&nbsp;
                                 <a href="EnquiryList.aspx" style="font-size: 16px; border: 1px dashed gray; padding: 4px;">&nbsp;Enquiry List</a>
                                 </span>
@@ -662,8 +818,6 @@
                                                             <div class="col-md-4">
                                                                 <asp:Button ID="btnAdd" CssClass="btn btn-warning btn-sm btncss" OnClick="Insert" runat="server" Text="Add Item" />
                                                             </div>
-                                                            <div class="col-md-4">
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -672,7 +826,7 @@
                                                 <div class="table-responsive">
 
                                                     <asp:GridView ID="dgvQuatationDtl" runat="server" CssClass="table" HeaderStyle-BackColor="#009999" AutoGenerateColumns="false"
-                                                        EmptyDataText="No records has been added." OnRowCommand="dgvQuatationDtl_RowCommand" OnRowEditing="dgvQuatationDtl_RowEditing">
+                                                         OnRowCommand="dgvQuatationDtl_RowCommand" OnRowEditing="dgvQuatationDtl_RowEditing">
                                                         <Columns>
                                                             <asp:TemplateField HeaderText="Sr.No" ItemStyle-Width="20" ItemStyle-HorizontalAlign="Center">
                                                                 <ItemTemplate>
@@ -772,10 +926,10 @@
                                                     <asp:FileUpload ID="FileUploadrefdoc" runat="server" />
                                                     <br />
                                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator17" runat="server" Display="Dynamic" ErrorMessage="Please upload documnet "
-                                                         ControlToValidate="FileUploadrefdoc" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                                        ControlToValidate="FileUploadrefdoc" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <asp:Label ID="lblimg" Font-Bold="true" ForeColor="Green" runat="server" Text="" Visible="false"></asp:Label>                                                
+                                                    <asp:Label ID="lblimg" Font-Bold="true" ForeColor="Green" runat="server" Text="" Visible="false"></asp:Label>
                                                 </div>
 
                                             </div>

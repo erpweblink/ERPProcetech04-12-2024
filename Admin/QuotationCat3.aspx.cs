@@ -1,20 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Data.SqlClient;
 using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
+using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using System.Net.Mail;
-using iTextSharp.text.pdf;
-using System.Globalization;
-using System.Threading.Tasks;
+using System.Web;
+using System.Web.Script.Serialization;
+using System.Web.Services;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+
+public class Product
+{
+    public string SrNo { get; set; }
+    public string Description { get; set; }
+    public string HSN { get; set; }
+    public string Qty { get; set; }
+    public string UOM { get; set; }
+    public string Price { get; set; }
+    public Tax CGST { get; set; }
+    public Tax SGST { get; set; }
+    public Tax IGST { get; set; }
+    public string Discount { get; set; }
+    public string TotalAmount { get; set; }
+}
+
+public class Tax
+{
+    public string Percent { get; set; }
+    public string Amount { get; set; }
+}
+
+
 
 public partial class Admin_Quotation : System.Web.UI.Page
 {
@@ -26,6 +49,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
     string action = "", quotationno = "";
     DataTable dtConstructionType = new DataTable();
     DataTable dt = new DataTable();
+    private static DataTable dtLocalData = new DataTable();
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Session["name"] == null)
@@ -65,7 +89,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
                 , new DataColumn("qty"), new DataColumn("uom"), new DataColumn("rate"), new DataColumn("CGST")
                 , new DataColumn("SGST"), new DataColumn("IGST"), new DataColumn("CGSTamt"), new DataColumn("SGSTamt")
                 , new DataColumn("IGSTamt"), new DataColumn("totaltax"),new DataColumn("discount"),new DataColumn("amount")
-            });
+                });
                     ViewState["QuatationData"] = dt;
                     Session["QuatationData"] = dt;
                     //GenerateCode();
@@ -73,6 +97,9 @@ public partial class Admin_Quotation : System.Web.UI.Page
                     GetCompanyDataByName(Decrypt(Request.QueryString["Ccode"].ToString()));
                     // FillExcelsheet();
                     dvParticular.Visible = true;
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "callCheckEnquiryDataAfterLogin", "checkEnquiryDataAfterLogin();", true);
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "LoadProducts", "LoadProducts();", true);
+                    ShowLocalDataGrid();
                 }
                 else
                 {
@@ -99,12 +126,14 @@ public partial class Admin_Quotation : System.Web.UI.Page
                     //txtPTSpecify.Visible = true;
                     chkrevise.Visible = true;
                     lblRevise.Visible = true;
+                    btnclear.Visible = false;
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "RemoveLocalStorage", "RemoveLocalStorage();", true);
                 }
                 if (Request.QueryString["cdd"] == null)
                 {
                     oldfile1 = ""; oldfile2 = ""; txtdate.Text = DateTime.Now.ToString("dd-MM-yyyy");
                 }
-            
+
                 Getemail();
 
                 txtCGSTamt.Attributes.Add("readonly", "readonly");
@@ -115,13 +144,166 @@ public partial class Admin_Quotation : System.Web.UI.Page
 
             }
 
+            if (dtLocalData.Columns.Count == 0)
+            {
+                dtLocalData.Columns.AddRange(new DataColumn[15] {
+                new DataColumn("id"),
+                new DataColumn("description"),
+                new DataColumn("hsncode"),
+                new DataColumn("qty"),
+                new DataColumn("uom"),
+                new DataColumn("rate"),
+                new DataColumn("CGST"),
+                new DataColumn("SGST"),
+                new DataColumn("IGST"),
+                new DataColumn("CGSTamt"),
+                new DataColumn("SGSTamt"),
+                new DataColumn("IGSTamt"),
+                new DataColumn("totaltax"),
+                new DataColumn("discount"),
+                new DataColumn("amount")
+            });
+
+            }
 
             dtConstructionType.Columns.AddRange(new DataColumn[9] { new DataColumn("quotationno", typeof(string)),new DataColumn("quotationid", typeof(Int32)),
                     new DataColumn("categoryname",typeof(string)),new DataColumn("category1", typeof(string)),new DataColumn("category2", typeof(string)),
                     new DataColumn("category3", typeof(string)),new DataColumn("category4",typeof(string)),new DataColumn("category5", typeof(string)),new DataColumn("category6", typeof(string)) });
-
+            
         }
     }
+
+
+    [WebMethod]
+    public static void AddProductsToViewState(string productsJson)
+    {
+        if(productsJson != "\"Empty\"")
+        {
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            List<Product> products = serializer.Deserialize<List<Product>>(productsJson);
+
+            dtLocalData.Rows.Clear();
+            // Add rows to DataTable only if they are unique
+            foreach (var product in products)
+            {
+                // Create the new row
+                DataRow row = dtLocalData.NewRow();
+
+                // Assign values with appropriate type checks (using TryParse)
+                row["id"] = product.SrNo.ToString(); // Assuming product.SrNo is an integer
+                row["description"] = product.Description.ToString();
+                row["hsncode"] = product.HSN.ToString();
+                row["uom"] = product.UOM.ToString();
+
+                decimal rate, CGST, SGST, IGST, CGSTamt, SGSTamt, IGSTamt, totaltax, discount, amount;
+
+
+                row["qty"] = product.Qty.ToString();
+
+                decimal.TryParse(product.Price.ToString(), out rate);
+                row["rate"] = rate;
+
+                decimal.TryParse(product.CGST.Percent.ToString(), out CGST);
+                row["CGST"] = CGST;
+
+                decimal.TryParse(product.SGST.Percent.ToString(), out SGST);
+                row["SGST"] = SGST;
+
+                decimal.TryParse(product.IGST.Percent.ToString(), out IGST);
+                row["IGST"] = IGST;
+
+                decimal.TryParse(product.CGST.Amount.ToString(), out CGSTamt);
+                row["CGSTamt"] = CGSTamt;
+
+                decimal.TryParse(product.SGST.Amount.ToString(), out SGSTamt);
+                row["SGSTamt"] = SGSTamt;
+
+                decimal.TryParse(product.IGST.Amount.ToString(), out IGSTamt);
+                row["IGSTamt"] = IGSTamt;
+
+                // Calculate total tax using safe decimals
+                totaltax = CGSTamt + SGSTamt + IGSTamt;
+                row["totaltax"] = Math.Round(totaltax, 2);
+
+                decimal.TryParse(product.Discount.ToString(), out discount);
+                row["discount"] = discount;
+
+                decimal.TryParse(product.TotalAmount.ToString(), out amount);
+                row["amount"] = amount;
+
+                // Check if this row already exists in the DataTable based on the values of all columns
+                bool isDuplicate = dtLocalData.AsEnumerable().Any(existingRow =>
+                    existingRow.Field<string>("id") == row["id"].ToString() &&
+                    existingRow.Field<string>("description") == row["description"].ToString() &&
+                    existingRow.Field<string>("hsncode") == row["hsncode"].ToString() &&
+                    existingRow.Field<string>("uom") == row["uom"].ToString() &&
+                    existingRow.Field<decimal>("rate") == Convert.ToDecimal(row["rate"]) &&
+                    existingRow.Field<decimal>("CGSTamt") == Convert.ToDecimal(row["CGSTamt"]) &&
+                    existingRow.Field<decimal>("SGSTamt") == Convert.ToDecimal(row["SGSTamt"]) &&
+                    existingRow.Field<decimal>("IGSTamt") == Convert.ToDecimal(row["IGSTamt"]) &&
+                    existingRow.Field<decimal>("totaltax") == Convert.ToDecimal(row["totaltax"]) &&
+                    existingRow.Field<decimal>("amount") == Convert.ToDecimal(row["amount"])
+                );
+
+                // Add the row only if it's not a duplicate
+                if (!isDuplicate)
+                {
+                    dtLocalData.Rows.Add(row);
+
+                }
+            }
+
+            // Store the updated DataTable in session
+            HttpContext.Current.Session["QuatationData"] = dtLocalData;
+        }
+        else
+        {
+            dtLocalData.Clear();
+
+        }
+
+    }
+
+
+    protected void ShowLocalDataGrid()
+    {
+        DataTable dt = dtLocalData;
+
+        // Use LINQ to select unique rows based on 'id' (or another unique field)
+        var uniqueRows = dt.AsEnumerable()
+                           .GroupBy(row => row["id"]) // Assuming 'id' is the unique field
+                           .Select(group => group.First()) // Take the first occurrence of each group
+                           .ToList();
+
+        // Create a new DataTable to store the unique rows
+        DataTable uniqueDataTable = dt.Clone(); // Clone the schema of the original DataTable
+
+        // Add the unique rows to the new DataTable
+        foreach (var row in uniqueRows)
+        {
+            uniqueDataTable.ImportRow(row); // Import each unique row
+        }
+
+        ViewState["RowNo"] = uniqueDataTable.Rows.Count;
+        // Now assign the unique DataTable to the ViewState
+        ViewState["QuatationData"] = dt;
+
+        // Bind the unique DataTable to the GridView
+        dgvQuatationDtl.DataSource = (DataTable)ViewState["QuatationData"];
+        dgvQuatationDtl.DataBind();
+
+        // Clear the form fields
+        txtperticular.Text = string.Empty;
+        txtQty1.Text = string.Empty;
+        txtuom.Text = string.Empty;
+        txtRate1.Text = string.Empty;
+        txtCGSTamt.Text = string.Empty;
+        txtSGSTamt.Text = string.Empty;
+        txtIGSTamt.Text = string.Empty;
+        txtdisc1.Text = "0";
+        txtAmt1.Text = string.Empty;
+    }
+
 
     // 22-03-2022
     private void BindCurrency()
@@ -158,6 +340,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
 
     private void Show_Grid()
     {
+
         ddltaxation.Enabled = false;
         string DescrData = Description();
         ViewState["RowNo"] = (int)ViewState["RowNo"] + 1;
@@ -165,6 +348,9 @@ public partial class Admin_Quotation : System.Web.UI.Page
         decimal totalTax = Convert.ToDecimal(txtCGSTamt.Text) + Convert.ToDecimal(txtSGSTamt.Text);
 
         dt.Rows.Add(ViewState["RowNo"], txtperticular.Text, txtHsn1.Text, txtQty1.Text, txtuom.Text, txtRate1.Text, txtCGST.Text, txtSGST.Text, txtIGST.Text, Request.Form[txtCGSTamt.UniqueID].ToString(), Request.Form[txtSGSTamt.UniqueID].ToString(), Request.Form[txtIGSTamt.UniqueID].ToString(), totalTax, txtdisc1.Text, Request.Form[txtAmt1.UniqueID].ToString());
+
+
+
         ViewState["QuatationData"] = dt;
 
         dgvQuatationDtl.DataSource = (DataTable)ViewState["QuatationData"];
@@ -182,6 +368,16 @@ public partial class Admin_Quotation : System.Web.UI.Page
         //txtdisc1.Text = string.Empty;
         txtdisc1.Text = "0";
         txtAmt1.Text = string.Empty;
+
+
+        DataTable dtss = (DataTable)ViewState["QuatationData"];
+        string json = Newtonsoft.Json.JsonConvert.SerializeObject(dtss);
+
+        string script = string.Format("var quotationData = {0};", json);
+        ClientScript.RegisterStartupScript(this.GetType(), "LoadQuotationData", script, true);
+
+        string scripts = "captureFormData();";
+        ClientScript.RegisterStartupScript(this.GetType(), "CaptureFormData", scripts, true);
     }
     protected void getQutationdts()
     {
@@ -303,7 +499,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
         {
             if (dtdefault.Rows.Count == 0)
             {
-               // addefault = new SqlDataAdapter("select id,sheetname,category,path, status from excelsheetdata where category='" + myconstype + "' and quotationid is null and Isactive=0", con);
+                // addefault = new SqlDataAdapter("select id,sheetname,category,path, status from excelsheetdata where category='" + myconstype + "' and quotationid is null and Isactive=0", con);
                 addefault = new SqlDataAdapter("select id,sheetname,category,path, status from [DB_ProcetechTesting].[DB_ProcetechERP].[Excelsheetdata] where category='" + myconstype + "' and quotationid is null and Isactive=0", con);
                 DataTable dtdefault2 = new DataTable();
                 addefault.Fill(dtdefault2);
@@ -3830,7 +4026,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
                 //Thread.Sleep(8000);
                 //await Task.Delay(8000);
                 con.Open();
-                cmdquotation.ExecuteNonQuery();
+               cmdquotation.ExecuteNonQuery();
                 con.Close();
 
                 if (Request.QueryString["Ccode"] != null)
@@ -3849,7 +4045,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
                                 Label lbltxtdiscount = (Label)dgvQuatationDtl.Rows[g1.RowIndex].FindControl("lbltxtdiscount");
                                 Label lbltotalamt = (Label)dgvQuatationDtl.Rows[g1.RowIndex].FindControl("lbltotalamt");
                                 Label lblunit = (Label)dgvQuatationDtl.Rows[g1.RowIndex].FindControl("lblunit");
-                           
+
 
                                 string Description = lbldescription.Text.Replace("<br>", "<br>");
                                 string HSN = g1.Cells[2].Text;
@@ -4210,11 +4406,13 @@ public partial class Admin_Quotation : System.Web.UI.Page
 
                 if (Action == "update")
                 {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "RemoveLocalStorage", "RemoveLocalStorage();", true);
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "Success", " alert('All details Updated successfully !!!');window.location='QuotationList.aspx';", true);
                     validation = 0;
                 }
                 else
                 {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "RemoveLocalStorage", "RemoveLocalStorage();", true);
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "Success", " alert('All details saved successfully !!!');window.location='QuotationList.aspx';", true);
                     validation = 0;
                 }
@@ -11260,4 +11458,5 @@ public partial class Admin_Quotation : System.Web.UI.Page
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('" + errorMsg + "');", true);
         }
     }
+
 }

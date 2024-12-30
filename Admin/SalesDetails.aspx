@@ -325,7 +325,7 @@
                                         <div class="col-md-3">
                                             <asp:Label ID="lblInvoiceDate" runat="server" class="form-label"><b>Invoice Date</b><i class="reqcls">*&nbsp;</i></asp:Label>
                                             <asp:TextBox ID="txtInvoiceDate" Width="100%" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
-                                            <asp:CalendarExtender ID="CalendarExtender2" TargetControlID="txtInvoiceDate" Format="yyyy-dd-MM" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>
+                                            <asp:CalendarExtender ID="CalendarExtender2" TargetControlID="txtInvoiceDate" Format="yyyy-MM-dd" CssClass="cal_Theme1" runat="server"></asp:CalendarExtender>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="Dynamic" ErrorMessage="Please choose invoice date"
                                                 ControlToValidate="txtInvoiceDate" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                         </div>

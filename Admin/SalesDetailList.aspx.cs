@@ -290,7 +290,7 @@ public partial class Admin_CustomerDetailList : System.Web.UI.Page
                 string invoiceDate = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "InvoiceDate"));
                 if (invoiceDate != "")
                 {
-                    DateTime date = DateTime.ParseExact(invoiceDate, "yyyy-dd-MM", CultureInfo.InvariantCulture);
+                    DateTime date = DateTime.ParseExact(invoiceDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                     lblInvoiceDate.Text = date.ToString("dd-MM-yyyy");
                 }
             }

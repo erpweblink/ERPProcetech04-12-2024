@@ -111,7 +111,7 @@ public partial class Admin_CustomerDetails : System.Web.UI.Page
                 cmd.Parameters.AddWithValue("@InvoiceNo", txtInvoiceNo.Text);
                 if (Request.Form[txtInvoiceDate.UniqueID].ToString() != "")
                 {
-                    string invoiceDateStr = Request.Form[txtInvoiceDate.UniqueID].ToString();
+                    string invoiceDateStr = Request.Form[txtInvoiceDate.UniqueID].ToString();                   
                     cmd.Parameters.AddWithValue("@InvoiceDate", invoiceDateStr);
                 }
                 cmd.Parameters.AddWithValue("@GSTTotAmount", txtGstTot.Text);

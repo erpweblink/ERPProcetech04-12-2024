@@ -1,9 +1,13 @@
-﻿using System;
+﻿using AjaxControlToolkit;
+using Newtonsoft.Json;
+using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Globalization;
+using System.Web.Script.Serialization;
+using System.Web.UI;
 using System.Web.UI.DataVisualization.Charting;
 using System.Web.UI.WebControls;
 
@@ -21,17 +25,27 @@ public partial class Admin_AdminDashboard : System.Web.UI.Page
       
             if (!IsPostBack)
             {
+
+                int currentYear = DateTime.Now.Year;
+
+                // Loop to add years to the dropdown
+                for (int i = 0; i <= 10; i++)
+                {
+                    int year = currentYear - i; // Get current year and the previous 10 years
+                    DropDownList1.Items.Add(new ListItem(year.ToString(), year.ToString()));
+                }
+                DropDownList1.SelectedValue = currentYear.ToString();
                 var Role = Session["RoleName"].ToString();
                 if (Role == "Admin")
                 {
                     Bindchart();
+                    DropDownList1_TextChanged();
                     RptSalesDetailsbind(); GvLoginLogBind();
                     lbltotalpaid = string.Empty; lbltotalunpaid = string.Empty; lbltotlaclients = string.Empty;
                     GvActiveUsersBind();
                     CountData();
                     TodayEnquiryList();
                     TodayQuotationList();
-                    //Bindchart();
                 }
                 else
                 {
@@ -287,18 +301,20 @@ public partial class Admin_AdminDashboard : System.Web.UI.Page
     {
         string dateString = "";
         string dateStringDrawing = "";
+
         if (txtDate.Text != "")
         {
             DateTime date = DateTime.ParseExact(txtDate.Text.Trim(), "dd-MM-yyyy", CultureInfo.InvariantCulture);
             DateTime date1 = DateTime.ParseExact(txtDate.Text.Trim(), "dd-MM-yyyy", CultureInfo.InvariantCulture);
-             dateString = date.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
-             dateStringDrawing = date1.ToString("MMM dd yyyy", CultureInfo.InvariantCulture);
+            dateString = date.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
+            dateStringDrawing = date1.ToString("MMM dd yyyy", CultureInfo.InvariantCulture);
         }
+
         SqlCommand cmd = new SqlCommand();
         cmd.CommandType = CommandType.StoredProcedure;
-        //cmd.CommandText = "SP_CommercialReport";                   
         cmd.CommandText = "[DB_ProcetechERP].[SP_DashBoardBarCount]";
-        if(txtDate.Text != "")
+
+        if (txtDate.Text != "")
         {
             cmd.Parameters.AddWithValue("@Date", dateString);
             cmd.Parameters.AddWithValue("@Date1", dateStringDrawing);
@@ -308,8 +324,10 @@ public partial class Admin_AdminDashboard : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@Date", "All");
             cmd.Parameters.AddWithValue("@Date1", "All");
         }
+
         cmd.Connection = con;
         con.Open();
+
         DataSet ds = new DataSet();
         using (var da = new SqlDataAdapter(cmd))
         {
@@ -317,85 +335,65 @@ public partial class Admin_AdminDashboard : System.Web.UI.Page
         }
 
         DataTable ChartData = ds.Tables[0];
-        //storing total rows count to loop on each Record    
-        string[] XPointMember = new string[ChartData.Rows.Count];
-        int[] YPointMember = new int[ChartData.Rows.Count];
-        for (int count = 0; count < ChartData.Rows.Count; count++)
+
+        // Serialize the ChartData to JSON
+        string jsonData = JsonConvert.SerializeObject(ChartData, Formatting.None, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+
+        // Close the connection
+        con.Close();
+        if (ChartData.Rows.Count > 0)
         {
-            //storing Values for X axis   
-            XPointMember[count] = ChartData.Rows[count]["Department"].ToString();
-
-            //storing values for Y Axis    
-            YPointMember[count] = ChartData.Rows[count]["Processed Quantity"] == DBNull.Value ? 0 : Convert.ToInt32(ChartData.Rows[count]["Processed Quantity"]);
-
+           // ClientScript.RegisterStartupScript(this.GetType(), "loadBarChartData", "loadBarChartData(" + jsonData + ");", true);
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "loadBarChartData", "loadBarChartData(" + jsonData + ");", true);
         }
 
 
-        //binding chart control    
-        Chart1.Series[0].Points.DataBindXY(XPointMember, YPointMember);
-        //Setting width of line    
-        Chart1.Series[0].BorderWidth = 2;
-        //setting Chart type     
-        // Chart1.Series[0].ChartType = SeriesChartType.Column;
-        Chart1.Series[0].ChartType = SeriesChartType.StackedColumn;
-
-        Chart1.ChartAreas["ChartArea1"].AxisX.MajorGrid.Enabled = false;
-        Chart1.ChartAreas["ChartArea1"].AxisX.Title = "Department";
-        Chart1.ChartAreas["ChartArea1"].AxisY.Title = "Quantity in numbers";
 
 
 
-        Chart1.ChartAreas["ChartArea1"].AxisX.TitleFont = new Font("Arial", 12);
-        Chart1.ChartAreas["ChartArea1"].AxisY.TitleFont = new Font("Arial", 12);
-
-        Chart1.Series[0].IsValueShownAsLabel = true;
-        // Chart1.Series[0].IsValueShownAsLabel= new Font("Arial", 14);
-
-        //Color color = ColorTranslator.FromHtml("#01a9ac");
-
-        Color color = ColorTranslator.FromHtml("#ff4500");
-        Chart1.Series[0].Color = color;
-
-
-        //Newly added code by Nikhil to show contains means note 16-12-2024
-
-        //// Remove any previous annotations or labels
-        // Chart1.Annotations.Clear();
-
-        //// Add a note (TextAnnotation) for the Y-axis and X-axis labels.
-        //TextAnnotation axisNote = new TextAnnotation
+        ////storing total rows count to loop on each Record    
+        //string[] XPointMember = new string[ChartData.Rows.Count];
+        //int[] YPointMember = new int[ChartData.Rows.Count];
+        //for (int count = 0; count < ChartData.Rows.Count; count++)
         //{
-        //    Text = "Y Axis: Quantity in numbers",  // Note for Y-axis
-        //    ForeColor = Color.Black,
-        //    Font = new Font("Arial", 10, FontStyle.Bold),
-        //    X = 80.5, // Positioning on the chart area
-        //    Y = 11.05, // Adjust position to be outside the chart area
-        //    Alignment = ContentAlignment.MiddleCenter
-        //};
+        //    //storing Values for X axis   
+        //    XPointMember[count] = ChartData.Rows[count]["Department"].ToString();
 
-        //// Add the annotation to the chart's annotations collection (for the Y axis)
-        //Chart1.Annotations.Add(axisNote);
+        //    //storing values for Y Axis    
+        //    YPointMember[count] = ChartData.Rows[count]["Processed Quantity"] == DBNull.Value ? 0 : Convert.ToInt32(ChartData.Rows[count]["Processed Quantity"]);
 
-        //axisNote = new TextAnnotation
-        //{
-        //    Text = "X Axis: Department",  // Note for X-axis
-        //    ForeColor = Color.Black,
-        //    Font = new Font("Arial", 10, FontStyle.Bold),
-        //    X = 80.5, // Positioning on the chart area
-        //    Y = 6.05, // Adjust position to be below the chart area
-        //    Alignment = ContentAlignment.MiddleCenter
-        //};
-
-        //// Add the annotation to the chart's annotations collection (for the X axis)
-        //Chart1.Annotations.Add(axisNote);
-
-        //End  16-12-2024
+        //}
 
 
-        // Chart1.ChartAreas["ChartArea1"].AxisY.MajorGrid.Enabled = false;    
-        //  Chart1.Series[0].ChartType = SeriesChartType.Spline;    
-        //Chart1.ChartAreas["ChartArea1"].Area3DStyle.Enable3D = true;   
-        con.Close();
+        ////binding chart control    
+        //Chart1.Series[0].Points.DataBindXY(XPointMember, YPointMember);
+        ////Setting width of line    
+        //Chart1.Series[0].BorderWidth = 2;
+        ////setting Chart type     
+        //// Chart1.Series[0].ChartType = SeriesChartType.Column;
+        //Chart1.Series[0].ChartType = SeriesChartType.StackedColumn;
+
+        //Chart1.ChartAreas["ChartArea1"].AxisX.MajorGrid.Enabled = false;
+        //Chart1.ChartAreas["ChartArea1"].AxisX.Title = "Department";
+        //Chart1.ChartAreas["ChartArea1"].AxisY.Title = "Quantity in numbers";
+
+        //Chart1.Width = 500;
+        //Chart1.Height = 500;
+        //Chart1.Style.Add("margin-left", "-4%");
+
+        //Chart1.ChartAreas["ChartArea1"].AxisX.TitleFont = new Font("Arial", 12, FontStyle.Bold | FontStyle.Italic);
+        //Chart1.ChartAreas["ChartArea1"].AxisY.TitleFont = new Font("Arial", 12, FontStyle.Bold | FontStyle.Italic);
+
+        //Chart1.Series[0].IsValueShownAsLabel = true;
+        //// Chart1.Series[0].IsValueShownAsLabel= new Font("Arial", 14);
+
+        ////Color color = ColorTranslator.FromHtml("#01a9ac");
+
+        //Color color = ColorTranslator.FromHtml("#ff4500");
+        //Chart1.Series[0].Color = color;
+
+        //con.Close();
+        DropDownList1_TextChanged();
     }
 
     private void BindWeekDatachart()
@@ -591,4 +589,41 @@ public partial class Admin_AdminDashboard : System.Web.UI.Page
         txtDate.Text = "";
         Bindchart();
     }
+
+    protected void DropDownList1_TextChanged()
+    {
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.CommandText = "GetSalesDetailsMonthWise";
+        cmd.Parameters.AddWithValue("@year", DropDownList1.Text);
+        cmd.Connection = con;
+
+        // Open the connection and fill the DataSet
+        con.Open();
+        DataSet ds = new DataSet();
+        using (var da = new SqlDataAdapter(cmd))
+        {
+            da.Fill(ds);
+        }
+
+        // Serialize the DataTable to JSON using JsonConvert (to handle circular references)
+        DataTable chartData = ds.Tables[0];  // Assuming you want the first table in the DataSet
+        string jsonData = JsonConvert.SerializeObject(chartData,
+                           Formatting.None,
+                           new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+
+        // Close the connection
+        con.Close();
+
+        // Pass the JSON data to JavaScript (via a ClientScript registration)
+        //ClientScript.RegisterStartupScript(this.GetType(), "loadChartData", "loadChartData(" + jsonData + ");", true);
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "loadChartData", "loadChartData(" + jsonData + ");", true);
+    }
+
+    protected void DropDownList1_TextChanged1(object sender, EventArgs e)
+    {
+        DropDownList1_TextChanged();
+        Bindchart();
+    }
+ 
 }

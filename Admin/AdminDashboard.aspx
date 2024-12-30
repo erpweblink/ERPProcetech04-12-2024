@@ -150,6 +150,9 @@
             margin-bottom: 5px !important;
             width: 100%;
         }
+        .canvasjs-chart-credit{
+            display:none !important;
+        }
 
     </style>
 

@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Globalization;
+using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.DataVisualization.Charting;
@@ -25,7 +26,7 @@ public partial class Admin_AdminDashboard : System.Web.UI.Page
       
             if (!IsPostBack)
             {
-
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "OnPageLoad", "OnPageLoad();", true);
                 int currentYear = DateTime.Now.Year;
 
                 // Loop to add years to the dropdown
@@ -625,5 +626,13 @@ public partial class Admin_AdminDashboard : System.Web.UI.Page
         DropDownList1_TextChanged();
         Bindchart();
     }
- 
+
+    [System.Web.Services.WebMethod]
+    public static void StoreCustomerDataInSession(string customerCode, string customerName)
+    {
+        HttpContext.Current.Session["CustomerCode"] = customerCode;
+        HttpContext.Current.Session["CustomerName"] = customerName;
+    }
+
+
 }

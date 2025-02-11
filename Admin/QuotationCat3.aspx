@@ -463,10 +463,13 @@
     <script type="text/javascript">
         var enquiryData = localStorage.getItem("quotationData");
         var formData = JSON.parse(enquiryData);
-        var custId = formData.CustomerId;
+        var custId = null;
+        if (formData != null) {
+            custId = formData.CustomerId; 
+        }
         function checkEnquiryDataAfterLogin() {
             var CustomerId = document.getElementById('<%= HFccode.ClientID %>').value;
-            if (CustomerId === formData.CustomerId) {
+            if (CustomerId === custId) {
                 if (enquiryData) {
                     bindMainFormData(formData);
                 }
@@ -488,7 +491,9 @@
 
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4 && xhr.status == 200) {
-                }
+                    debugger;
+                    __doPostBack('ShowLocalDataGrid', '');
+                } 
             };
             xhr.send(JSON.stringify({ productsJson: JSON.stringify(data) }));
 
@@ -530,9 +535,16 @@
 
 
         function RemoveLocalStorage() {
-          
+            debugger;
             localStorage.removeItem("quotationData");
             LoadProducts();
+            __doPostBack('ShowLocalDataGrid', '');
+
+            setTimeout(function () {
+                window.location.href = "../Admin/EnquiryList.aspx";
+               // location.reload();
+            }, 100);
+           
         }
     </script>
 

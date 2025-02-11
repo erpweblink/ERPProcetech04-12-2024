@@ -99,7 +99,9 @@ public partial class Admin_Quotation : System.Web.UI.Page
                     dvParticular.Visible = true;
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "callCheckEnquiryDataAfterLogin", "checkEnquiryDataAfterLogin();", true);
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "LoadProducts", "LoadProducts();", true);
+
                     ShowLocalDataGrid();
+
                 }
                 else
                 {
@@ -169,7 +171,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
             dtConstructionType.Columns.AddRange(new DataColumn[9] { new DataColumn("quotationno", typeof(string)),new DataColumn("quotationid", typeof(Int32)),
                     new DataColumn("categoryname",typeof(string)),new DataColumn("category1", typeof(string)),new DataColumn("category2", typeof(string)),
                     new DataColumn("category3", typeof(string)),new DataColumn("category4",typeof(string)),new DataColumn("category5", typeof(string)),new DataColumn("category6", typeof(string)) });
-            
+
         }
     }
 
@@ -177,7 +179,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
     [WebMethod]
     public static void AddProductsToViewState(string productsJson)
     {
-        if(productsJson != "\"Empty\"")
+        if (productsJson != "\"Empty\"")
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             List<Product> products = serializer.Deserialize<List<Product>>(productsJson);
@@ -255,6 +257,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
 
             // Store the updated DataTable in session
             HttpContext.Current.Session["QuatationData"] = dtLocalData;
+
         }
         else
         {
@@ -269,11 +272,10 @@ public partial class Admin_Quotation : System.Web.UI.Page
     {
         DataTable dt = dtLocalData;
 
-        // Use LINQ to select unique rows based on 'id' (or another unique field)
         var uniqueRows = dt.AsEnumerable()
-                           .GroupBy(row => row["id"]) // Assuming 'id' is the unique field
-                           .Select(group => group.First()) // Take the first occurrence of each group
-                           .ToList();
+                       .GroupBy(row => row["id"]) // Assuming 'id' is the unique field
+                       .Select(group => group.First()) // Take the first occurrence of each group
+                       .ToList();
 
         // Create a new DataTable to store the unique rows
         DataTable uniqueDataTable = dt.Clone(); // Clone the schema of the original DataTable
@@ -302,6 +304,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
         txtIGSTamt.Text = string.Empty;
         txtdisc1.Text = "0";
         txtAmt1.Text = string.Empty;
+
     }
 
 
@@ -4026,7 +4029,7 @@ public partial class Admin_Quotation : System.Web.UI.Page
                 //Thread.Sleep(8000);
                 //await Task.Delay(8000);
                 con.Open();
-               cmdquotation.ExecuteNonQuery();
+                cmdquotation.ExecuteNonQuery();
                 con.Close();
 
                 if (Request.QueryString["Ccode"] != null)

@@ -216,7 +216,44 @@
             document.getElementById('DivHeaderRow').scrollLeft = Scrollablediv.scrollLeft;
             document.getElementById('DivFooterRow').scrollLeft = Scrollablediv.scrollLeft;
         }
+
+        function RemoveLocalStorage() {
+            
+            localStorage.removeItem("quotationData");
+            window.location.href = "../Admin/EnquiryList.aspx";
+        }
+
+        function OnPageLoad() {
+            debugger;
+            var data = localStorage.getItem("quotationData");
+            if (data != null) {
+                var parsedData = JSON.parse(data);
+
+                // Retrieve the CustomerCode and CustomerName from the stored data
+                var customerCode = parsedData.CustomerId;
+                var customerName = parsedData.CustomerName;
+            } else {
+                var customerCode = null;
+                var customerName = null;
+            }
+            $.ajax({
+                type: "POST",
+                url: "AdminDashboard.aspx/StoreCustomerDataInSession", // Adjust URL
+                data: JSON.stringify({ customerCode: customerCode, customerName: customerName }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                  
+                },
+                error: function (xhr, status, error) {
+                   
+                }
+            });
+
+        }
     </script>
+
+
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
@@ -300,6 +337,7 @@
                                         <%--From date to date filter start--%>
 
                                         <div class="col-md-3">
+
                                             <asp:Label ID="lblfromdate" runat="server" Text="From Date :"></asp:Label>
                                             <div>
                                                 <asp:TextBox ID="txtfromdate" Placeholder="Enter From Date" runat="server" TextMode="Date" AutoComplete="off" CssClass="form-control"></asp:TextBox>
@@ -316,125 +354,132 @@
                                         </div>
                                         <%--From date to date filter end--%>
                                     </div>
+                                    <div class="row">
 
-                                    <br />
-                                    <div class="col-md-12">
-                                        <div id="DivRoot" align="left">
-                                            <div style="overflow: hidden;" id="DivHeaderRow">
-                                            </div>
-                                            <div style="overflow: scroll;" class="dt-responsive table-responsive" onscroll="OnScrollDiv(this)" id="DivMainContent">
-                                                <asp:GridView ID="GvCompany" runat="server" CssClass="table table-striped table-bordered nowrap" AutoGenerateColumns="false"
-                                                    DataKeyNames="id" OnRowDataBound="GvCompany_RowDataBound" OnRowCommand="GvCompany_RowCommand" AllowPaging="false" OnPageIndexChanging="GvCompany_PageIndexChanging" PageSize="25">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="S No." HeaderStyle-Width="50px" ItemStyle-HorizontalAlign="Center">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
-                                                                <asp:Label ID="lblfilepath1" runat="server" Visible="false" Text='<%# Eval("filepath1") %>'></asp:Label>
-                                                                <asp:Label ID="lblfilepath2" runat="server" Visible="false" Text='<%# Eval("filepath2") %>'></asp:Label>
-                                                                <asp:Label ID="lblfilepath3" runat="server" Visible="false" Text='<%# Eval("filepath3") %>'></asp:Label>
-                                                                <asp:Label ID="lblfilepath4" runat="server" Visible="false" Text='<%# Eval("filepath4") %>'></asp:Label>
-                                                                <asp:Label ID="lblfilepath5" runat="server" Visible="false" Text='<%# Eval("filepath5") %>'></asp:Label>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
+                                        <b>Note :</b>
 
-                                                        <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblstatus1" runat="server" Text='<%# Eval("status") %>' Visible="false"></asp:Label>
-                                                                <asp:Label ID="lblstatus2" runat="server" Text='' Font-Bold="true"></asp:Label>
-                                                                <asp:Label ID="lblIsActive" runat="server" Text='<%# Eval("IsActive") %>' Visible="false"></asp:Label>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
+                                        The Visible button indicates the pending quotation records.
+                                                To make other rows button visible first&nbsp;<b>Create Quot</b>&nbsp; or &nbsp; <b> Delete</b>&nbsp; the row.
+                                    </div>
 
-                                                        <asp:TemplateField HeaderText="Enquiry Code" ItemStyle-HorizontalAlign="Center" Visible="false">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblEnqCode" runat="server" Text='<%# Eval("EnqCode") %>'></asp:Label>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                        <asp:TemplateField HeaderText="Customer Code" ItemStyle-HorizontalAlign="Center">
-                                                            <ItemTemplate>
-                                                                <asp:LinkButton ID="linkCustomerCode" runat="server" CssClass="linkbtn" CommandName="companyname" Text='<%# Eval("CustomerCode").ToString().Replace(" ", "<br /><br />") %>' CommandArgument='<%# Eval("id") %>' ToolTip="View Details"></asp:LinkButton>
-                                                                <%--   <asp:Label ID="lblcustomercode" runat="server" Text='<%# Eval("CustomerCode") %>'></asp:Label>--%>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                        <asp:TemplateField HeaderText="Name" Visible="false">
-                                                            <ItemTemplate>
-                                                                <asp:LinkButton ID="linkcname" runat="server" CssClass="linkbtn" CommandName="companyname" Text='<%# Eval("cname").ToString().Replace(" ", "<br /><br />") %>' CommandArgument='<%# Eval("id") %>' ToolTip="View Details"></asp:LinkButton>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
+                                <br />
+                                <div class="col-md-12">
+                                    <div id="DivRoot" align="left">
+                                        <div style="overflow: hidden;" id="DivHeaderRow">
+                                        </div>
+                                        <div style="overflow: scroll;" class="dt-responsive table-responsive" onscroll="OnScrollDiv(this)" id="DivMainContent">
+                                            <asp:GridView ID="GvCompany" runat="server" CssClass="table table-striped table-bordered nowrap" AutoGenerateColumns="false"
+                                                DataKeyNames="id" OnRowDataBound="GvCompany_RowDataBound" OnRowCommand="GvCompany_RowCommand" AllowPaging="false" OnPageIndexChanging="GvCompany_PageIndexChanging" PageSize="25">
+                                                <Columns>
+                                                    <asp:TemplateField HeaderText="S No." HeaderStyle-Width="50px" ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
+                                                            <asp:Label ID="lblfilepath1" runat="server" Visible="false" Text='<%# Eval("filepath1") %>'></asp:Label>
+                                                            <asp:Label ID="lblfilepath2" runat="server" Visible="false" Text='<%# Eval("filepath2") %>'></asp:Label>
+                                                            <asp:Label ID="lblfilepath3" runat="server" Visible="false" Text='<%# Eval("filepath3") %>'></asp:Label>
+                                                            <asp:Label ID="lblfilepath4" runat="server" Visible="false" Text='<%# Eval("filepath4") %>'></asp:Label>
+                                                            <asp:Label ID="lblfilepath5" runat="server" Visible="false" Text='<%# Eval("filepath5") %>'></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
 
-                                                        <asp:TemplateField HeaderText="Reg. Date" ItemStyle-HorizontalAlign="Center">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblvisitdate" runat="server" Text='<%# Eval("regdate") %>'></asp:Label>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblstatus1" runat="server" Text='<%# Eval("status") %>' Visible="false"></asp:Label>
+                                                            <asp:Label ID="lblstatus2" runat="server" Text='' Font-Bold="true"></asp:Label>
+                                                            <asp:Label ID="lblIsActive" runat="server" Text='<%# Eval("IsActive") %>' Visible="false"></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
 
-                                                        <asp:TemplateField HeaderText="File1" ItemStyle-HorizontalAlign="Center">
-                                                            <ItemTemplate>
-                                                                <%--<asp:ImageButton ID="ImageButton1" ImageUrl="../img/Open-file.ico" runat="server" Width="30px" OnClick="linkbtnfile_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File" />--%>
-                                                                <asp:ImageButton ID="ImageButtonfile1" ImageUrl="../img/Open-file2.png" runat="server" Width="30px" OnClick="linkbtnfile_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File" />
-                                                                <%--<asp:LinkButton ID="linkbtnfile1" runat="server" CssClass="linkbtn" OnClick="linkbtnfile_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File">Open</asp:LinkButton>--%>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="Enquiry Code" ItemStyle-HorizontalAlign="Center" Visible="false">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblEnqCode" runat="server" Text='<%# Eval("EnqCode") %>'></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="Customer Code" ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <asp:LinkButton ID="linkCustomerCode" runat="server" CssClass="linkbtn" CommandName="companyname" Text='<%# Eval("CustomerCode").ToString().Replace(" ", "<br /><br />") %>' CommandArgument='<%# Eval("id") %>' ToolTip="View Details"></asp:LinkButton>
+                                                            <%--   <asp:Label ID="lblcustomercode" runat="server" Text='<%# Eval("CustomerCode") %>'></asp:Label>--%>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="Name" Visible="false">
+                                                        <ItemTemplate>
+                                                            <asp:LinkButton ID="linkcname" runat="server" CssClass="linkbtn" CommandName="companyname" Text='<%# Eval("cname").ToString().Replace(" ", "<br /><br />") %>' CommandArgument='<%# Eval("id") %>' ToolTip="View Details"></asp:LinkButton>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
 
-                                                        <asp:TemplateField HeaderText="File2" ItemStyle-HorizontalAlign="Center">
-                                                            <ItemTemplate>
-                                                                <asp:ImageButton ID="ImageButtonfile2" ImageUrl="../img/Open-file2.png" runat="server" Width="30px" OnClick="linkbtnfile2_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File" />
-                                                                <%--<asp:LinkButton ID="linkbtnfile2" runat="server" CssClass="linkbtn" OnClick="linkbtnfile2_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File">Open</asp:LinkButton>--%>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="Reg. Date" ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblvisitdate" runat="server" Text='<%# Eval("regdate") %>'></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
 
-                                                        <asp:TemplateField HeaderText="File3" ItemStyle-HorizontalAlign="Center">
-                                                            <ItemTemplate>
-                                                                <asp:ImageButton ID="ImageButtonfile3" ImageUrl="../img/Open-file2.png" runat="server" Width="30px" OnClick="linkbtnfile3_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File" />
-                                                                <%--<asp:LinkButton ID="linkbtnfile3" runat="server" CssClass="linkbtn" OnClick="linkbtnfile3_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File">Open</asp:LinkButton>--%>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="File1" ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <%--<asp:ImageButton ID="ImageButton1" ImageUrl="../img/Open-file.ico" runat="server" Width="30px" OnClick="linkbtnfile_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File" />--%>
+                                                            <asp:ImageButton ID="ImageButtonfile1" ImageUrl="../img/Open-file2.png" runat="server" Width="30px" OnClick="linkbtnfile_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File" />
+                                                            <%--<asp:LinkButton ID="linkbtnfile1" runat="server" CssClass="linkbtn" OnClick="linkbtnfile_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File">Open</asp:LinkButton>--%>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
 
-                                                        <asp:TemplateField HeaderText="File4" ItemStyle-HorizontalAlign="Center">
-                                                            <ItemTemplate>
-                                                                <asp:ImageButton ID="ImageButtonfile4" ImageUrl="../img/Open-file2.png" runat="server" Width="30px" OnClick="linkbtnfile4_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File" />
-                                                                <%--<asp:LinkButton ID="linkbtnfile4" runat="server" CssClass="linkbtn" OnClick="linkbtnfile4_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File">Open</asp:LinkButton>--%>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="File2" ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <asp:ImageButton ID="ImageButtonfile2" ImageUrl="../img/Open-file2.png" runat="server" Width="30px" OnClick="linkbtnfile2_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File" />
+                                                            <%--<asp:LinkButton ID="linkbtnfile2" runat="server" CssClass="linkbtn" OnClick="linkbtnfile2_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File">Open</asp:LinkButton>--%>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
 
-                                                        <asp:TemplateField HeaderText="File5" ItemStyle-HorizontalAlign="Center">
-                                                            <ItemTemplate>
-                                                                <asp:ImageButton ID="ImageButtonfile5" ImageUrl="../img/Open-file2.png" runat="server" Width="30px" OnClick="linkbtnfile5_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File" />
-                                                                <%--<asp:LinkButton ID="linkbtnfile5" runat="server" CssClass="linkbtn" OnClick="linkbtnfile5_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File">Open</asp:LinkButton>--%>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="File3" ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <asp:ImageButton ID="ImageButtonfile3" ImageUrl="../img/Open-file2.png" runat="server" Width="30px" OnClick="linkbtnfile3_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File" />
+                                                            <%--<asp:LinkButton ID="linkbtnfile3" runat="server" CssClass="linkbtn" OnClick="linkbtnfile3_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File">Open</asp:LinkButton>--%>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
 
-                                                        <asp:TemplateField HeaderText="Action" ItemStyle-HorizontalAlign="Center">
-                                                            <ItemTemplate>
-                                                                <asp:Button ID="Button4" CssClass="btn" runat="server" Text="Edit" Style="background-color: #09989a !important; color: #fff;" CommandName="RowEdit" CommandArgument='<%# Eval("id") %>' />
-                                                                <%--<asp:Button ID="btnsendquot" CssClass="btn btn-success" runat="server" Text="Create Quot" OnClientClick="SetTarget();" CommandArgument='<%# Eval("ccode") %>' OnClick="btnsendquot_Click" />--%>
-                                                                <asp:Button ID="btnsendquot" CssClass="btn btn-success" runat="server" Text="Create Quot" CommandName="CreateQuaot" CommandArgument='<%# Eval("ccode") %>' />
-                                                                <asp:LinkButton ID="Linkbtndelete" runat="server" CssClass="btn btn-warning" CommandName="DeleteData" OnClientClick="return confirm('Do you want to delete this record ?')" CommandArgument='<%# Eval("id") %>' ToolTip="Delete">Delete</asp:LinkButton>&nbsp;
+                                                    <asp:TemplateField HeaderText="File4" ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <asp:ImageButton ID="ImageButtonfile4" ImageUrl="../img/Open-file2.png" runat="server" Width="30px" OnClick="linkbtnfile4_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File" />
+                                                            <%--<asp:LinkButton ID="linkbtnfile4" runat="server" CssClass="linkbtn" OnClick="linkbtnfile4_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File">Open</asp:LinkButton>--%>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+
+                                                    <asp:TemplateField HeaderText="File5" ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <asp:ImageButton ID="ImageButtonfile5" ImageUrl="../img/Open-file2.png" runat="server" Width="30px" OnClick="linkbtnfile5_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File" />
+                                                            <%--<asp:LinkButton ID="linkbtnfile5" runat="server" CssClass="linkbtn" OnClick="linkbtnfile5_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File">Open</asp:LinkButton>--%>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+
+                                                    <asp:TemplateField HeaderText="Action" ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <asp:Button ID="Button4" CssClass="btn" runat="server" Text="Edit" Style="background-color: #09989a !important; color: #fff;" CommandName="RowEdit" CommandArgument='<%# Eval("id") %>' />
+                                                            <%--<asp:Button ID="btnsendquot" CssClass="btn btn-success" runat="server" Text="Create Quot" OnClientClick="SetTarget();" CommandArgument='<%# Eval("ccode") %>' OnClick="btnsendquot_Click" />--%>
+                                                            <asp:Button ID="btnsendquot" CssClass="btn btn-success" runat="server" Text="Create Quot" CommandName="CreateQuaot" CommandArgument='<%# Eval("ccode") %>' />
+                                                            <asp:LinkButton ID="Linkbtndelete" runat="server" CssClass="btn btn-warning" CommandName="DeleteData" OnClientClick="return confirm('Do you want to delete this record ?')" CommandArgument='<%# Eval("id") %>' ToolTip="Delete">Delete</asp:LinkButton>&nbsp;
                                                     <%--<asp:LinkButton ID="linkaccount" runat="server" CssClass="linkbtn" CommandName="status" OnClientClick="return confirm('Do you want to Activate/Deactivate this account ?')" CommandArgument='<%# Eval("id") %>' ToolTip="Activate/Deactivate" Text="Activated"></asp:LinkButton>--%>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                                <div id="DivFooterRow" style="overflow: hidden">
-                                                </div>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                </Columns>
+                                            </asp:GridView>
+                                            <div id="DivFooterRow" style="overflow: hidden">
                                             </div>
                                         </div>
                                     </div>
-                                    <br />
-                                    <br />
-                                    <script type="text/javascript">
-                                        function SetTarget() {
-                                            document.forms[0].target = "_blank";
-                                        }
-                                    </script>
                                 </div>
+                                <br />
+                                <br />
+                                <script type="text/javascript">
+                                    function SetTarget() {
+                                        document.forms[0].target = "_blank";
+                                    }
+                                </script>
                             </div>
                         </div>
                     </div>
-                    <br />
                 </div>
+                <br />
             </div>
         </div>
+    </div>
     </div>
 
 
@@ -530,8 +575,8 @@
                         <br />
                         <%-- <asp:Button ID="btnHide" runat="server" CssClass="" Text="" />--%>
                         <br />
-                        <asp:Button ID="BtnEnclosure" runat="server" CssClass="btn btn-outline-primary btn-lg" Text="MS fabricated Enclosure" OnClick="BtnEnclosure_Click"  Visible="false" />&nbsp;&nbsp;&nbsp;
-                        <asp:Button ID="btnPart" runat="server" CssClass="btn btn-outline-success btn-lg" Text="Loose Parts for the Enclosure" OnClick="btnPart_Click"  /><br />
+                        <asp:Button ID="BtnEnclosure" runat="server" CssClass="btn btn-outline-primary btn-lg" Text="MS fabricated Enclosure" OnClick="BtnEnclosure_Click" Visible="false" />&nbsp;&nbsp;&nbsp;
+                        <asp:Button ID="btnPart" runat="server" CssClass="btn btn-outline-success btn-lg" Text="Loose Parts for the Enclosure" OnClick="btnPart_Click" /><br />
                         <br />
                     </div>
 

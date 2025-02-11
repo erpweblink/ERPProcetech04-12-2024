@@ -150,10 +150,10 @@
             margin-bottom: 5px !important;
             width: 100%;
         }
-        .canvasjs-chart-credit{
-            display:none !important;
-        }
 
+        .canvasjs-chart-credit {
+            display: none !important;
+        }
     </style>
 
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
@@ -239,6 +239,35 @@
             chart.render();
         }
 
+        //Local Storage function 
+        function OnPageLoad() {
+            debugger;
+            var data = localStorage.getItem("quotationData");
+            if (data != null) {
+                var parsedData = JSON.parse(data);
+
+                // Retrieve the CustomerCode and CustomerName from the stored data
+                var customerCode = parsedData.CustomerId;
+                var customerName = parsedData.CustomerName;
+            } else {
+                var customerCode = null;
+                var customerName = null;
+            }
+            $.ajax({
+                type: "POST",
+                url: "AdminDashboard.aspx/StoreCustomerDataInSession", // Adjust URL
+                data: JSON.stringify({ customerCode: customerCode, customerName: customerName }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                   
+                },
+                error: function (xhr, status, error) {
+                   
+                }
+            });
+
+        }
     </script>
 
 
@@ -645,7 +674,7 @@
                                         </div>
 
                                         <br />
-                                        <hr class="d-none"/>
+                                        <hr class="d-none" />
                                         <div class="col-md-12 d-none">
                                             <div class="row">
                                                 <div class="col-md-2 spancls">From Date:</div>

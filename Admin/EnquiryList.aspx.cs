@@ -1,17 +1,16 @@
-﻿using Microsoft.Office.Interop.Outlook;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Data.SqlClient;
 using System.Configuration;
 using System.Data;
-using System.IO;
-using System.Text;
-using System.Security.Cryptography;
+using System.Data.SqlClient;
 using System.Drawing;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using System.Web;
+using System.Web.Services;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 
 public partial class Admin_EnquiryList : System.Web.UI.Page
 {
@@ -20,12 +19,14 @@ public partial class Admin_EnquiryList : System.Web.UI.Page
     {
         if (Session["name"] == null)
         {
+
             Response.Redirect("../Login.aspx");
         }
         else
         {
             if (!IsPostBack)
             {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "OnPageLoad", "OnPageLoad();", true);
                 DdlSalesBind();
                 Gvbind();
                 ViewAuthorization();
@@ -136,7 +137,9 @@ public partial class Admin_EnquiryList : System.Web.UI.Page
             if (!string.IsNullOrEmpty(e.CommandArgument.ToString()))
             {
                 HdnID.Text = e.CommandArgument.ToString();
-                this.modalCreateQuat.Show();
+                Response.Redirect("QuotationCat3.aspx?Ccode=" + encrypt(HdnID.Text));
+                
+                //this.modalCreateQuat.Show();
             }
         }
 
@@ -144,6 +147,11 @@ public partial class Admin_EnquiryList : System.Web.UI.Page
         {
             if (!string.IsNullOrEmpty(e.CommandArgument.ToString()))
             {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "RemoveLocalStorage", "RemoveLocalStorage();", true);
+
+                HttpContext.Current.Session["CustomerCode"] = null;
+                HttpContext.Current.Session["CustomerName"] = null;
+
                 SqlCommand cmd = new SqlCommand("UPDATE [dbo].[EnquiryData] SET [IsActive] = 0 WHERE id='" + e.CommandArgument.ToString() + "'", con);
                 con.Open();
                 cmd.ExecuteNonQuery();
@@ -465,67 +473,173 @@ ON C.ccode = A.ccode where A.id='" + id + "' ";
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            Label file1 = e.Row.FindControl("lblfilepath1") as Label;
-            Label file2 = e.Row.FindControl("lblfilepath2") as Label;
-            Label file3 = e.Row.FindControl("lblfilepath3") as Label;
-            Label file4 = e.Row.FindControl("lblfilepath4") as Label;
-            Label file5 = e.Row.FindControl("lblfilepath5") as Label;
+            // Get the session values
+            string sessionCustomerCode = null;
+            string sessionCustomerName = null;
 
-            ImageButton ImageButtonfile1 = e.Row.FindControl("ImageButtonfile1") as ImageButton;
-            ImageButton ImageButtonfile2 = e.Row.FindControl("ImageButtonfile2") as ImageButton;
-            ImageButton ImageButtonfile3 = e.Row.FindControl("ImageButtonfile3") as ImageButton;
-            ImageButton ImageButtonfile4 = e.Row.FindControl("ImageButtonfile4") as ImageButton;
-            ImageButton ImageButtonfile5 = e.Row.FindControl("ImageButtonfile5") as ImageButton;
-
-            if (string.IsNullOrEmpty(file1.Text))
+            if (Session["CustomerCode"] != null)
             {
-                ImageButtonfile1.Enabled = false;
-                ImageButtonfile1.ToolTip = "File Not Available";
-            }
-            if (string.IsNullOrEmpty(file2.Text))
-            {
-                ImageButtonfile2.Enabled = false;
-                ImageButtonfile2.ToolTip = "File Not Available";
-            }
-            if (string.IsNullOrEmpty(file3.Text))
-            {
-                ImageButtonfile3.Enabled = false;
-                ImageButtonfile3.ToolTip = "File Not Available";
-            }
-            if (string.IsNullOrEmpty(file4.Text))
-            {
-                ImageButtonfile4.Enabled = false;
-                ImageButtonfile4.ToolTip = "File Not Available";
-            }
-            if (string.IsNullOrEmpty(file5.Text))
-            {
-                ImageButtonfile5.Enabled = false;
-                ImageButtonfile5.ToolTip = "File Not Available";
+                sessionCustomerCode = Session["CustomerCode"].ToString();
             }
 
-            Label lblstatus1 = e.Row.FindControl("lblstatus1") as Label;
-            Label lblstatus2 = e.Row.FindControl("lblstatus2") as Label;
-            if (lblstatus1.Text == "False" || lblstatus1.Text == "false")
+            if (Session["CustomerName"] != null)
             {
-                lblstatus2.Text = "Open";
-                lblstatus2.ForeColor = Color.Green;
-            }
-            if (lblstatus1.Text == "True" || lblstatus1.Text == "true")
-            {
-                lblstatus2.Text = "Close";
-                lblstatus2.ForeColor = Color.Red;
-            }
-            Label lblIsActive = e.Row.FindControl("lblIsActive") as Label;
-            Button btnEdit = e.Row.FindControl("Button4") as Button;
-            Button btnsendquot = e.Row.FindControl("btnsendquot") as Button;
-            LinkButton Linkbtndelete = e.Row.FindControl("Linkbtndelete") as LinkButton;
-            if (lblIsActive.Text == "False")
-            {
-                btnEdit.Visible = false;
-                btnsendquot.Visible = false;
-                Linkbtndelete.Visible = false;
+                sessionCustomerName = Session["CustomerName"].ToString();
             }
 
+            if (!string.IsNullOrEmpty(sessionCustomerCode) || !string.IsNullOrEmpty(sessionCustomerName))
+            {
+                // Retrieve values from the current row
+                string rowCustomerCode = DataBinder.Eval(e.Row.DataItem, "Ccode").ToString();
+                string rowCustomerName = DataBinder.Eval(e.Row.DataItem, "Cname").ToString();
+
+                // Get the controls for file paths and image buttons
+                Label file1 = e.Row.FindControl("lblfilepath1") as Label;
+                Label file2 = e.Row.FindControl("lblfilepath2") as Label;
+                Label file3 = e.Row.FindControl("lblfilepath3") as Label;
+                Label file4 = e.Row.FindControl("lblfilepath4") as Label;
+                Label file5 = e.Row.FindControl("lblfilepath5") as Label;
+
+                ImageButton ImageButtonfile1 = e.Row.FindControl("ImageButtonfile1") as ImageButton;
+                ImageButton ImageButtonfile2 = e.Row.FindControl("ImageButtonfile2") as ImageButton;
+                ImageButton ImageButtonfile3 = e.Row.FindControl("ImageButtonfile3") as ImageButton;
+                ImageButton ImageButtonfile4 = e.Row.FindControl("ImageButtonfile4") as ImageButton;
+                ImageButton ImageButtonfile5 = e.Row.FindControl("ImageButtonfile5") as ImageButton;
+
+                // Disable Image Buttons if no file exists
+                if (string.IsNullOrEmpty(file1.Text))
+                {
+                    ImageButtonfile1.Enabled = false;
+                    ImageButtonfile1.ToolTip = "File Not Available";
+                }
+                if (string.IsNullOrEmpty(file2.Text))
+                {
+                    ImageButtonfile2.Enabled = false;
+                    ImageButtonfile2.ToolTip = "File Not Available";
+                }
+                if (string.IsNullOrEmpty(file3.Text))
+                {
+                    ImageButtonfile3.Enabled = false;
+                    ImageButtonfile3.ToolTip = "File Not Available";
+                }
+                if (string.IsNullOrEmpty(file4.Text))
+                {
+                    ImageButtonfile4.Enabled = false;
+                    ImageButtonfile4.ToolTip = "File Not Available";
+                }
+                if (string.IsNullOrEmpty(file5.Text))
+                {
+                    ImageButtonfile5.Enabled = false;
+                    ImageButtonfile5.ToolTip = "File Not Available";
+                }
+
+                // Check the status label and set text and color
+                Label lblstatus1 = e.Row.FindControl("lblstatus1") as Label;
+                Label lblstatus2 = e.Row.FindControl("lblstatus2") as Label;
+                if (lblstatus1.Text == "False" || lblstatus1.Text == "false")
+                {
+                    lblstatus2.Text = "Open";
+                    lblstatus2.ForeColor = Color.Green;
+                }
+                if (lblstatus1.Text == "True" || lblstatus1.Text == "true")
+                {
+                    lblstatus2.Text = "Close";
+                    lblstatus2.ForeColor = Color.Red;
+                }
+
+                // Get the "IsActive" label and buttons
+                Label lblIsActive = e.Row.FindControl("lblIsActive") as Label;
+                Button btnEdit = e.Row.FindControl("Button4") as Button;
+                Button btnsendquot = e.Row.FindControl("btnsendquot") as Button;
+                LinkButton Linkbtndelete = e.Row.FindControl("Linkbtndelete") as LinkButton;
+
+                // Check if the row corresponds to the active customer and is the correct customer
+                if (lblIsActive.Text == "False")
+                {
+                    btnEdit.Visible = false;
+                    btnsendquot.Visible = false;
+                    Linkbtndelete.Visible = false;
+                }
+                else
+                {
+                    // Hide the buttons for rows where customer code/name do not match session data
+                    if (sessionCustomerCode != rowCustomerCode || sessionCustomerName != rowCustomerName)
+                    {
+                        btnEdit.Visible = false;
+                        btnsendquot.Visible = false;
+                        Linkbtndelete.Visible = false;
+                    }
+                    else
+                    {
+                        btnEdit.Visible = true;
+                        btnsendquot.Visible = true;
+                        Linkbtndelete.Visible = true;
+                    }
+                }
+            }
+            else
+            {
+                Label file1 = e.Row.FindControl("lblfilepath1") as Label;
+                Label file2 = e.Row.FindControl("lblfilepath2") as Label;
+                Label file3 = e.Row.FindControl("lblfilepath3") as Label;
+                Label file4 = e.Row.FindControl("lblfilepath4") as Label;
+                Label file5 = e.Row.FindControl("lblfilepath5") as Label;
+
+                ImageButton ImageButtonfile1 = e.Row.FindControl("ImageButtonfile1") as ImageButton;
+                ImageButton ImageButtonfile2 = e.Row.FindControl("ImageButtonfile2") as ImageButton;
+                ImageButton ImageButtonfile3 = e.Row.FindControl("ImageButtonfile3") as ImageButton;
+                ImageButton ImageButtonfile4 = e.Row.FindControl("ImageButtonfile4") as ImageButton;
+                ImageButton ImageButtonfile5 = e.Row.FindControl("ImageButtonfile5") as ImageButton;
+
+                if (string.IsNullOrEmpty(file1.Text))
+                {
+                    ImageButtonfile1.Enabled = false;
+                    ImageButtonfile1.ToolTip = "File Not Available";
+                }
+                if (string.IsNullOrEmpty(file2.Text))
+                {
+                    ImageButtonfile2.Enabled = false;
+                    ImageButtonfile2.ToolTip = "File Not Available";
+                }
+                if (string.IsNullOrEmpty(file3.Text))
+                {
+                    ImageButtonfile3.Enabled = false;
+                    ImageButtonfile3.ToolTip = "File Not Available";
+                }
+                if (string.IsNullOrEmpty(file4.Text))
+                {
+                    ImageButtonfile4.Enabled = false;
+                    ImageButtonfile4.ToolTip = "File Not Available";
+                }
+                if (string.IsNullOrEmpty(file5.Text))
+                {
+                    ImageButtonfile5.Enabled = false;
+                    ImageButtonfile5.ToolTip = "File Not Available";
+                }
+
+                Label lblstatus1 = e.Row.FindControl("lblstatus1") as Label;
+                Label lblstatus2 = e.Row.FindControl("lblstatus2") as Label;
+                if (lblstatus1.Text == "False" || lblstatus1.Text == "false")
+                {
+                    lblstatus2.Text = "Open";
+                    lblstatus2.ForeColor = Color.Green;
+                }
+                if (lblstatus1.Text == "True" || lblstatus1.Text == "true")
+                {
+                    lblstatus2.Text = "Close";
+                    lblstatus2.ForeColor = Color.Red;
+                }
+                Label lblIsActive = e.Row.FindControl("lblIsActive") as Label;
+                Button btnEdit = e.Row.FindControl("Button4") as Button;
+                Button btnsendquot = e.Row.FindControl("btnsendquot") as Button;
+                LinkButton Linkbtndelete = e.Row.FindControl("Linkbtndelete") as LinkButton;
+                if (lblIsActive.Text == "False")
+                {
+                    btnEdit.Visible = false;
+                    btnsendquot.Visible = false;
+                    Linkbtndelete.Visible = false;
+                }
+            }
         }
     }
 
